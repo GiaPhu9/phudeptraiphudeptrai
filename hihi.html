@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Website của tôi</title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <!-- Thanh menu -->
+    <header>
+        <h2>MY WEBSITE</h2>
+
+        <nav>
+            <a href="#home">Trang chủ</a>
+            <a href="#about">Giới thiệu</a>
+            <a href="#contact">Liên hệ</a>
+        </nav>
+    </header>
+
+
+    <!-- Trang chủ -->
+    <section id="home" class="hero">
+
+        <div class="content">
+            <h1>Xin chào 👋</h1>
+
+            <p>
+                Chào mừng bạn đến với website đầu tiên của tôi!
+            </p>
+
+            <button onclick="hello()">
+                Bấm vào đây
+            </button>
+        </div>
+
+
+    </section>
+
+
+    <!-- Giới thiệu -->
+    <section id="about">
+
+        <h2>Giới thiệu</h2>
+
+        <p>
+            Đây là website được tạo bằng HTML, CSS và JavaScript.
+        </p>
+
+        <div class="cards">
+
+            <div class="card">
+                <h3>HTML</h3>
+                <p>Tạo cấu trúc cho website.</p>
+            </div>
+
+            <div class="card">
+                <h3>CSS</h3>
+                <p>Làm website đẹp và sinh động.</p>
+            </div>
+
+            <div class="card">
+                <h3>JavaScript</h3>
+                <p>Tạo các chức năng tương tác.</p>
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- Liên hệ -->
+    <section id="contact">
+
+        <h2>Liên hệ</h2>
+
+        <input type="text" placeholder="Tên của bạn">
+
+        <input type="email" placeholder="Email">
+
+        <textarea placeholder="Nội dung"></textarea>
+
+        <button onclick="sendMessage()">
+            Gửi
+        </button>
+
+    </section>
+
+
+    <footer>
+        <p>© 2026 Website của tôi</p>
+    </footer>
+
+
+    <script src="script.js"></script>
+
+</body>
+</html>
