@@ -1,9 +1,10 @@
+```html
 <!DOCTYPE html>
 <html lang="vi">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Snake Game</title>
+<title>Game Center</title>
 
 <style>
 * {
@@ -13,189 +14,475 @@
 body {
     margin: 0;
     min-height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
     font-family: Arial, sans-serif;
-    background: linear-gradient(135deg, #101820, #172a3a);
     color: white;
-}
-
-.game-container {
-    width: min(95vw, 520px);
-    text-align: center;
-}
-
-h1 {
-    margin: 0 0 15px;
-    font-size: 42px;
-    color: #5cff72;
-    text-shadow: 0 0 15px #27ff4c;
-}
-
-.score-board {
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 12px;
-    padding: 12px 18px;
-    background: #1e3446;
-    border-radius: 12px;
-    font-size: 18px;
-}
-
-canvas {
-    width: 100%;
-    aspect-ratio: 1 / 1;
-    display: block;
-    background: #0b1117;
-    border: 3px solid #42ff63;
-    border-radius: 12px;
-    box-shadow: 0 0 25px rgba(66,255,99,.3);
+    background:
+        radial-gradient(circle at top left, #263c52, transparent 35%),
+        radial-gradient(circle at bottom right, #263b2c, transparent 35%),
+        #0b1016;
 }
 
 button {
-    border: none;
-    border-radius: 10px;
+    font-family: inherit;
     cursor: pointer;
-    color: white;
-    background: #25c94a;
-    font-weight: bold;
 }
 
-#restart {
-    margin-top: 15px;
-    padding: 12px 25px;
-    font-size: 17px;
-}
-
-button:hover {
-    background: #1de044;
-    transform: scale(1.03);
-}
-
-.controls {
-    margin: 18px auto 0;
-    display: grid;
-    grid-template-columns: repeat(3, 65px);
-    gap: 8px;
+.screen {
+    min-height: 100vh;
+    display: none;
     justify-content: center;
+    align-items: center;
+    padding: 30px;
 }
 
-.controls button {
-    width: 65px;
-    height: 55px;
-    font-size: 22px;
+.screen.active {
+    display: flex;
 }
 
-.empty {
-    visibility: hidden;
+/* ================= MENU ================= */
+
+.menu {
+    width: min(1000px, 95vw);
+    text-align: center;
 }
 
-#message {
-    min-height: 28px;
-    margin-top: 12px;
+.logo {
+    font-size: 55px;
+    margin-bottom: 5px;
+}
+
+.title {
+    font-size: 42px;
+    margin: 0;
+}
+
+.subtitle {
+    color: #9ba8b5;
+    margin: 10px 0 40px;
+    font-size: 18px;
+}
+
+.games {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 25px;
+}
+
+.game-card {
+    min-height: 400px;
+    border-radius: 25px;
+    padding: 40px 25px;
+    border: 1px solid rgba(255,255,255,.12);
+    background: rgba(255,255,255,.06);
+    backdrop-filter: blur(15px);
+    transition: .3s;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.game-card:hover {
+    transform: translateY(-10px) scale(1.02);
+    border-color: rgba(255,255,255,.3);
+    box-shadow: 0 20px 50px rgba(0,0,0,.35);
+}
+
+.game-icon {
+    font-size: 120px;
+    margin-bottom: 15px;
+}
+
+.game-card h2 {
+    font-size: 32px;
+    margin: 5px;
+}
+
+.game-card p {
+    color: #aab5c0;
+    margin-bottom: 25px;
+}
+
+.play-btn {
+    padding: 14px 35px;
+    border: 0;
+    border-radius: 12px;
     font-size: 18px;
     font-weight: bold;
-    color: #ffdc4a;
+    color: white;
+    background: #22c55e;
+    transition: .2s;
+}
+
+.play-btn:hover {
+    transform: scale(1.06);
+    background: #16a34a;
+}
+
+.chess-btn {
+    background: #d49a4a;
+}
+
+.chess-btn:hover {
+    background: #b8792e;
+}
+
+/* ================= GAME ================= */
+
+.game-screen {
+    flex-direction: column;
+}
+
+.game-header {
+    width: min(700px, 95vw);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 15px;
+}
+
+.back-btn {
+    padding: 10px 18px;
+    border: 0;
+    border-radius: 10px;
+    color: white;
+    background: #273442;
+    font-size: 16px;
+}
+
+.back-btn:hover {
+    background: #3a4b5c;
+}
+
+.game-title {
+    font-size: 28px;
+    margin: 0;
+}
+
+#snakeCanvas {
+    width: min(600px, 90vw);
+    height: min(600px, 90vw);
+    background: #081018;
+    border: 3px solid #36e66a;
+    border-radius: 15px;
+}
+
+.score {
+    margin: 10px;
+    font-size: 19px;
+}
+
+/* ================= CHESS ================= */
+
+.chess-area {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.chess-info {
+    margin-bottom: 15px;
+    font-size: 18px;
+}
+
+#chessboard {
+    width: min(600px, 90vw);
+    height: min(600px, 90vw);
+    display: grid;
+    grid-template-columns: repeat(8, 1fr);
+    grid-template-rows: repeat(8, 1fr);
+    border: 6px solid #513b28;
+    box-shadow: 0 15px 40px rgba(0,0,0,.5);
+}
+
+.square {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: clamp(30px, 8vw, 65px);
+    user-select: none;
+}
+
+.light {
+    background: #f0d9b5;
+}
+
+.dark {
+    background: #b58863;
+}
+
+.selected {
+    box-shadow: inset 0 0 0 5px #39ff68;
+}
+
+@media (max-width: 700px) {
+    .games {
+        grid-template-columns: 1fr;
+    }
+
+    .game-card {
+        min-height: 300px;
+    }
+
+    .game-icon {
+        font-size: 80px;
+    }
+
+    .title {
+        font-size: 32px;
+    }
 }
 </style>
 </head>
 
 <body>
 
-<div class="game-container">
-    <h1>🐍 SNAKE</h1>
+<!-- ================= MENU ================= -->
 
-    <div class="score-board">
-        <div>Điểm: <b id="score">0</b></div>
-        <div>Kỷ lục: <b id="highScore">0</b></div>
+<section id="menuScreen" class="screen active">
+
+    <div class="menu">
+
+        <div class="logo">🎮</div>
+
+        <h1 class="title">GAME CENTER</h1>
+
+        <p class="subtitle">
+            Chọn một trò chơi để bắt đầu
+        </p>
+
+        <div class="games">
+
+            <!-- RẮN -->
+            <div class="game-card">
+
+                <div class="game-icon">🐍</div>
+
+                <h2>Rắn săn mồi</h2>
+
+                <p>
+                    Ăn thức ăn, lớn lên và đạt điểm cao nhất!
+                </p>
+
+                <button
+                    class="play-btn"
+                    onclick="showSnake()">
+                    🐍 Chơi Rắn
+                </button>
+
+            </div>
+
+            <!-- CỜ VUA -->
+            <div class="game-card">
+
+                <div class="game-icon">♟️</div>
+
+                <h2>Cờ vua</h2>
+
+                <p>
+                    Đấu cờ vua ngay trên trình duyệt.
+                </p>
+
+                <button
+                    class="play-btn chess-btn"
+                    onclick="showChess()">
+                    ♟️ Chơi Cờ vua
+                </button>
+
+            </div>
+
+        </div>
     </div>
 
-    <canvas id="game" width="500" height="500"></canvas>
+</section>
 
-    <div id="message">Dùng phím mũi tên hoặc WASD để chơi</div>
 
-    <button id="restart">🔄 Chơi lại</button>
+<!-- ================= SNAKE ================= -->
 
-    <div class="controls">
-        <button class="empty"></button>
-        <button onclick="changeDirection('up')">⬆️</button>
-        <button class="empty"></button>
+<section id="snakeScreen" class="screen game-screen">
 
-        <button onclick="changeDirection('left')">⬅️</button>
-        <button onclick="changeDirection('down')">⬇️</button>
-        <button onclick="changeDirection('right')">➡️</button>
+    <div class="game-header">
+
+        <button class="back-btn" onclick="backToMenu()">
+            ← Quay lại
+        </button>
+
+        <h2 class="game-title">🐍 Rắn săn mồi</h2>
+
+        <div></div>
+
     </div>
-</div>
+
+    <div class="score">
+        Điểm: <b id="score">0</b>
+        &nbsp; | &nbsp;
+        Kỷ lục: <b id="highScore">0</b>
+    </div>
+
+    <canvas id="snakeCanvas"
+            width="600"
+            height="600">
+    </canvas>
+
+</section>
+
+
+<!-- ================= CHESS ================= -->
+
+<section id="chessScreen" class="screen game-screen">
+
+    <div class="game-header">
+
+        <button class="back-btn" onclick="backToMenu()">
+            ← Quay lại
+        </button>
+
+        <h2 class="game-title">♟️ Cờ vua</h2>
+
+        <div></div>
+
+    </div>
+
+    <div class="chess-area">
+
+        <div class="chess-info" id="chessInfo">
+            Lượt của Trắng
+        </div>
+
+        <div id="chessboard"></div>
+
+    </div>
+
+</section>
+
 
 <script>
-const canvas = document.getElementById("game");
+
+/* =====================================================
+   CHUYỂN MÀN HÌNH
+===================================================== */
+
+function hideAllScreens() {
+    document.querySelectorAll(".screen")
+        .forEach(screen => screen.classList.remove("active"));
+}
+
+function showSnake() {
+    hideAllScreens();
+
+    document.getElementById("snakeScreen")
+        .classList.add("active");
+
+    startSnake();
+}
+
+function showChess() {
+    hideAllScreens();
+
+    document.getElementById("chessScreen")
+        .classList.add("active");
+
+    createChessBoard();
+}
+
+function backToMenu() {
+    hideAllScreens();
+
+    document.getElementById("menuScreen")
+        .classList.add("active");
+
+    clearInterval(snakeLoop);
+}
+
+
+/* =====================================================
+   GAME RẮN
+===================================================== */
+
+const canvas = document.getElementById("snakeCanvas");
 const ctx = canvas.getContext("2d");
 
-const grid = 25;
+const grid = 30;
 const tile = canvas.width / grid;
 
 let snake;
 let food;
 let direction;
 let nextDirection;
-let score;
-let gameOver;
-let gameLoop;
+let snakeScore = 0;
+let snakeLoop;
 
-let highScore = Number(localStorage.getItem("snakeHighScore")) || 0;
-document.getElementById("highScore").textContent = highScore;
+let highScore =
+    Number(localStorage.getItem("snakeHighScore")) || 0;
 
-function startGame() {
+document.getElementById("highScore").textContent =
+    highScore;
+
+
+function startSnake() {
+
     snake = [
-        { x: 12, y: 12 },
-        { x: 11, y: 12 },
-        { x: 10, y: 12 }
+        {x: 15, y: 15},
+        {x: 14, y: 15},
+        {x: 13, y: 15}
     ];
 
     direction = "right";
     nextDirection = "right";
-    score = 0;
-    gameOver = false;
 
-    document.getElementById("score").textContent = score;
-    document.getElementById("message").textContent =
-        "Dùng phím mũi tên hoặc WASD để chơi";
+    snakeScore = 0;
+
+    document.getElementById("score").textContent =
+        snakeScore;
 
     createFood();
 
-    clearInterval(gameLoop);
-    gameLoop = setInterval(update, 110);
+    clearInterval(snakeLoop);
 
-    draw();
+    snakeLoop = setInterval(updateSnake, 100);
+
+    drawSnake();
 }
 
+
 function createFood() {
+
     do {
+
         food = {
             x: Math.floor(Math.random() * grid),
             y: Math.floor(Math.random() * grid)
         };
+
     } while (
-        snake.some(part => part.x === food.x && part.y === food.y)
+        snake.some(
+            part =>
+            part.x === food.x &&
+            part.y === food.y
+        )
     );
 }
 
+
 function changeDirection(newDirection) {
-    const opposites = {
+
+    const opposite = {
         up: "down",
         down: "up",
         left: "right",
         right: "left"
     };
 
-    if (opposites[newDirection] !== direction) {
+    if (opposite[newDirection] !== direction) {
         nextDirection = newDirection;
     }
 }
 
+
 document.addEventListener("keydown", e => {
+
     const keys = {
+
         ArrowUp: "up",
         w: "up",
         W: "up",
@@ -214,183 +501,403 @@ document.addEventListener("keydown", e => {
     };
 
     if (keys[e.key]) {
-        e.preventDefault();
         changeDirection(keys[e.key]);
-    }
-
-    if (e.key === "Enter" && gameOver) {
-        startGame();
     }
 });
 
-function update() {
+
+function updateSnake() {
+
     direction = nextDirection;
 
-    const head = { ...snake[0] };
+    const head = {...snake[0]};
 
     if (direction === "up") head.y--;
     if (direction === "down") head.y++;
     if (direction === "left") head.x--;
     if (direction === "right") head.x++;
 
-    // Đâm tường
+
+    /* Đâm tường */
+
     if (
         head.x < 0 ||
         head.x >= grid ||
         head.y < 0 ||
         head.y >= grid
     ) {
-        endGame();
+        snakeGameOver();
         return;
     }
 
-    // Đâm vào thân
+
+    /* Đâm thân */
+
     if (
-        snake.some(part =>
-            part.x === head.x && part.y === head.y
+        snake.some(
+            part =>
+            part.x === head.x &&
+            part.y === head.y
         )
     ) {
-        endGame();
+        snakeGameOver();
         return;
     }
+
 
     snake.unshift(head);
 
-    // Ăn thức ăn
-    if (head.x === food.x && head.y === food.y) {
-        score++;
 
-        document.getElementById("score").textContent = score;
+    /* Ăn mồi */
 
-        if (score > highScore) {
-            highScore = score;
-            localStorage.setItem("snakeHighScore", highScore);
-            document.getElementById("highScore").textContent = highScore;
+    if (
+        head.x === food.x &&
+        head.y === food.y
+    ) {
+
+        snakeScore++;
+
+        document.getElementById("score")
+            .textContent = snakeScore;
+
+        if (snakeScore > highScore) {
+
+            highScore = snakeScore;
+
+            localStorage.setItem(
+                "snakeHighScore",
+                highScore
+            );
+
+            document.getElementById("highScore")
+                .textContent = highScore;
         }
 
         createFood();
+
     } else {
+
         snake.pop();
+
     }
 
-    draw();
+    drawSnake();
 }
 
-function draw() {
-    // Nền
-    ctx.fillStyle = "#0b1117";
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-    // Lưới
-    ctx.strokeStyle = "rgba(255,255,255,0.035)";
-    ctx.lineWidth = 1;
+function drawSnake() {
+
+    ctx.fillStyle = "#071016";
+
+    ctx.fillRect(
+        0,
+        0,
+        canvas.width,
+        canvas.height
+    );
+
+
+    /* Lưới */
+
+    ctx.strokeStyle =
+        "rgba(255,255,255,.035)";
 
     for (let i = 0; i <= grid; i++) {
+
         ctx.beginPath();
+
         ctx.moveTo(i * tile, 0);
         ctx.lineTo(i * tile, canvas.height);
+
         ctx.stroke();
 
         ctx.beginPath();
+
         ctx.moveTo(0, i * tile);
         ctx.lineTo(canvas.width, i * tile);
+
         ctx.stroke();
     }
 
-    // Thức ăn
-    ctx.fillStyle = "#ff3b4f";
-    ctx.shadowColor = "#ff3b4f";
-    ctx.shadowBlur = 15;
+
+    /* Thức ăn */
+
+    ctx.fillStyle = "#ff4057";
 
     ctx.beginPath();
+
     ctx.arc(
         food.x * tile + tile / 2,
         food.y * tile + tile / 2,
-        tile * 0.35,
+        tile * .35,
         0,
         Math.PI * 2
     );
+
     ctx.fill();
 
-    ctx.shadowBlur = 0;
 
-    // Rắn
+    /* Rắn */
+
     snake.forEach((part, index) => {
-        ctx.fillStyle = index === 0 ? "#75ff8a" : "#2fd653";
 
-        const padding = 2;
+        ctx.fillStyle =
+            index === 0
+            ? "#7cff91"
+            : "#26d84e";
 
         ctx.beginPath();
+
         ctx.roundRect(
-            part.x * tile + padding,
-            part.y * tile + padding,
-            tile - padding * 2,
-            tile - padding * 2,
-            6
+            part.x * tile + 2,
+            part.y * tile + 2,
+            tile - 4,
+            tile - 4,
+            7
         );
+
         ctx.fill();
 
-        // Mắt
-        if (index === 0) {
-            ctx.fillStyle = "#102018";
-
-            let eye1X = part.x * tile + tile * 0.35;
-            let eye2X = part.x * tile + tile * 0.65;
-            let eyeY = part.y * tile + tile * 0.35;
-
-            if (direction === "left") {
-                eye1X = part.x * tile + tile * 0.35;
-                eye2X = eye1X;
-                eyeY = part.y * tile + tile * 0.35;
-            }
-
-            ctx.beginPath();
-            ctx.arc(eye1X, eyeY, 2.5, 0, Math.PI * 2);
-            ctx.fill();
-
-            ctx.beginPath();
-            ctx.arc(eye2X, eyeY + tile * 0.3, 2.5, 0, Math.PI * 2);
-            ctx.fill();
-        }
     });
 }
 
-function endGame() {
-    gameOver = true;
-    clearInterval(gameLoop);
 
-    document.getElementById("message").textContent =
-        `💥 Game Over! Bạn được ${score} điểm — nhấn Chơi lại`;
+function snakeGameOver() {
 
-    draw();
+    clearInterval(snakeLoop);
 
-    ctx.fillStyle = "rgba(0,0,0,0.55)";
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    setTimeout(() => {
 
-    ctx.fillStyle = "#ffffff";
-    ctx.textAlign = "center";
+        alert(
+            "💥 Game Over!\n\n" +
+            "Điểm của bạn: " +
+            snakeScore
+        );
 
-    ctx.font = "bold 42px Arial";
-    ctx.fillText(
-        "GAME OVER",
-        canvas.width / 2,
-        canvas.height / 2 - 15
-    );
+        startSnake();
 
-    ctx.font = "22px Arial";
-    ctx.fillText(
-        `Điểm: ${score}`,
-        canvas.width / 2,
-        canvas.height / 2 + 30
-    );
+    }, 50);
 }
 
-document.getElementById("restart").addEventListener(
-    "click",
-    startGame
-);
 
-startGame();
+/* =====================================================
+   CỜ VUA
+===================================================== */
+
+const pieces = {
+
+    r: "♜",
+    n: "♞",
+    b: "♝",
+    q: "♛",
+    k: "♚",
+    p: "♟",
+
+    R: "♖",
+    N: "♘",
+    B: "♗",
+    Q: "♕",
+    K: "♔",
+    P: "♙"
+};
+
+let board;
+let selectedSquare = null;
+let chessTurn = "white";
+
+
+function createChessBoard() {
+
+    board = [
+
+        ["r","n","b","q","k","b","n","r"],
+
+        ["p","p","p","p","p","p","p","p"],
+
+        ["","","","","","","",""],
+
+        ["","","","","","","",""],
+
+        ["","","","","","","",""],
+
+        ["","","","","","","",""],
+
+        ["P","P","P","P","P","P","P","P"],
+
+        ["R","N","B","Q","K","B","N","R"]
+
+    ];
+
+    selectedSquare = null;
+
+    chessTurn = "white";
+
+    document.getElementById("chessInfo")
+        .textContent = "Lượt của Trắng";
+
+    renderChess();
+}
+
+
+function renderChess() {
+
+    const chessboard =
+        document.getElementById("chessboard");
+
+    chessboard.innerHTML = "";
+
+    for (let row = 0; row < 8; row++) {
+
+        for (let col = 0; col < 8; col++) {
+
+            const square =
+                document.createElement("div");
+
+            square.classList.add("square");
+
+            if ((row + col) % 2 === 0) {
+                square.classList.add("light");
+            } else {
+                square.classList.add("dark");
+            }
+
+            if (
+                selectedSquare &&
+                selectedSquare.row === row &&
+                selectedSquare.col === col
+            ) {
+                square.classList.add("selected");
+            }
+
+            const piece = board[row][col];
+
+            if (piece) {
+                square.textContent = pieces[piece];
+            }
+
+            square.onclick = () =>
+                chessClick(row, col);
+
+            chessboard.appendChild(square);
+        }
+    }
+}
+
+
+function isWhite(piece) {
+
+    return piece &&
+        piece === piece.toUpperCase();
+}
+
+
+function isBlack(piece) {
+
+    return piece &&
+        piece === piece.toLowerCase();
+}
+
+
+function chessClick(row, col) {
+
+    const piece = board[row][col];
+
+
+    /* Chưa chọn quân */
+
+    if (!selectedSquare) {
+
+        if (!piece) return;
+
+        if (
+            chessTurn === "white" &&
+            !isWhite(piece)
+        ) return;
+
+        if (
+            chessTurn === "black" &&
+            !isBlack(piece)
+        ) return;
+
+        selectedSquare = {
+            row,
+            col
+        };
+
+        renderChess();
+
+        return;
+    }
+
+
+    /* Chọn quân khác */
+
+    if (piece) {
+
+        if (
+            chessTurn === "white" &&
+            isWhite(piece)
+        ) {
+
+            selectedSquare = {
+                row,
+                col
+            };
+
+            renderChess();
+
+            return;
+        }
+
+        if (
+            chessTurn === "black" &&
+            isBlack(piece)
+        ) {
+
+            selectedSquare = {
+                row,
+                col
+            };
+
+            renderChess();
+
+            return;
+        }
+    }
+
+
+    /* Di chuyển */
+
+    const from = selectedSquare;
+
+    board[row][col] =
+        board[from.row][from.col];
+
+    board[from.row][from.col] = "";
+
+
+    selectedSquare = null;
+
+
+    if (chessTurn === "white") {
+
+        chessTurn = "black";
+
+        document.getElementById("chessInfo")
+            .textContent = "Lượt của Đen";
+
+    } else {
+
+        chessTurn = "white";
+
+        document.getElementById("chessInfo")
+            .textContent = "Lượt của Trắng";
+    }
+
+
+    renderChess();
+}
+
 </script>
 
 </body>
