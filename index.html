@@ -2,901 +2,876 @@
 <html lang="vi">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Game Center</title>
 
 <style>
-* {
-    box-sizing: border-box;
+*{box-sizing:border-box}
+body{
+ margin:0;min-height:100vh;font-family:Arial,sans-serif;color:white;
+ background:radial-gradient(circle at top,#243b53,#0b1117 65%);
+}
+.screen{display:none;min-height:100vh;justify-content:center;align-items:center;padding:25px}
+.screen.active{display:flex}
+button{font:inherit;cursor:pointer}
+
+.menu{width:min(1000px,95vw);text-align:center}
+.logo{font-size:65px}
+h1{font-size:45px;margin:5px}
+.subtitle{color:#9daab6;margin:10px 0 40px}
+.games{display:grid;grid-template-columns:1fr 1fr;gap:25px}
+.card{
+ min-height:390px;padding:35px;border-radius:25px;
+ background:rgba(255,255,255,.07);
+ border:1px solid rgba(255,255,255,.12);
+ display:flex;flex-direction:column;align-items:center;justify-content:center;
+ transition:.3s;backdrop-filter:blur(12px)
+}
+.card:hover{transform:translateY(-8px);box-shadow:0 20px 50px #0008}
+.icon{font-size:110px}
+.card h2{font-size:30px;margin:10px}
+.card p{color:#aeb9c4}
+.play{
+ border:0;border-radius:12px;padding:14px 30px;
+ color:white;background:#22c55e;font-weight:bold
+}
+.play.chess{background:#c58a45}
+.play:hover{filter:brightness(1.15);transform:scale(1.04)}
+
+.game{flex-direction:column}
+.header{
+ width:min(850px,95vw);display:flex;align-items:center;
+ justify-content:space-between;margin-bottom:12px
+}
+.back{
+ border:0;background:#273746;color:white;border-radius:10px;
+ padding:10px 18px
+}
+.back:hover{background:#3b4d5e}
+.title{font-size:28px;margin:0}
+
+#snakeCanvas{
+ width:min(600px,92vw);height:min(600px,92vw);
+ background:#071016;border:3px solid #3be75f;border-radius:15px
+}
+.snake-info{margin:5px;font-size:18px}
+
+.chess-wrap{display:flex;flex-direction:column;align-items:center}
+#status{font-size:18px;margin-bottom:12px}
+#board{
+ width:min(680px,94vw);height:min(680px,94vw);
+ display:grid;grid-template-columns:repeat(8,1fr);
+ border:7px solid #4a3422;
+ box-shadow:0 15px 45px #0009
+}
+.sq{
+ display:flex;justify-content:center;align-items:center;
+ font-size:clamp(28px,8vw,68px);
+ position:relative;user-select:none
+}
+.light{background:#f0d9b5}
+.dark{background:#b58863}
+.selected{box-shadow:inset 0 0 0 5px #38ff62}
+.legal::after{
+ content:"";width:22%;height:22%;border-radius:50%;
+ background:#0005;position:absolute
+}
+.capture::after{
+ content:"";position:absolute;inset:5px;
+ border:5px solid #ef4444;border-radius:50%
+}
+.controls{margin-top:15px}
+.small-btn{
+ padding:9px 15px;border:0;border-radius:9px;
+ background:#34495e;color:white
 }
 
-body {
-    margin: 0;
-    min-height: 100vh;
-    font-family: Arial, sans-serif;
-    color: white;
-    background:
-        radial-gradient(circle at top left, #263c52, transparent 35%),
-        radial-gradient(circle at bottom right, #263b2c, transparent 35%),
-        #0b1016;
+.promotion{
+ position:fixed;inset:0;background:#000b;
+ display:none;align-items:center;justify-content:center;z-index:10
+}
+.promotion-box{
+ background:#18232e;padding:25px;border-radius:18px;text-align:center
+}
+.promotion button{
+ font-size:45px;margin:5px;width:65px;height:65px;
+ border:0;border-radius:10px;background:#eee
 }
 
-button {
-    font-family: inherit;
-    cursor: pointer;
-}
-
-.screen {
-    min-height: 100vh;
-    display: none;
-    justify-content: center;
-    align-items: center;
-    padding: 30px;
-}
-
-.screen.active {
-    display: flex;
-}
-
-/* ================= MENU ================= */
-
-.menu {
-    width: min(1000px, 95vw);
-    text-align: center;
-}
-
-.logo {
-    font-size: 55px;
-    margin-bottom: 5px;
-}
-
-.title {
-    font-size: 42px;
-    margin: 0;
-}
-
-.subtitle {
-    color: #9ba8b5;
-    margin: 10px 0 40px;
-    font-size: 18px;
-}
-
-.games {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 25px;
-}
-
-.game-card {
-    min-height: 400px;
-    border-radius: 25px;
-    padding: 40px 25px;
-    border: 1px solid rgba(255,255,255,.12);
-    background: rgba(255,255,255,.06);
-    backdrop-filter: blur(15px);
-    transition: .3s;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-}
-
-.game-card:hover {
-    transform: translateY(-10px) scale(1.02);
-    border-color: rgba(255,255,255,.3);
-    box-shadow: 0 20px 50px rgba(0,0,0,.35);
-}
-
-.game-icon {
-    font-size: 120px;
-    margin-bottom: 15px;
-}
-
-.game-card h2 {
-    font-size: 32px;
-    margin: 5px;
-}
-
-.game-card p {
-    color: #aab5c0;
-    margin-bottom: 25px;
-}
-
-.play-btn {
-    padding: 14px 35px;
-    border: 0;
-    border-radius: 12px;
-    font-size: 18px;
-    font-weight: bold;
-    color: white;
-    background: #22c55e;
-    transition: .2s;
-}
-
-.play-btn:hover {
-    transform: scale(1.06);
-    background: #16a34a;
-}
-
-.chess-btn {
-    background: #d49a4a;
-}
-
-.chess-btn:hover {
-    background: #b8792e;
-}
-
-/* ================= GAME ================= */
-
-.game-screen {
-    flex-direction: column;
-}
-
-.game-header {
-    width: min(700px, 95vw);
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 15px;
-}
-
-.back-btn {
-    padding: 10px 18px;
-    border: 0;
-    border-radius: 10px;
-    color: white;
-    background: #273442;
-    font-size: 16px;
-}
-
-.back-btn:hover {
-    background: #3a4b5c;
-}
-
-.game-title {
-    font-size: 28px;
-    margin: 0;
-}
-
-#snakeCanvas {
-    width: min(600px, 90vw);
-    height: min(600px, 90vw);
-    background: #081018;
-    border: 3px solid #36e66a;
-    border-radius: 15px;
-}
-
-.score {
-    margin: 10px;
-    font-size: 19px;
-}
-
-/* ================= CHESS ================= */
-
-.chess-area {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-
-.chess-info {
-    margin-bottom: 15px;
-    font-size: 18px;
-}
-
-#chessboard {
-    width: min(600px, 90vw);
-    height: min(600px, 90vw);
-    display: grid;
-    grid-template-columns: repeat(8, 1fr);
-    grid-template-rows: repeat(8, 1fr);
-    border: 6px solid #513b28;
-    box-shadow: 0 15px 40px rgba(0,0,0,.5);
-}
-
-.square {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-size: clamp(30px, 8vw, 65px);
-    user-select: none;
-}
-
-.light {
-    background: #f0d9b5;
-}
-
-.dark {
-    background: #b58863;
-}
-
-.selected {
-    box-shadow: inset 0 0 0 5px #39ff68;
-}
-
-@media (max-width: 700px) {
-    .games {
-        grid-template-columns: 1fr;
-    }
-
-    .game-card {
-        min-height: 300px;
-    }
-
-    .game-icon {
-        font-size: 80px;
-    }
-
-    .title {
-        font-size: 32px;
-    }
+@media(max-width:700px){
+ .games{grid-template-columns:1fr}
+ .card{min-height:300px}
+ .icon{font-size:80px}
+ h1{font-size:34px}
 }
 </style>
 </head>
 
 <body>
 
-<!-- ================= MENU ================= -->
+<!-- MENU -->
+<section id="menu" class="screen active">
+<div class="menu">
+ <div class="logo">🎮</div>
+ <h1>GAME CENTER</h1>
+ <div class="subtitle">Chọn trò chơi bạn muốn chơi</div>
 
-<section id="menuScreen" class="screen active">
+ <div class="games">
+  <div class="card">
+   <div class="icon">🐍</div>
+   <h2>Rắn săn mồi</h2>
+   <p>Ăn mồi, lớn lên và phá kỷ lục.</p>
+   <button class="play" onclick="openSnake()">🐍 Chơi Rắn</button>
+  </div>
 
-    <div class="menu">
-
-        <div class="logo">🎮</div>
-
-        <h1 class="title">GAME CENTER</h1>
-
-        <p class="subtitle">
-            Chọn một trò chơi để bắt đầu
-        </p>
-
-        <div class="games">
-
-            <!-- RẮN -->
-            <div class="game-card">
-
-                <div class="game-icon">🐍</div>
-
-                <h2>Rắn săn mồi</h2>
-
-                <p>
-                    Ăn thức ăn, lớn lên và đạt điểm cao nhất!
-                </p>
-
-                <button
-                    class="play-btn"
-                    onclick="showSnake()">
-                    🐍 Chơi Rắn
-                </button>
-
-            </div>
-
-            <!-- CỜ VUA -->
-            <div class="game-card">
-
-                <div class="game-icon">♟️</div>
-
-                <h2>Cờ vua</h2>
-
-                <p>
-                    Đấu cờ vua ngay trên trình duyệt.
-                </p>
-
-                <button
-                    class="play-btn chess-btn"
-                    onclick="showChess()">
-                    ♟️ Chơi Cờ vua
-                </button>
-
-            </div>
-
-        </div>
-    </div>
-
+  <div class="card">
+   <div class="icon">♟️</div>
+   <h2>Cờ vua</h2>
+   <p>Đấu cờ vua 2 người với luật cơ bản đầy đủ.</p>
+   <button class="play chess" onclick="openChess()">♟️ Chơi Cờ vua</button>
+  </div>
+ </div>
+</div>
 </section>
 
+<!-- SNAKE -->
+<section id="snakeScreen" class="screen game">
+ <div class="header">
+  <button class="back" onclick="backMenu()">← Quay lại</button>
+  <h2 class="title">🐍 Rắn săn mồi</h2>
+  <span></span>
+ </div>
 
-<!-- ================= SNAKE ================= -->
+ <div class="snake-info">
+  Điểm: <b id="score">0</b> |
+  Kỷ lục: <b id="high">0</b>
+ </div>
 
-<section id="snakeScreen" class="screen game-screen">
+ <canvas id="snake" width="600" height="600"></canvas>
 
-    <div class="game-header">
-
-        <button class="back-btn" onclick="backToMenu()">
-            ← Quay lại
-        </button>
-
-        <h2 class="game-title">🐍 Rắn săn mồi</h2>
-
-        <div></div>
-
-    </div>
-
-    <div class="score">
-        Điểm: <b id="score">0</b>
-        &nbsp; | &nbsp;
-        Kỷ lục: <b id="highScore">0</b>
-    </div>
-
-    <canvas id="snakeCanvas"
-            width="600"
-            height="600">
-    </canvas>
-
+ <div style="margin-top:12px">
+  <button class="small-btn" onclick="restartSnake()">🔄 Chơi lại</button>
+ </div>
 </section>
 
+<!-- CHESS -->
+<section id="chessScreen" class="screen game">
+ <div class="header">
+  <button class="back" onclick="backMenu()">← Quay lại</button>
+  <h2 class="title">♟️ Cờ vua</h2>
+  <span></span>
+ </div>
 
-<!-- ================= CHESS ================= -->
-
-<section id="chessScreen" class="screen game-screen">
-
-    <div class="game-header">
-
-        <button class="back-btn" onclick="backToMenu()">
-            ← Quay lại
-        </button>
-
-        <h2 class="game-title">♟️ Cờ vua</h2>
-
-        <div></div>
-
-    </div>
-
-    <div class="chess-area">
-
-        <div class="chess-info" id="chessInfo">
-            Lượt của Trắng
-        </div>
-
-        <div id="chessboard"></div>
-
-    </div>
-
+ <div class="chess-wrap">
+  <div id="status">Lượt của Trắng</div>
+  <div id="board"></div>
+  <div class="controls">
+   <button class="small-btn" onclick="newChess()">🔄 Ván mới</button>
+  </div>
+ </div>
 </section>
 
+<!-- PHONG CẤP -->
+<div id="promotion" class="promotion">
+ <div class="promotion-box">
+  <h2>Chọn quân phong cấp</h2>
+  <div id="promotionButtons"></div>
+ </div>
+</div>
 
 <script>
-
-/* =====================================================
+/* =========================
    CHUYỂN MÀN HÌNH
-===================================================== */
-
-function hideAllScreens() {
-    document.querySelectorAll(".screen")
-        .forEach(screen => screen.classList.remove("active"));
+========================= */
+function hideScreens(){
+ document.querySelectorAll(".screen").forEach(x=>x.classList.remove("active"));
 }
 
-function showSnake() {
-    hideAllScreens();
-
-    document.getElementById("snakeScreen")
-        .classList.add("active");
-
-    startSnake();
+function openSnake(){
+ hideScreens();
+ document.getElementById("snakeScreen").classList.add("active");
+ restartSnake();
 }
 
-function showChess() {
-    hideAllScreens();
-
-    document.getElementById("chessScreen")
-        .classList.add("active");
-
-    createChessBoard();
+function openChess(){
+ hideScreens();
+ document.getElementById("chessScreen").classList.add("active");
+ newChess();
 }
 
-function backToMenu() {
-    hideAllScreens();
-
-    document.getElementById("menuScreen")
-        .classList.add("active");
-
-    clearInterval(snakeLoop);
+function backMenu(){
+ clearInterval(snakeTimer);
+ hideScreens();
+ document.getElementById("menu").classList.add("active");
 }
 
 
-/* =====================================================
-   GAME RẮN
-===================================================== */
+/* =========================
+   SNAKE
+========================= */
+const sc=document.getElementById("snake");
+const sx=sc.getContext("2d");
+const N=30;
+const TILE=20;
 
-const canvas = document.getElementById("snakeCanvas");
-const ctx = canvas.getContext("2d");
+let snake=[];
+let food={};
+let dir="right";
+let nextDir="right";
+let snakeScore=0;
+let snakeTimer=null;
+let snakeDead=false;
 
-const grid = 30;
-const tile = canvas.width / grid;
+let high=Number(localStorage.getItem("snakeHigh")||0);
+document.getElementById("high").textContent=high;
 
-let snake;
-let food;
-let direction;
-let nextDirection;
-let snakeScore = 0;
-let snakeLoop;
+function restartSnake(){
+ clearInterval(snakeTimer);
 
-let highScore =
-    Number(localStorage.getItem("snakeHighScore")) || 0;
+ snake=[
+  {x:15,y:15},
+  {x:14,y:15},
+  {x:13,y:15}
+ ];
 
-document.getElementById("highScore").textContent =
-    highScore;
+ dir="right";
+ nextDir="right";
+ snakeScore=0;
+ snakeDead=false;
 
+ document.getElementById("score").textContent=0;
+ makeFood();
+ drawSnake();
 
-function startSnake() {
-
-    snake = [
-        {x: 15, y: 15},
-        {x: 14, y: 15},
-        {x: 13, y: 15}
-    ];
-
-    direction = "right";
-    nextDirection = "right";
-
-    snakeScore = 0;
-
-    document.getElementById("score").textContent =
-        snakeScore;
-
-    createFood();
-
-    clearInterval(snakeLoop);
-
-    snakeLoop = setInterval(updateSnake, 100);
-
-    drawSnake();
+ snakeTimer=setInterval(updateSnake,100);
 }
 
-
-function createFood() {
-
-    do {
-
-        food = {
-            x: Math.floor(Math.random() * grid),
-            y: Math.floor(Math.random() * grid)
-        };
-
-    } while (
-        snake.some(
-            part =>
-            part.x === food.x &&
-            part.y === food.y
-        )
-    );
+function makeFood(){
+ do{
+  food={
+   x:Math.floor(Math.random()*N),
+   y:Math.floor(Math.random()*N)
+  };
+ }while(snake.some(p=>p.x===food.x&&p.y===food.y));
 }
 
-
-function changeDirection(newDirection) {
-
-    const opposite = {
-        up: "down",
-        down: "up",
-        left: "right",
-        right: "left"
-    };
-
-    if (opposite[newDirection] !== direction) {
-        nextDirection = newDirection;
-    }
+function setDir(d){
+ const opp={up:"down",down:"up",left:"right",right:"left"};
+ if(opp[d]!==dir) nextDir=d;
 }
 
-
-document.addEventListener("keydown", e => {
-
-    const keys = {
-
-        ArrowUp: "up",
-        w: "up",
-        W: "up",
-
-        ArrowDown: "down",
-        s: "down",
-        S: "down",
-
-        ArrowLeft: "left",
-        a: "left",
-        A: "left",
-
-        ArrowRight: "right",
-        d: "right",
-        D: "right"
-    };
-
-    if (keys[e.key]) {
-        changeDirection(keys[e.key]);
-    }
+document.addEventListener("keydown",e=>{
+ const k={
+  ArrowUp:"up",w:"up",W:"up",
+  ArrowDown:"down",s:"down",S:"down",
+  ArrowLeft:"left",a:"left",A:"left",
+  ArrowRight:"right",d:"right",D:"right"
+ };
+ if(k[e.key]){
+  e.preventDefault();
+  setDir(k[e.key]);
+ }
 });
 
+function updateSnake(){
+ if(snakeDead)return;
 
-function updateSnake() {
+ dir=nextDir;
+ let h={...snake[0]};
 
-    direction = nextDirection;
+ if(dir==="up")h.y--;
+ if(dir==="down")h.y++;
+ if(dir==="left")h.x--;
+ if(dir==="right")h.x++;
 
-    const head = {...snake[0]};
+ if(h.x<0||h.x>=N||h.y<0||h.y>=N){
+  endSnake();return;
+ }
 
-    if (direction === "up") head.y--;
-    if (direction === "down") head.y++;
-    if (direction === "left") head.x--;
-    if (direction === "right") head.x++;
+ let ate=h.x===food.x&&h.y===food.y;
 
+ let body=ate?snake:snake.slice(0,-1);
 
-    /* Đâm tường */
+ if(body.some(p=>p.x===h.x&&p.y===h.y)){
+  endSnake();return;
+ }
 
-    if (
-        head.x < 0 ||
-        head.x >= grid ||
-        head.y < 0 ||
-        head.y >= grid
-    ) {
-        snakeGameOver();
-        return;
-    }
+ snake.unshift(h);
 
+ if(ate){
+  snakeScore++;
+  document.getElementById("score").textContent=snakeScore;
 
-    /* Đâm thân */
+  if(snakeScore>high){
+   high=snakeScore;
+   localStorage.setItem("snakeHigh",high);
+   document.getElementById("high").textContent=high;
+  }
 
-    if (
-        snake.some(
-            part =>
-            part.x === head.x &&
-            part.y === head.y
-        )
-    ) {
-        snakeGameOver();
-        return;
-    }
+  makeFood();
+ }else snake.pop();
 
+ drawSnake();
+}
 
-    snake.unshift(head);
+function drawSnake(){
+ sx.fillStyle="#071016";
+ sx.fillRect(0,0,600,600);
 
+ sx.strokeStyle="rgba(255,255,255,.035)";
+ for(let i=0;i<=N;i++){
+  sx.beginPath();
+  sx.moveTo(i*TILE,0);
+  sx.lineTo(i*TILE,600);
+  sx.stroke();
 
-    /* Ăn mồi */
+  sx.beginPath();
+  sx.moveTo(0,i*TILE);
+  sx.lineTo(600,i*TILE);
+  sx.stroke();
+ }
 
-    if (
-        head.x === food.x &&
-        head.y === food.y
-    ) {
+ sx.fillStyle="#ff4057";
+ sx.beginPath();
+ sx.arc(food.x*TILE+10,food.y*TILE+10,7,0,Math.PI*2);
+ sx.fill();
 
-        snakeScore++;
+ snake.forEach((p,i)=>{
+  sx.fillStyle=i===0?"#7cff91":"#25d94d";
+  sx.beginPath();
+  sx.roundRect(p.x*TILE+2,p.y*TILE+2,16,16,5);
+  sx.fill();
+ });
+}
 
-        document.getElementById("score")
-            .textContent = snakeScore;
+function endSnake(){
+ snakeDead=true;
+ clearInterval(snakeTimer);
 
-        if (snakeScore > highScore) {
+ sx.fillStyle="#0009";
+ sx.fillRect(0,0,600,600);
 
-            highScore = snakeScore;
-
-            localStorage.setItem(
-                "snakeHighScore",
-                highScore
-            );
-
-            document.getElementById("highScore")
-                .textContent = highScore;
-        }
-
-        createFood();
-
-    } else {
-
-        snake.pop();
-
-    }
-
-    drawSnake();
+ sx.fillStyle="white";
+ sx.textAlign="center";
+ sx.font="bold 48px Arial";
+ sx.fillText("GAME OVER",300,280);
+ sx.font="24px Arial";
+ sx.fillText("Điểm: "+snakeScore,300,325);
 }
 
 
-function drawSnake() {
+/* =========================
+   CHESS ENGINE
+========================= */
 
-    ctx.fillStyle = "#071016";
-
-    ctx.fillRect(
-        0,
-        0,
-        canvas.width,
-        canvas.height
-    );
-
-
-    /* Lưới */
-
-    ctx.strokeStyle =
-        "rgba(255,255,255,.035)";
-
-    for (let i = 0; i <= grid; i++) {
-
-        ctx.beginPath();
-
-        ctx.moveTo(i * tile, 0);
-        ctx.lineTo(i * tile, canvas.height);
-
-        ctx.stroke();
-
-        ctx.beginPath();
-
-        ctx.moveTo(0, i * tile);
-        ctx.lineTo(canvas.width, i * tile);
-
-        ctx.stroke();
-    }
-
-
-    /* Thức ăn */
-
-    ctx.fillStyle = "#ff4057";
-
-    ctx.beginPath();
-
-    ctx.arc(
-        food.x * tile + tile / 2,
-        food.y * tile + tile / 2,
-        tile * .35,
-        0,
-        Math.PI * 2
-    );
-
-    ctx.fill();
-
-
-    /* Rắn */
-
-    snake.forEach((part, index) => {
-
-        ctx.fillStyle =
-            index === 0
-            ? "#7cff91"
-            : "#26d84e";
-
-        ctx.beginPath();
-
-        ctx.roundRect(
-            part.x * tile + 2,
-            part.y * tile + 2,
-            tile - 4,
-            tile - 4,
-            7
-        );
-
-        ctx.fill();
-
-    });
-}
-
-
-function snakeGameOver() {
-
-    clearInterval(snakeLoop);
-
-    setTimeout(() => {
-
-        alert(
-            "💥 Game Over!\n\n" +
-            "Điểm của bạn: " +
-            snakeScore
-        );
-
-        startSnake();
-
-    }, 50);
-}
-
-
-/* =====================================================
-   CỜ VUA
-===================================================== */
-
-const pieces = {
-
-    r: "♜",
-    n: "♞",
-    b: "♝",
-    q: "♛",
-    k: "♚",
-    p: "♟",
-
-    R: "♖",
-    N: "♘",
-    B: "♗",
-    Q: "♕",
-    K: "♔",
-    P: "♙"
+const PIECES={
+ r:"♜",n:"♞",b:"♝",q:"♛",k:"♚",p:"♟",
+ R:"♖",N:"♘",B:"♗",Q:"♕",K:"♔",P:"♙"
 };
 
-let board;
-let selectedSquare = null;
-let chessTurn = "white";
+let board=[];
+let turn="w";
+let selected=null;
+let legalMoves=[];
+let castle={
+ wK:true,wQ:true,
+ bK:true,bQ:true
+};
+let enPassant=null;
+let gameFinished=false;
+let pendingPromotion=null;
 
+function newChess(){
+ board=[
+  ["r","n","b","q","k","b","n","r"],
+  ["p","p","p","p","p","p","p","p"],
+  ["","","","","","","",""],
+  ["","","","","","","",""],
+  ["","","","","","","",""],
+  ["","","","","","","",""],
+  ["P","P","P","P","P","P","P","P"],
+  ["R","N","B","Q","K","B","N","R"]
+ ];
 
-function createChessBoard() {
+ turn="w";
+ selected=null;
+ legalMoves=[];
+ enPassant=null;
 
-    board = [
+ castle={
+  wK:true,wQ:true,
+  bK:true,bQ:true
+ };
 
-        ["r","n","b","q","k","b","n","r"],
+ gameFinished=false;
+ pendingPromotion=null;
 
-        ["p","p","p","p","p","p","p","p"],
-
-        ["","","","","","","",""],
-
-        ["","","","","","","",""],
-
-        ["","","","","","","",""],
-
-        ["","","","","","","",""],
-
-        ["P","P","P","P","P","P","P","P"],
-
-        ["R","N","B","Q","K","B","N","R"]
-
-    ];
-
-    selectedSquare = null;
-
-    chessTurn = "white";
-
-    document.getElementById("chessInfo")
-        .textContent = "Lượt của Trắng";
-
-    renderChess();
+ renderChess();
+ updateStatus();
 }
 
-
-function renderChess() {
-
-    const chessboard =
-        document.getElementById("chessboard");
-
-    chessboard.innerHTML = "";
-
-    for (let row = 0; row < 8; row++) {
-
-        for (let col = 0; col < 8; col++) {
-
-            const square =
-                document.createElement("div");
-
-            square.classList.add("square");
-
-            if ((row + col) % 2 === 0) {
-                square.classList.add("light");
-            } else {
-                square.classList.add("dark");
-            }
-
-            if (
-                selectedSquare &&
-                selectedSquare.row === row &&
-                selectedSquare.col === col
-            ) {
-                square.classList.add("selected");
-            }
-
-            const piece = board[row][col];
-
-            if (piece) {
-                square.textContent = pieces[piece];
-            }
-
-            square.onclick = () =>
-                chessClick(row, col);
-
-            chessboard.appendChild(square);
-        }
-    }
+function color(p){
+ if(!p)return null;
+ return p===p.toUpperCase()?"w":"b";
 }
 
-
-function isWhite(piece) {
-
-    return piece &&
-        piece === piece.toUpperCase();
+function inside(r,c){
+ return r>=0&&r<8&&c>=0&&c<8;
 }
 
-
-function isBlack(piece) {
-
-    return piece &&
-        piece === piece.toLowerCase();
+function opposite(c){
+ return c==="w"?"b":"w";
 }
 
-
-function chessClick(row, col) {
-
-    const piece = board[row][col];
-
-
-    /* Chưa chọn quân */
-
-    if (!selectedSquare) {
-
-        if (!piece) return;
-
-        if (
-            chessTurn === "white" &&
-            !isWhite(piece)
-        ) return;
-
-        if (
-            chessTurn === "black" &&
-            !isBlack(piece)
-        ) return;
-
-        selectedSquare = {
-            row,
-            col
-        };
-
-        renderChess();
-
-        return;
-    }
-
-
-    /* Chọn quân khác */
-
-    if (piece) {
-
-        if (
-            chessTurn === "white" &&
-            isWhite(piece)
-        ) {
-
-            selectedSquare = {
-                row,
-                col
-            };
-
-            renderChess();
-
-            return;
-        }
-
-        if (
-            chessTurn === "black" &&
-            isBlack(piece)
-        ) {
-
-            selectedSquare = {
-                row,
-                col
-            };
-
-            renderChess();
-
-            return;
-        }
-    }
-
-
-    /* Di chuyển */
-
-    const from = selectedSquare;
-
-    board[row][col] =
-        board[from.row][from.col];
-
-    board[from.row][from.col] = "";
-
-
-    selectedSquare = null;
-
-
-    if (chessTurn === "white") {
-
-        chessTurn = "black";
-
-        document.getElementById("chessInfo")
-            .textContent = "Lượt của Đen";
-
-    } else {
-
-        chessTurn = "white";
-
-        document.getElementById("chessInfo")
-            .textContent = "Lượt của Trắng";
-    }
-
-
-    renderChess();
+function cloneBoard(b){
+ return b.map(row=>row.slice());
 }
 
+function findKing(b,col){
+ for(let r=0;r<8;r++)
+  for(let c=0;c<8;c++)
+   if(b[r][c]===(col==="w"?"K":"k"))
+    return [r,c];
+
+ return null;
+}
+
+function attacked(b,r,c,by){
+
+ /* Tốt */
+ let pr=by==="w"?r+1:r-1;
+
+ for(let dc of [-1,1]){
+  let pc=c+dc;
+  if(inside(pr,pc)){
+   if(b[pr][pc]===(by==="w"?"P":"p"))return true;
+  }
+ }
+
+ /* Mã */
+ const knight=[
+  [-2,-1],[-2,1],[-1,-2],[-1,2],
+  [1,-2],[1,2],[2,-1],[2,1]
+ ];
+
+ for(let [dr,dc] of knight){
+  let rr=r+dr,cc=c+dc;
+  if(inside(rr,cc)&&b[rr][cc]===(by==="w"?"N":"n"))
+   return true;
+ }
+
+ /* Vua */
+ for(let dr=-1;dr<=1;dr++)
+  for(let dc=-1;dc<=1;dc++){
+   if(!dr&&!dc)continue;
+   let rr=r+dr,cc=c+dc;
+   if(inside(rr,cc)&&b[rr][cc]===(by==="w"?"K":"k"))
+    return true;
+  }
+
+ /* Xe + Hậu */
+ const straight=[
+  [1,0],[-1,0],[0,1],[0,-1]
+ ];
+
+ for(let [dr,dc] of straight){
+  let rr=r+dr,cc=c+dc;
+
+  while(inside(rr,cc)){
+   let p=b[rr][cc];
+
+   if(p){
+    if(
+     p===(by==="w"?"R":"r")||
+     p===(by==="w"?"Q":"q")
+    )return true;
+    break;
+   }
+
+   rr+=dr;cc+=dc;
+  }
+ }
+
+ /* Tượng + Hậu */
+ const diagonal=[
+  [1,1],[1,-1],[-1,1],[-1,-1]
+ ];
+
+ for(let [dr,dc] of diagonal){
+  let rr=r+dr,cc=c+dc;
+
+  while(inside(rr,cc)){
+   let p=b[rr][cc];
+
+   if(p){
+    if(
+     p===(by==="w"?"B":"b")||
+     p===(by==="w"?"Q":"q")
+    )return true;
+    break;
+   }
+
+   rr+=dr;cc+=dc;
+  }
+ }
+
+ return false;
+}
+
+function inCheck(b,col){
+ let k=findKing(b,col);
+ if(!k)return true;
+ return attacked(b,k[0],k[1],opposite(col));
+}
+
+function pseudoMoves(b,r,c){
+ const p=b[r][c];
+ if(!p)return [];
+
+ const col=color(p);
+ const type=p.toLowerCase();
+ const out=[];
+
+ const add=(rr,cc)=>{
+  if(!inside(rr,cc))return false;
+  if(!b[rr][cc]){
+   out.push([rr,cc]);
+   return true;
+  }
+
+  if(color(b[rr][cc])!==col)
+   out.push([rr,cc]);
+
+  return false;
+ };
+
+ if(type==="p"){
+  let d=col==="w"?-1:1;
+  let start=col==="w"?6:1;
+
+  if(inside(r+d,c)&&!b[r+d][c]){
+   out.push([r+d,c]);
+
+   if(r===start&&!b[r+2*d][c])
+    out.push([r+2*d,c]);
+  }
+
+  for(let dc of [-1,1]){
+   let rr=r+d,cc=c+dc;
+   if(!inside(rr,cc))continue;
+
+   if(b[rr][cc]&&color(b[rr][cc])!==col)
+    out.push([rr,cc]);
+
+   if(
+    enPassant &&
+    enPassant[0]===rr &&
+    enPassant[1]===cc
+   )out.push([rr,cc]);
+  }
+ }
+
+ if(type==="n"){
+  [
+   [-2,-1],[-2,1],[-1,-2],[-1,2],
+   [1,-2],[1,2],[2,-1],[2,1]
+  ].forEach(([dr,dc])=>add(r+dr,c+dc));
+ }
+
+ if(type==="k"){
+  for(let dr=-1;dr<=1;dr++)
+   for(let dc=-1;dc<=1;dc++)
+    if(dr||dc)add(r+dr,c+dc);
+
+  /* Nhập thành */
+  if(col==="w"&&r===7&&c===4&&!inCheck(b,"w")){
+   if(
+    castle.wK&&b[7][5]===""&&b[7][6]===""&&
+    b[7][7]==="R"&&
+    !attacked(b,7,5,"b")&&!attacked(b,7,6,"b")
+   )out.push([7,6]);
+
+   if(
+    castle.wQ&&b[7][1]===""&&b[7][2]===""&&b[7][3]===""&&
+    b[7][0]==="R"&&
+    !attacked(b,7,3,"b")&&!attacked(b,7,2,"b")
+   )out.push([7,2]);
+  }
+
+  if(col==="b"&&r===0&&c===4&&!inCheck(b,"b")){
+   if(
+    castle.bK&&b[0][5]===""&&b[0][6]===""&&
+    b[0][7]==="r"&&
+    !attacked(b,0,5,"w")&&!attacked(b,0,6,"w")
+   )out.push([0,6]);
+
+   if(
+    castle.bQ&&b[0][1]===""&&b[0][2]===""&&b[0][3]===""&&
+    b[0][0]==="r"&&
+    !attacked(b,0,3,"w")&&!attacked(b,0,2,"w")
+   )out.push([0,2]);
+  }
+ }
+
+ if(type==="r"||type==="q"){
+  for(let [dr,dc] of [[1,0],[-1,0],[0,1],[0,-1]]){
+   let rr=r+dr,cc=c+dc;
+   while(add(rr,cc)){
+    rr+=dr;cc+=dc;
+   }
+  }
+ }
+
+ if(type==="b"||type==="q"){
+  for(let [dr,dc] of [[1,1],[1,-1],[-1,1],[-1,-1]]){
+   let rr=r+dr,cc=c+dc;
+   while(add(rr,cc)){
+    rr+=dr;cc+=dc;
+   }
+  }
+ }
+
+ return out;
+}
+
+function makeMove(b,from,to){
+ const nb=cloneBoard(b);
+ const p=nb[from[0]][from[1]];
+ const col=color(p);
+ const type=p.toLowerCase();
+
+ nb[to[0]][to[1]]=p;
+ nb[from[0]][from[1]]="";
+
+ /* Bắt tốt qua đường */
+ if(
+  type==="p" &&
+  from[1]!==to[1] &&
+  !b[to[0]][to[1]]
+ ){
+  nb[from[0]][to[1]]="";
+ }
+
+ /* Nhập thành */
+ if(type==="k"&&Math.abs(to[1]-from[1])===2){
+  if(to[1]===6){
+   nb[to[0]][5]=nb[to[0]][7];
+   nb[to[0]][7]="";
+  }else{
+   nb[to[0]][3]=nb[to[0]][0];
+   nb[to[0]][0]="";
+  }
+ }
+
+ return nb;
+}
+
+function legalFor(b,r,c){
+ const p=b[r][c];
+ if(!p)return [];
+
+ const col=color(p);
+ let moves=pseudoMoves(b,r,c);
+
+ return moves.filter(to=>{
+  const nb=makeMove(b,[r,c],to);
+  return !inCheck(nb,col);
+ });
+}
+
+function allLegal(b,col){
+ const arr=[];
+
+ for(let r=0;r<8;r++)
+  for(let c=0;c<8;c++)
+   if(color(b[r][c])===col)
+    for(let m of legalFor(b,r,c))
+     arr.push({from:[r,c],to:m});
+
+ return arr;
+}
+
+function updateCastling(from,to,p){
+ if(p==="K"){castle.wK=false;castle.wQ=false}
+ if(p==="k"){castle.bK=false;castle.bQ=false}
+
+ if(p==="R"){
+  if(from[0]===7&&from[1]===0)castle.wQ=false;
+  if(from[0]===7&&from[1]===7)castle.wK=false;
+ }
+
+ if(p==="r"){
+  if(from[0]===0&&from[1]===0)castle.bQ=false;
+  if(from[0]===0&&from[1]===7)castle.bK=false;
+ }
+
+ /* Ăn xe ở vị trí ban đầu */
+ if(to[0]===7&&to[1]===0)castle.wQ=false;
+ if(to[0]===7&&to[1]===7)castle.wK=false;
+ if(to[0]===0&&to[1]===0)castle.bQ=false;
+ if(to[0]===0&&to[1]===7)castle.bK=false;
+}
+
+function playMove(from,to){
+ const p=board[from[0]][from[1]];
+
+ updateCastling(from,to,p);
+
+ const wasPawn=p.toLowerCase()==="p";
+ const oldEn=enPassant;
+
+ board=makeMove(board,from,to);
+
+ /* En passant mới */
+ enPassant=null;
+
+ if(wasPawn&&Math.abs(to[0]-from[0])===2){
+  enPassant=[
+   (from[0]+to[0])/2,
+   from[1]
+  ];
+ }
+
+ /* Phong cấp */
+ if(
+  wasPawn &&
+  (to[0]===0||to[0]===7)
+ ){
+  pendingPromotion={r:to[0],c:to[1],color:color(p)};
+  showPromotion(color(p));
+  return;
+ }
+
+ finishMove();
+}
+
+function finishMove(){
+ turn=opposite(turn);
+ selected=null;
+ legalMoves=[];
+
+ renderChess();
+ updateStatus();
+}
+
+function showPromotion(col){
+ const box=document.getElementById("promotion");
+ const buttons=document.getElementById("promotionButtons");
+
+ buttons.innerHTML="";
+
+ const pieces=col==="w"
+  ?["Q","R","B","N"]
+  :["q","r","b","n"];
+
+ pieces.forEach(p=>{
+  const b=document.createElement("button");
+  b.textContent=PIECES[p];
+
+  b.onclick=()=>{
+   board[pendingPromotion.r][pendingPromotion.c]=p;
+   pendingPromotion=null;
+   box.style.display="none";
+   finishMove();
+  };
+
+  buttons.appendChild(b);
+ });
+
+ box.style.display="flex";
+}
+
+function chessClick(r,c){
+ if(gameFinished||pendingPromotion)return;
+
+ const p=board[r][c];
+
+ if(!selected){
+
+  if(color(p)!==turn)return;
+
+  selected=[r,c];
+  legalMoves=legalFor(board,r,c);
+
+  renderChess();
+  return;
+ }
+
+ /* Chọn quân khác cùng màu */
+ if(color(p)===turn){
+  selected=[r,c];
+  legalMoves=legalFor(board,r,c);
+  renderChess();
+  return;
+ }
+
+ const valid=legalMoves.some(m=>m[0]===r&&m[1]===c);
+
+ if(valid){
+  playMove(selected,[r,c]);
+ }
+}
+
+function renderChess(){
+ const el=document.getElementById("board");
+ el.innerHTML="";
+
+ for(let r=0;r<8;r++){
+  for(let c=0;c<8;c++){
+
+   const s=document.createElement("div");
+   s.className="sq "+((r+c)%2?"dark":"light");
+
+   if(selected&&selected[0]===r&&selected[1]===c)
+    s.classList.add("selected");
+
+   const move=legalMoves.find(m=>m[0]===r&&m[1]===c);
+
+   if(move){
+    if(board[r][c])s.classList.add("capture");
+    else s.classList.add("legal");
+   }
+
+   const p=board[r][c];
+   if(p)s.textContent=PIECES[p];
+
+   s.onclick=()=>chessClick(r,c);
+
+   el.appendChild(s);
+  }
+ }
+}
+
+function updateStatus(){
+ if(gameFinished)return;
+
+ const moves=allLegal(board,turn);
+ const check=inCheck(board,turn);
+
+ if(moves.length===0){
+
+  gameFinished=true;
+
+  if(check){
+   const winner=turn==="w"?"Đen":"Trắng";
+   document.getElementById("status").textContent=
+    "♚ CHIẾU HẾT — "+winner+" thắng!";
+  }else{
+   document.getElementById("status").textContent=
+    "🤝 HÒA — Bế tắc!";
+  }
+
+  return;
+ }
+
+ if(check){
+  document.getElementById("status").textContent=
+   "⚠️ CHIẾU! — Lượt của "+(turn==="w"?"Trắng":"Đen");
+ }else{
+  document.getElementById("status").textContent=
+   "Lượt của "+(turn==="w"?"Trắng":"Đen");
+ }
+}
 </script>
 
 </body>
