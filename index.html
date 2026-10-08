@@ -1,3 +1,4 @@
+```html
 <!DOCTYPE html>
 <html lang="vi">
 <head>
@@ -9,568 +10,620 @@
 *{box-sizing:border-box}
 
 body{
- margin:0;
- min-height:100vh;
- font-family:Arial,sans-serif;
- color:white;
- background:
- radial-gradient(circle at top,#263c52,#0b1117 65%);
+    margin:0;
+    min-height:100vh;
+    font-family:Arial,sans-serif;
+    color:white;
+    background:
+        radial-gradient(circle at top,#263c52,#0b1117 65%);
+}
+
+button{
+    font:inherit;
+    cursor:pointer;
 }
 
 .screen{
- display:none;
- min-height:100vh;
- justify-content:center;
- align-items:center;
- padding:25px;
+    display:none;
+    min-height:100vh;
+    justify-content:center;
+    align-items:center;
+    padding:25px;
 }
 
-.screen.active{display:flex}
-
-button{
- font:inherit;
- cursor:pointer;
+.screen.active{
+    display:flex;
 }
+
+/* ================= MENU ================= */
 
 .menu{
- width:min(1100px,95vw);
- text-align:center;
+    width:min(1150px,95vw);
+    text-align:center;
 }
 
-.logo{font-size:65px}
+.logo{
+    font-size:65px;
+}
 
 h1{
- font-size:45px;
- margin:5px;
+    font-size:45px;
+    margin:5px;
 }
 
 .subtitle{
- color:#9daab6;
- margin:10px 0 40px;
+    color:#9daab6;
+    margin:10px 0 40px;
 }
 
 .games{
- display:grid;
- grid-template-columns:repeat(3,1fr);
- gap:20px;
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:20px;
 }
 
 .card{
- min-height:380px;
- padding:30px 20px;
- border-radius:25px;
- background:rgba(255,255,255,.07);
- border:1px solid rgba(255,255,255,.12);
- display:flex;
- flex-direction:column;
- align-items:center;
- justify-content:center;
- transition:.3s;
- backdrop-filter:blur(12px);
+    min-height:390px;
+    padding:30px 20px;
+    border-radius:25px;
+    background:rgba(255,255,255,.07);
+    border:1px solid rgba(255,255,255,.12);
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    transition:.3s;
+    backdrop-filter:blur(12px);
 }
 
 .card:hover{
- transform:translateY(-8px);
- box-shadow:0 20px 50px #0008;
+    transform:translateY(-8px);
+    box-shadow:0 20px 50px #0008;
 }
 
-.icon{font-size:100px}
+.icon{
+    font-size:100px;
+}
 
 .card h2{
- font-size:28px;
- margin:10px;
+    font-size:28px;
+    margin:10px;
 }
 
 .card p{
- color:#aeb9c4;
- min-height:45px;
+    color:#aeb9c4;
+    min-height:45px;
 }
 
 .play{
- border:0;
- border-radius:12px;
- padding:13px 25px;
- color:white;
- background:#22c55e;
- font-weight:bold;
+    border:0;
+    border-radius:12px;
+    padding:13px 25px;
+    color:white;
+    background:#22c55e;
+    font-weight:bold;
 }
 
 .play:hover{
- filter:brightness(1.15);
- transform:scale(1.04);
+    filter:brightness(1.15);
+    transform:scale(1.04);
 }
 
-.chess{background:#c58a45}
-.pool{background:#147b45}
+.chess{
+    background:#c58a45;
+}
+
+.adventure{
+    background:#5b55e8;
+}
+
+/* ================= GAME ================= */
 
 .game{
- flex-direction:column;
+    flex-direction:column;
 }
 
 .header{
- width:min(950px,95vw);
- display:flex;
- align-items:center;
- justify-content:space-between;
- margin-bottom:12px;
+    width:min(950px,95vw);
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    margin-bottom:12px;
 }
 
 .back{
- border:0;
- background:#273746;
- color:white;
- border-radius:10px;
- padding:10px 18px;
+    border:0;
+    background:#273746;
+    color:white;
+    border-radius:10px;
+    padding:10px 18px;
 }
 
-.back:hover{background:#3b4d5e}
+.back:hover{
+    background:#3b4d5e;
+}
 
 .title{
- font-size:28px;
- margin:0;
-}
-
-/* SNAKE */
-
-#snake{
- width:min(600px,92vw);
- height:min(600px,92vw);
- background:#071016;
- border:3px solid #3be75f;
- border-radius:15px;
-}
-
-.snake-info{
- margin:5px;
- font-size:18px;
-}
-
-/* CHESS */
-
-.chess-wrap{
- display:flex;
- flex-direction:column;
- align-items:center;
-}
-
-#status{
- font-size:18px;
- margin-bottom:12px;
-}
-
-#board{
- width:min(680px,94vw);
- height:min(680px,94vw);
- display:grid;
- grid-template-columns:repeat(8,1fr);
- border:7px solid #4a3422;
- box-shadow:0 15px 45px #0009;
-}
-
-.sq{
- display:flex;
- justify-content:center;
- align-items:center;
- font-size:clamp(28px,8vw,68px);
- position:relative;
- user-select:none;
-}
-
-.light{background:#f0d9b5}
-.dark{background:#b58863}
-
-.selected{
- box-shadow:inset 0 0 0 5px #38ff62;
-}
-
-.legal::after{
- content:"";
- width:22%;
- height:22%;
- border-radius:50%;
- background:#0005;
- position:absolute;
-}
-
-.capture::after{
- content:"";
- position:absolute;
- inset:5px;
- border:5px solid #ef4444;
- border-radius:50%;
+    font-size:28px;
+    margin:0;
 }
 
 .small-btn{
- padding:9px 15px;
- border:0;
- border-radius:9px;
- background:#34495e;
- color:white;
+    padding:9px 15px;
+    border:0;
+    border-radius:9px;
+    background:#34495e;
+    color:white;
 }
 
-/* PROMOTION */
+/* ================= SNAKE ================= */
+
+.snake-info{
+    margin:5px;
+    font-size:18px;
+}
+
+#snake{
+    width:min(600px,92vw);
+    height:min(600px,92vw);
+    background:#071016;
+    border:3px solid #3be75f;
+    border-radius:15px;
+}
+
+/* ================= CHESS ================= */
+
+.chess-wrap{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+}
+
+#status{
+    font-size:18px;
+    margin-bottom:12px;
+}
+
+#board{
+    width:min(680px,94vw);
+    height:min(680px,94vw);
+    display:grid;
+    grid-template-columns:repeat(8,1fr);
+    border:7px solid #4a3422;
+    box-shadow:0 15px 45px #0009;
+}
+
+.sq{
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    font-size:clamp(28px,8vw,68px);
+    position:relative;
+    user-select:none;
+}
+
+.light{
+    background:#f0d9b5;
+}
+
+.dark{
+    background:#b58863;
+}
+
+.selected{
+    box-shadow:inset 0 0 0 5px #38ff62;
+}
+
+.legal::after{
+    content:"";
+    width:22%;
+    height:22%;
+    border-radius:50%;
+    background:#0005;
+    position:absolute;
+}
+
+.capture::after{
+    content:"";
+    position:absolute;
+    inset:5px;
+    border:5px solid #ef4444;
+    border-radius:50%;
+}
+
+/* ================= PROMOTION ================= */
 
 .promotion{
- position:fixed;
- inset:0;
- background:#000b;
- display:none;
- align-items:center;
- justify-content:center;
- z-index:10;
+    position:fixed;
+    inset:0;
+    background:#000b;
+    display:none;
+    align-items:center;
+    justify-content:center;
+    z-index:10;
 }
 
 .promotion-box{
- background:#18232e;
- padding:25px;
- border-radius:18px;
- text-align:center;
+    background:#18232e;
+    padding:25px;
+    border-radius:18px;
+    text-align:center;
 }
 
 .promotion button{
- font-size:45px;
- margin:5px;
- width:65px;
- height:65px;
- border:0;
- border-radius:10px;
- background:#eee;
+    font-size:45px;
+    margin:5px;
+    width:65px;
+    height:65px;
+    border:0;
+    border-radius:10px;
+    background:#eee;
 }
 
-/* ================= BIDA ================= */
+/* ================= 2D GAME ================= */
 
-.pool-wrap{
- display:flex;
- flex-direction:column;
- align-items:center;
- width:100%;
+.platform-wrap{
+    width:min(1000px,95vw);
+    display:flex;
+    flex-direction:column;
+    align-items:center;
 }
 
-.pool-info{
- display:flex;
- justify-content:space-between;
- width:min(1000px,95vw);
- margin-bottom:10px;
- font-size:17px;
+#platformCanvas{
+    width:100%;
+    max-height:600px;
+    border:4px solid #5964ff;
+    border-radius:16px;
+    background:#77cfff;
+    box-shadow:0 15px 50px #0009;
+    image-rendering:auto;
+    touch-action:none;
 }
 
-#poolCanvas{
- width:min(1000px,95vw);
- height:auto;
- display:block;
- border-radius:18px;
- box-shadow:
-  0 15px 50px #000b,
-  0 0 0 6px #3d2414;
- background:#08783f;
- touch-action:none;
+.platform-info{
+    width:100%;
+    display:flex;
+    justify-content:space-between;
+    margin-bottom:10px;
+    font-size:18px;
 }
 
-.pool-help{
- color:#aeb9c4;
- margin-top:12px;
- text-align:center;
+.controls{
+    display:flex;
+    gap:10px;
+    margin-top:12px;
 }
 
-.pool-buttons{
- margin-top:12px;
- display:flex;
- gap:10px;
+.mobile-controls{
+    display:none;
+    gap:10px;
+    margin-top:12px;
 }
 
-.power-bar{
- width:min(400px,80vw);
- height:12px;
- border-radius:20px;
- background:#263441;
- overflow:hidden;
- margin-top:10px;
+.mobile-controls button{
+    width:65px;
+    height:55px;
+    border:0;
+    border-radius:12px;
+    background:#34495e;
+    color:white;
+    font-size:25px;
 }
 
-#powerFill{
- width:0%;
- height:100%;
- background:#e8b84a;
-}
-    
 @media(max-width:850px){
- .games{
-  grid-template-columns:1fr;
- }
 
- .card{
-  min-height:280px;
- }
+    .games{
+        grid-template-columns:1fr;
+    }
 
- .icon{
-  font-size:75px;
- }
+    .card{
+        min-height:280px;
+    }
 
- h1{
-  font-size:34px;
- }
+    .icon{
+        font-size:75px;
+    }
+
+    h1{
+        font-size:34px;
+    }
+
+    .mobile-controls{
+        display:flex;
+    }
 }
 </style>
 </head>
 
 <body>
 
-<!-- ================= MENU ================= -->
+<!-- =====================================================
+MENU
+===================================================== -->
 
 <section id="menu" class="screen active">
 
 <div class="menu">
 
- <div class="logo">🎮</div>
+    <div class="logo">🎮</div>
 
- <h1>GAME CENTER</h1>
+    <h1>GAME CENTER</h1>
 
- <div class="subtitle">
-  Chọn trò chơi bạn muốn chơi
- </div>
+    <div class="subtitle">
+        Chọn trò chơi bạn muốn chơi
+    </div>
 
- <div class="games">
+    <div class="games">
 
-  <!-- RẮN -->
+        <!-- SNAKE -->
 
-  <div class="card">
+        <div class="card">
 
-   <div class="icon">🐍</div>
+            <div class="icon">🐍</div>
 
-   <h2>Rắn săn mồi</h2>
+            <h2>Rắn săn mồi</h2>
 
-   <p>
-    Ăn mồi, lớn lên và phá kỷ lục.
-   </p>
+            <p>
+                Ăn mồi, lớn lên và phá kỷ lục.
+            </p>
 
-   <button class="play"
-    onclick="openSnake()">
-    🐍 Chơi Rắn
-   </button>
+            <button
+                class="play"
+                onclick="openSnake()">
+                🐍 Chơi Rắn
+            </button>
 
-  </div>
-
-
-  <!-- CỜ -->
-
-  <div class="card">
-
-   <div class="icon">♟️</div>
-
-   <h2>Cờ vua</h2>
-
-   <p>
-    Đấu cờ vua 2 người.
-   </p>
-
-   <button class="play chess"
-    onclick="openChess()">
-    ♟️ Chơi Cờ vua
-   </button>
-
-  </div>
+        </div>
 
 
-  <!-- BIDA -->
+        <!-- CHESS -->
 
-  <div class="card">
+        <div class="card">
 
-   <div class="icon">🎱</div>
+            <div class="icon">♟️</div>
 
-   <h2>Bida 8 Ball</h2>
+            <h2>Cờ vua</h2>
 
-   <p>
-    Ngắm, kéo lực và đánh bi vào lỗ.
-   </p>
+            <p>
+                Đấu cờ vua 2 người.
+            </p>
 
-   <button class="play pool"
-    onclick="openPool()">
-    🎱 Chơi Bida
-   </button>
+            <button
+                class="play chess"
+                onclick="openChess()">
+                ♟️ Chơi Cờ vua
+            </button>
 
-  </div>
+        </div>
 
- </div>
+
+        <!-- 2D -->
+
+        <div class="card">
+
+            <div class="icon">🎮</div>
+
+            <h2>Phiêu lưu 2D</h2>
+
+            <p>
+                Chạy, nhảy, ăn xu và đánh bại quái vật.
+            </p>
+
+            <button
+                class="play adventure"
+                onclick="openPlatform()">
+                🎮 Chơi 2D
+            </button>
+
+        </div>
+
+    </div>
+
 </div>
 
 </section>
 
 
-<!-- ================= SNAKE ================= -->
+<!-- =====================================================
+SNAKE
+===================================================== -->
 
 <section id="snakeScreen" class="screen game">
 
- <div class="header">
+    <div class="header">
 
-  <button class="back"
-   onclick="backMenu()">
-   ← Quay lại
-  </button>
+        <button
+            class="back"
+            onclick="backMenu()">
+            ← Quay lại
+        </button>
 
-  <h2 class="title">
-   🐍 Rắn săn mồi
-  </h2>
+        <h2 class="title">
+            🐍 Rắn săn mồi
+        </h2>
 
-  <span></span>
+        <span></span>
 
- </div>
+    </div>
 
- <div class="snake-info">
+    <div class="snake-info">
 
-  Điểm:
-  <b id="score">0</b>
+        Điểm:
+        <b id="score">0</b>
 
-  |
+        |
 
-  Kỷ lục:
-  <b id="high">0</b>
+        Kỷ lục:
+        <b id="high">0</b>
 
- </div>
+    </div>
 
- <canvas
-  id="snake"
-  width="600"
-  height="600">
- </canvas>
+    <canvas
+        id="snake"
+        width="600"
+        height="600">
+    </canvas>
 
- <div style="margin-top:12px">
+    <div style="margin-top:12px">
 
-  <button
-   class="small-btn"
-   onclick="restartSnake()">
-   🔄 Chơi lại
-  </button>
+        <button
+            class="small-btn"
+            onclick="restartSnake()">
+            🔄 Chơi lại
+        </button>
 
- </div>
+    </div>
 
 </section>
 
 
-<!-- ================= CHESS ================= -->
+<!-- =====================================================
+CHESS
+===================================================== -->
 
 <section id="chessScreen" class="screen game">
 
- <div class="header">
+    <div class="header">
 
-  <button class="back"
-   onclick="backMenu()">
-   ← Quay lại
-  </button>
+        <button
+            class="back"
+            onclick="backMenu()">
+            ← Quay lại
+        </button>
 
-  <h2 class="title">
-   ♟️ Cờ vua
-  </h2>
+        <h2 class="title">
+            ♟️ Cờ vua
+        </h2>
 
-  <span></span>
+        <span></span>
 
- </div>
+    </div>
 
- <div class="chess-wrap">
+    <div class="chess-wrap">
 
-  <div id="status">
-   Lượt của Trắng
-  </div>
+        <div id="status">
+            Lượt của Trắng
+        </div>
 
-  <div id="board"></div>
+        <div id="board"></div>
 
-  <div style="margin-top:15px">
+        <div style="margin-top:15px">
 
-   <button
-    class="small-btn"
-    onclick="newChess()">
-    🔄 Ván mới
-   </button>
+            <button
+                class="small-btn"
+                onclick="newChess()">
+                🔄 Ván mới
+            </button>
 
-  </div>
+        </div>
 
- </div>
-
-</section>
-
-
-<!-- ================= BIDA ================= -->
-
-<section id="poolScreen" class="screen game">
-
- <div class="header">
-
-  <button class="back"
-   onclick="backMenu()">
-   ← Quay lại
-  </button>
-
-  <h2 class="title">
-   🎱 Bida 8 Ball
-  </h2>
-
-  <span></span>
-
- </div>
-
-
- <div class="pool-wrap">
-
-  <div class="pool-info">
-
-   <span>
-    Lượt:
-    <b id="poolTurn">Người chơi 1</b>
-   </span>
-
-   <span>
-    Bi đã vào:
-    <b id="potted">0</b>
-   </span>
-
-  </div>
-
-
-  <canvas
-   id="poolCanvas"
-   width="1000"
-   height="560">
-  </canvas>
-
-
-  <div class="power-bar">
-   <div id="powerFill"></div>
-  </div>
-
-
-  <div class="pool-help">
-   Kéo chuột từ bi cái ngược hướng muốn đánh
-   để chọn hướng và lực, sau đó thả chuột.
-  </div>
-
-
-  <div class="pool-buttons">
-
-   <button
-    class="small-btn"
-    onclick="newPoolGame()">
-    🔄 Ván mới
-   </button>
-
-  </div>
-
- </div>
+    </div>
 
 </section>
 
 
-<!-- PHONG CẤP CỜ -->
+<!-- =====================================================
+2D PLATFORMER
+===================================================== -->
+
+<section id="platformScreen" class="screen game">
+
+    <div class="header">
+
+        <button
+            class="back"
+            onclick="backMenu()">
+            ← Quay lại
+        </button>
+
+        <h2 class="title">
+            🎮 Phiêu lưu 2D
+        </h2>
+
+        <span></span>
+
+    </div>
+
+
+    <div class="platform-wrap">
+
+        <div class="platform-info">
+
+            <span>
+                🪙 Xu:
+                <b id="coinScore">0</b>
+            </span>
+
+            <span>
+                ❤️ Mạng:
+                <b id="lives">3</b>
+            </span>
+
+            <span>
+                🏁 Màn:
+                <b>1</b>
+            </span>
+
+        </div>
+
+
+        <canvas
+            id="platformCanvas"
+            width="1000"
+            height="560">
+        </canvas>
+
+
+        <div class="controls">
+
+            <button
+                class="small-btn"
+                onclick="restartPlatform()">
+                🔄 Chơi lại
+            </button>
+
+        </div>
+
+
+        <div class="mobile-controls">
+
+            <button
+                ontouchstart="platformKeys.left=true"
+                ontouchend="platformKeys.left=false">
+                ◀
+            </button>
+
+            <button
+                ontouchstart="platformJump()">
+                ⬆
+            </button>
+
+            <button
+                ontouchstart="platformKeys.right=true"
+                ontouchend="platformKeys.right=false">
+                ▶
+            </button>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- PROMOTION -->
 
 <div id="promotion" class="promotion">
 
- <div class="promotion-box">
+    <div class="promotion-box">
 
-  <h2>
-   Chọn quân phong cấp
-  </h2>
+        <h2>
+            Chọn quân phong cấp
+        </h2>
 
-  <div id="promotionButtons"></div>
+        <div id="promotionButtons"></div>
 
- </div>
+    </div>
 
 </div>
 
@@ -578,70 +631,70 @@ h1{
 <script>
 
 /* =====================================================
-   CHUYỂN MÀN HÌNH
+CHUYỂN MÀN HÌNH
 ===================================================== */
 
 function hideScreens(){
 
- document
-  .querySelectorAll(".screen")
-  .forEach(x=>x.classList.remove("active"));
+    document
+        .querySelectorAll(".screen")
+        .forEach(x=>x.classList.remove("active"));
 
 }
 
 function openSnake(){
 
- hideScreens();
+    hideScreens();
 
- document
-  .getElementById("snakeScreen")
-  .classList.add("active");
+    document
+        .getElementById("snakeScreen")
+        .classList.add("active");
 
- restartSnake();
+    restartSnake();
 
 }
 
 function openChess(){
 
- hideScreens();
+    hideScreens();
 
- document
-  .getElementById("chessScreen")
-  .classList.add("active");
+    document
+        .getElementById("chessScreen")
+        .classList.add("active");
 
- newChess();
+    newChess();
 
 }
 
-function openPool(){
+function openPlatform(){
 
- hideScreens();
+    hideScreens();
 
- document
-  .getElementById("poolScreen")
-  .classList.add("active");
+    document
+        .getElementById("platformScreen")
+        .classList.add("active");
 
- newPoolGame();
+    restartPlatform();
 
 }
 
 function backMenu(){
 
- clearInterval(snakeTimer);
+    clearInterval(snakeTimer);
 
- poolRunning=false;
+    platformRunning=false;
 
- hideScreens();
+    hideScreens();
 
- document
-  .getElementById("menu")
-  .classList.add("active");
+    document
+        .getElementById("menu")
+        .classList.add("active");
 
 }
 
 
 /* =====================================================
-   SNAKE
+SNAKE
 ===================================================== */
 
 const sc=document.getElementById("snake");
@@ -659,295 +712,292 @@ let snakeTimer=null;
 let snakeDead=false;
 
 let high=
- Number(localStorage.getItem("snakeHigh")||0);
+    Number(localStorage.getItem("snakeHigh")||0);
 
 document.getElementById("high").textContent=high;
 
 function restartSnake(){
 
- clearInterval(snakeTimer);
+    clearInterval(snakeTimer);
 
- snake=[
-  {x:15,y:15},
-  {x:14,y:15},
-  {x:13,y:15}
- ];
+    snake=[
+        {x:15,y:15},
+        {x:14,y:15},
+        {x:13,y:15}
+    ];
 
- dir="right";
- nextDir="right";
- snakeScore=0;
- snakeDead=false;
+    dir="right";
+    nextDir="right";
+    snakeScore=0;
+    snakeDead=false;
 
- document
-  .getElementById("score")
-  .textContent=0;
+    document
+        .getElementById("score")
+        .textContent=0;
 
- makeFood();
+    makeFood();
+    drawSnake();
 
- drawSnake();
-
- snakeTimer=setInterval(
-  updateSnake,
-  100
- );
+    snakeTimer=setInterval(
+        updateSnake,
+        100
+    );
 
 }
 
 function makeFood(){
 
- do{
+    do{
 
-  food={
-   x:Math.floor(Math.random()*N),
-   y:Math.floor(Math.random()*N)
-  };
+        food={
+            x:Math.floor(Math.random()*N),
+            y:Math.floor(Math.random()*N)
+        };
 
- }while(
-  snake.some(
-   p=>p.x===food.x&&p.y===food.y
-  )
- );
+    }while(
+        snake.some(
+            p=>p.x===food.x&&p.y===food.y
+        )
+    );
 
 }
 
 function setDir(d){
 
- const opp={
-  up:"down",
-  down:"up",
-  left:"right",
-  right:"left"
- };
+    const opp={
+        up:"down",
+        down:"up",
+        left:"right",
+        right:"left"
+    };
 
- if(opp[d]!==dir)
-  nextDir=d;
+    if(opp[d]!==dir)
+        nextDir=d;
 
 }
 
 document.addEventListener("keydown",e=>{
 
- const k={
+    const k={
 
-  ArrowUp:"up",
-  w:"up",
-  W:"up",
+        ArrowUp:"up",
+        w:"up",
+        W:"up",
 
-  ArrowDown:"down",
-  s:"down",
-  S:"down",
+        ArrowDown:"down",
+        s:"down",
+        S:"down",
 
-  ArrowLeft:"left",
-  a:"left",
-  A:"left",
+        ArrowLeft:"left",
+        a:"left",
+        A:"left",
 
-  ArrowRight:"right",
-  d:"right",
-  D:"right"
+        ArrowRight:"right",
+        d:"right",
+        D:"right"
 
- };
+    };
 
- if(k[e.key]){
+    if(k[e.key]){
 
-  e.preventDefault();
+        e.preventDefault();
 
-  setDir(k[e.key]);
+        setDir(k[e.key]);
 
- }
+    }
 
 });
 
 function updateSnake(){
 
- if(snakeDead)return;
+    if(snakeDead)return;
 
- dir=nextDir;
+    dir=nextDir;
 
- let h={...snake[0]};
+    let h={...snake[0]};
 
- if(dir==="up")h.y--;
- if(dir==="down")h.y++;
- if(dir==="left")h.x--;
- if(dir==="right")h.x++;
+    if(dir==="up")h.y--;
+    if(dir==="down")h.y++;
+    if(dir==="left")h.x--;
+    if(dir==="right")h.x++;
 
- if(
-  h.x<0||
-  h.x>=N||
-  h.y<0||
-  h.y>=N
- ){
+    if(
+        h.x<0||
+        h.x>=N||
+        h.y<0||
+        h.y>=N
+    ){
 
-  endSnake();
+        endSnake();
+        return;
 
-  return;
+    }
 
- }
+    let ate=
+        h.x===food.x&&
+        h.y===food.y;
 
- let ate=
-  h.x===food.x&&
-  h.y===food.y;
+    let body=
+        ate
+        ?snake
+        :snake.slice(0,-1);
 
- let body=
-  ate
-  ?snake
-  :snake.slice(0,-1);
+    if(
+        body.some(
+            p=>p.x===h.x&&p.y===h.y
+        )
+    ){
 
- if(
-  body.some(
-   p=>p.x===h.x&&p.y===h.y
-  )
- ){
+        endSnake();
+        return;
 
-  endSnake();
+    }
 
-  return;
+    snake.unshift(h);
 
- }
+    if(ate){
 
- snake.unshift(h);
+        snakeScore++;
 
- if(ate){
+        document
+            .getElementById("score")
+            .textContent=snakeScore;
 
-  snakeScore++;
+        if(snakeScore>high){
 
-  document
-   .getElementById("score")
-   .textContent=snakeScore;
+            high=snakeScore;
 
-  if(snakeScore>high){
+            localStorage.setItem(
+                "snakeHigh",
+                high
+            );
 
-   high=snakeScore;
+            document
+                .getElementById("high")
+                .textContent=high;
 
-   localStorage.setItem(
-    "snakeHigh",
-    high
-   );
+        }
 
-   document
-    .getElementById("high")
-    .textContent=high;
+        makeFood();
 
-  }
+    }else{
 
-  makeFood();
+        snake.pop();
 
- }else{
+    }
 
-  snake.pop();
-
- }
-
- drawSnake();
+    drawSnake();
 
 }
 
 function drawSnake(){
 
- sx.fillStyle="#071016";
+    sx.fillStyle="#071016";
 
- sx.fillRect(
-  0,0,600,600
- );
+    sx.fillRect(
+        0,0,600,600
+    );
 
- sx.strokeStyle=
-  "rgba(255,255,255,.035)";
+    sx.strokeStyle=
+        "rgba(255,255,255,.035)";
 
- for(let i=0;i<=N;i++){
+    for(let i=0;i<=N;i++){
 
-  sx.beginPath();
+        sx.beginPath();
 
-  sx.moveTo(i*TILE,0);
-  sx.lineTo(i*TILE,600);
+        sx.moveTo(i*TILE,0);
+        sx.lineTo(i*TILE,600);
 
-  sx.stroke();
+        sx.stroke();
 
-  sx.beginPath();
+        sx.beginPath();
 
-  sx.moveTo(0,i*TILE);
-  sx.lineTo(600,i*TILE);
+        sx.moveTo(0,i*TILE);
+        sx.lineTo(600,i*TILE);
 
-  sx.stroke();
+        sx.stroke();
 
- }
+    }
 
- sx.fillStyle="#ff4057";
+    sx.fillStyle="#ff4057";
 
- sx.beginPath();
+    sx.beginPath();
 
- sx.arc(
-  food.x*TILE+10,
-  food.y*TILE+10,
-  7,
-  0,
-  Math.PI*2
- );
+    sx.arc(
+        food.x*TILE+10,
+        food.y*TILE+10,
+        7,
+        0,
+        Math.PI*2
+    );
 
- sx.fill();
+    sx.fill();
 
- snake.forEach((p,i)=>{
+    snake.forEach((p,i)=>{
 
-  sx.fillStyle=
-   i===0
-   ?"#7cff91"
-   :"#25d94d";
+        sx.fillStyle=
+            i===0
+            ?"#7cff91"
+            :"#25d94d";
 
-  sx.beginPath();
+        sx.beginPath();
 
-  sx.roundRect(
-   p.x*TILE+2,
-   p.y*TILE+2,
-   16,
-   16,
-   5
-  );
+        sx.roundRect(
+            p.x*TILE+2,
+            p.y*TILE+2,
+            16,
+            16,
+            5
+        );
 
-  sx.fill();
+        sx.fill();
 
- });
+    });
 
 }
 
 function endSnake(){
 
- snakeDead=true;
+    snakeDead=true;
 
- clearInterval(snakeTimer);
+    clearInterval(snakeTimer);
 
- sx.fillStyle="#0009";
+    sx.fillStyle="#0009";
 
- sx.fillRect(
-  0,0,600,600
- );
+    sx.fillRect(
+        0,0,600,600
+    );
 
- sx.fillStyle="white";
- sx.textAlign="center";
+    sx.fillStyle="white";
+    sx.textAlign="center";
 
- sx.font="bold 48px Arial";
+    sx.font="bold 48px Arial";
 
- sx.fillText(
-  "GAME OVER",
-  300,
-  280
- );
+    sx.fillText(
+        "GAME OVER",
+        300,
+        280
+    );
 
- sx.font="24px Arial";
+    sx.font="24px Arial";
 
- sx.fillText(
-  "Điểm: "+snakeScore,
-  300,
-  325
- );
+    sx.fillText(
+        "Điểm: "+snakeScore,
+        300,
+        325
+    );
 
 }
 
 
 /* =====================================================
-   CHESS
+CHESS
 ===================================================== */
 
 const PIECES={
 
- r:"♜",n:"♞",b:"♝",q:"♛",k:"♚",p:"♟",
- R:"♖",N:"♘",B:"♗",Q:"♕",K:"♔",P:"♙"
+    r:"♜",n:"♞",b:"♝",q:"♛",k:"♚",p:"♟",
+    R:"♖",N:"♘",B:"♗",Q:"♕",K:"♔",P:"♙"
 
 };
 
@@ -956,8 +1006,8 @@ let turn="w";
 let selected=null;
 let legalMoves=[];
 let castle={
- wK:true,wQ:true,
- bK:true,bQ:true
+    wK:true,wQ:true,
+    bK:true,bQ:true
 };
 let enPassant=null;
 let gameFinished=false;
@@ -965,1595 +1015,1655 @@ let pendingPromotion=null;
 
 function newChess(){
 
- board=[
+    board=[
 
-  ["r","n","b","q","k","b","n","r"],
-  ["p","p","p","p","p","p","p","p"],
-  ["","","","","","","",""],
-  ["","","","","","","",""],
-  ["","","","","","","",""],
-  ["","","","","","","",""],
-  ["P","P","P","P","P","P","P","P"],
-  ["R","N","B","Q","K","B","N","R"]
+        ["r","n","b","q","k","b","n","r"],
+        ["p","p","p","p","p","p","p","p"],
+        ["","","","","","","",""],
+        ["","","","","","","",""],
+        ["","","","","","","",""],
+        ["","","","","","","",""],
+        ["P","P","P","P","P","P","P","P"],
+        ["R","N","B","Q","K","B","N","R"]
 
- ];
+    ];
 
- turn="w";
- selected=null;
- legalMoves=[];
- enPassant=null;
+    turn="w";
+    selected=null;
+    legalMoves=[];
+    enPassant=null;
 
- castle={
-  wK:true,wQ:true,
-  bK:true,bQ:true
- };
+    castle={
+        wK:true,wQ:true,
+        bK:true,bQ:true
+    };
 
- gameFinished=false;
- pendingPromotion=null;
+    gameFinished=false;
+    pendingPromotion=null;
 
- renderChess();
- updateStatus();
+    renderChess();
+    updateStatus();
 
 }
 
 function color(p){
 
- if(!p)return null;
+    if(!p)return null;
 
- return p===p.toUpperCase()
-  ?"w"
-  :"b";
+    return p===p.toUpperCase()
+        ?"w"
+        :"b";
 
 }
 
 function inside(r,c){
 
- return r>=0&&r<8&&c>=0&&c<8;
+    return r>=0&&r<8&&c>=0&&c<8;
 
 }
 
 function opposite(c){
 
- return c==="w"?"b":"w";
+    return c==="w"?"b":"w";
 
 }
 
 function cloneBoard(b){
 
- return b.map(
-  row=>row.slice()
- );
+    return b.map(
+        row=>row.slice()
+    );
 
 }
 
 function findKing(b,col){
 
- for(let r=0;r<8;r++)
-  for(let c=0;c<8;c++)
-   if(
-    b[r][c]===(col==="w"?"K":"k")
-   )
-    return [r,c];
+    for(let r=0;r<8;r++)
+        for(let c=0;c<8;c++)
+            if(
+                b[r][c]===(col==="w"?"K":"k")
+            )
+                return [r,c];
 
- return null;
+    return null;
 
 }
 
 function attacked(b,r,c,by){
 
- let pr=by==="w"?r+1:r-1;
+    let pr=by==="w"?r+1:r-1;
 
- for(let dc of [-1,1]){
+    for(let dc of [-1,1]){
 
-  let pc=c+dc;
+        let pc=c+dc;
 
-  if(
-   inside(pr,pc)&&
-   b[pr][pc]===(by==="w"?"P":"p")
-  )
-   return true;
+        if(
+            inside(pr,pc)&&
+            b[pr][pc]===(by==="w"?"P":"p")
+        )
+            return true;
 
- }
+    }
 
- const knight=[
+    const knight=[
 
-  [-2,-1],[-2,1],
-  [-1,-2],[-1,2],
-  [1,-2],[1,2],
-  [2,-1],[2,1]
+        [-2,-1],[-2,1],
+        [-1,-2],[-1,2],
+        [1,-2],[1,2],
+        [2,-1],[2,1]
 
- ];
+    ];
 
- for(let [dr,dc] of knight){
+    for(let [dr,dc] of knight){
 
-  let rr=r+dr;
-  let cc=c+dc;
+        let rr=r+dr;
+        let cc=c+dc;
 
-  if(
-   inside(rr,cc)&&
-   b[rr][cc]===(by==="w"?"N":"n")
-  )
-   return true;
+        if(
+            inside(rr,cc)&&
+            b[rr][cc]===(by==="w"?"N":"n")
+        )
+            return true;
 
- }
+    }
 
- for(let dr=-1;dr<=1;dr++)
-  for(let dc=-1;dc<=1;dc++){
+    for(let dr=-1;dr<=1;dr++)
+        for(let dc=-1;dc<=1;dc++){
 
-   if(!dr&&!dc)continue;
+            if(!dr&&!dc)continue;
 
-   let rr=r+dr;
-   let cc=c+dc;
+            let rr=r+dr;
+            let cc=c+dc;
 
-   if(
-    inside(rr,cc)&&
-    b[rr][cc]===(by==="w"?"K":"k")
-   )
-    return true;
+            if(
+                inside(rr,cc)&&
+                b[rr][cc]===(by==="w"?"K":"k")
+            )
+                return true;
 
-  }
+        }
 
- const straight=[
-  [1,0],[-1,0],[0,1],[0,-1]
- ];
+    const straight=[
+        [1,0],[-1,0],
+        [0,1],[0,-1]
+    ];
 
- for(let [dr,dc] of straight){
+    for(let [dr,dc] of straight){
 
-  let rr=r+dr;
-  let cc=c+dc;
+        let rr=r+dr;
+        let cc=c+dc;
 
-  while(inside(rr,cc)){
+        while(inside(rr,cc)){
 
-   let p=b[rr][cc];
+            let p=b[rr][cc];
 
-   if(p){
+            if(p){
 
-    if(
-     p===(by==="w"?"R":"r")||
-     p===(by==="w"?"Q":"q")
-    )
-     return true;
+                if(
+                    p===(by==="w"?"R":"r")||
+                    p===(by==="w"?"Q":"q")
+                )
+                    return true;
 
-    break;
+                break;
 
-   }
+            }
 
-   rr+=dr;
-   cc+=dc;
+            rr+=dr;
+            cc+=dc;
 
-  }
+        }
 
- }
+    }
 
- const diagonal=[
-  [1,1],[1,-1],
-  [-1,1],[-1,-1]
- ];
+    const diagonal=[
+        [1,1],[1,-1],
+        [-1,1],[-1,-1]
+    ];
 
- for(let [dr,dc] of diagonal){
+    for(let [dr,dc] of diagonal){
 
-  let rr=r+dr;
-  let cc=c+dc;
+        let rr=r+dr;
+        let cc=c+dc;
 
-  while(inside(rr,cc)){
+        while(inside(rr,cc)){
 
-   let p=b[rr][cc];
+            let p=b[rr][cc];
 
-   if(p){
+            if(p){
 
-    if(
-     p===(by==="w"?"B":"b")||
-     p===(by==="w"?"Q":"q")
-    )
-     return true;
+                if(
+                    p===(by==="w"?"B":"b")||
+                    p===(by==="w"?"Q":"q")
+                )
+                    return true;
 
-    break;
+                break;
 
-   }
+            }
 
-   rr+=dr;
-   cc+=dc;
+            rr+=dr;
+            cc+=dc;
 
-  }
+        }
 
- }
+    }
 
- return false;
+    return false;
 
 }
 
 function inCheck(b,col){
 
- let k=findKing(b,col);
+    let k=findKing(b,col);
 
- if(!k)return true;
+    if(!k)return true;
 
- return attacked(
-  b,
-  k[0],
-  k[1],
-  opposite(col)
- );
+    return attacked(
+        b,
+        k[0],
+        k[1],
+        opposite(col)
+    );
 
 }
 
 function pseudoMoves(b,r,c){
 
- const p=b[r][c];
+    const p=b[r][c];
 
- if(!p)return[];
+    if(!p)return[];
 
- const col=color(p);
- const type=p.toLowerCase();
- const out=[];
+    const col=color(p);
+    const type=p.toLowerCase();
+    const out=[];
 
- const add=(rr,cc)=>{
+    const add=(rr,cc)=>{
 
-  if(!inside(rr,cc))
-   return false;
+        if(!inside(rr,cc))
+            return false;
 
-  if(!b[rr][cc]){
+        if(!b[rr][cc]){
 
-   out.push([rr,cc]);
+            out.push([rr,cc]);
+            return true;
 
-   return true;
+        }
 
-  }
+        if(color(b[rr][cc])!==col)
+            out.push([rr,cc]);
 
-  if(color(b[rr][cc])!==col)
-   out.push([rr,cc]);
+        return false;
 
-  return false;
+    };
 
- };
+    if(type==="p"){
 
- if(type==="p"){
+        let d=col==="w"?-1:1;
+        let start=col==="w"?6:1;
 
-  let d=col==="w"?-1:1;
-  let start=col==="w"?6:1;
+        if(
+            inside(r+d,c)&&
+            !b[r+d][c]
+        ){
 
-  if(
-   inside(r+d,c)&&
-   !b[r+d][c]
-  ){
+            out.push([r+d,c]);
 
-   out.push([r+d,c]);
+            if(
+                r===start&&
+                !b[r+2*d][c]
+            )
+                out.push([r+2*d,c]);
 
-   if(
-    r===start&&
-    !b[r+2*d][c]
-   )
-    out.push([r+2*d,c]);
+        }
 
-  }
+        for(let dc of [-1,1]){
 
-  for(let dc of [-1,1]){
+            let rr=r+d;
+            let cc=c+dc;
 
-   let rr=r+d;
-   let cc=c+dc;
+            if(!inside(rr,cc))
+                continue;
 
-   if(!inside(rr,cc))
-    continue;
+            if(
+                b[rr][cc]&&
+                color(b[rr][cc])!==col
+            )
+                out.push([rr,cc]);
 
-   if(
-    b[rr][cc]&&
-    color(b[rr][cc])!==col
-   )
-    out.push([rr,cc]);
+            if(
+                enPassant&&
+                enPassant[0]===rr&&
+                enPassant[1]===cc
+            )
+                out.push([rr,cc]);
 
-   if(
-    enPassant&&
-    enPassant[0]===rr&&
-    enPassant[1]===cc
-   )
-    out.push([rr,cc]);
+        }
 
-  }
+    }
 
- }
+    if(type==="n"){
 
- if(type==="n"){
+        [
 
-  [
+            [-2,-1],[-2,1],
+            [-1,-2],[-1,2],
+            [1,-2],[1,2],
+            [2,-1],[2,1]
 
-   [-2,-1],[-2,1],
-   [-1,-2],[-1,2],
-   [1,-2],[1,2],
-   [2,-1],[2,1]
+        ].forEach(
+            ([dr,dc])=>add(r+dr,c+dc)
+        );
 
-  ].forEach(
-   ([dr,dc])=>add(r+dr,c+dc)
-  );
+    }
 
- }
+    if(type==="k"){
 
- if(type==="k"){
+        for(let dr=-1;dr<=1;dr++)
+            for(let dc=-1;dc<=1;dc++)
+                if(dr||dc)
+                    add(r+dr,c+dc);
 
-  for(let dr=-1;dr<=1;dr++)
-   for(let dc=-1;dc<=1;dc++)
-    if(dr||dc)
-     add(r+dr,c+dc);
+        if(
+            col==="w"&&
+            r===7&&c===4&&
+            !inCheck(b,"w")
+        ){
 
-  if(
-   col==="w"&&
-   r===7&&c===4&&
-   !inCheck(b,"w")
-  ){
+            if(
+                castle.wK&&
+                b[7][5]===""&&
+                b[7][6]===""&&
+                b[7][7]==="R"&&
+                !attacked(b,7,5,"b")&&
+                !attacked(b,7,6,"b")
+            )
+                out.push([7,6]);
 
-   if(
-    castle.wK&&
-    b[7][5]===""&&
-    b[7][6]===""&&
-    b[7][7]==="R"&&
-    !attacked(b,7,5,"b")&&
-    !attacked(b,7,6,"b")
-   )
-    out.push([7,6]);
+            if(
+                castle.wQ&&
+                b[7][1]===""&&
+                b[7][2]===""&&
+                b[7][3]===""&&
+                b[7][0]==="R"&&
+                !attacked(b,7,3,"b")&&
+                !attacked(b,7,2,"b")
+            )
+                out.push([7,2]);
 
-   if(
-    castle.wQ&&
-    b[7][1]===""&&
-    b[7][2]===""&&
-    b[7][3]===""&&
-    b[7][0]==="R"&&
-    !attacked(b,7,3,"b")&&
-    !attacked(b,7,2,"b")
-   )
-    out.push([7,2]);
+        }
 
-  }
+        if(
+            col==="b"&&
+            r===0&&c===4&&
+            !inCheck(b,"b")
+        ){
 
-  if(
-   col==="b"&&
-   r===0&&c===4&&
-   !inCheck(b,"b")
-  ){
+            if(
+                castle.bK&&
+                b[0][5]===""&&
+                b[0][6]===""&&
+                b[0][7]==="r"&&
+                !attacked(b,0,5,"w")&&
+                !attacked(b,0,6,"w")
+            )
+                out.push([0,6]);
 
-   if(
-    castle.bK&&
-    b[0][5]===""&&
-    b[0][6]===""&&
-    b[0][7]==="r"&&
-    !attacked(b,0,5,"w")&&
-    !attacked(b,0,6,"w")
-   )
-    out.push([0,6]);
+            if(
+                castle.bQ&&
+                b[0][1]===""&&
+                b[0][2]===""&&
+                b[0][3]===""&&
+                b[0][0]==="r"&&
+                !attacked(b,0,3,"w")&&
+                !attacked(b,0,2,"w")
+            )
+                out.push([0,2]);
 
-   if(
-    castle.bQ&&
-    b[0][1]===""&&
-    b[0][2]===""&&
-    b[0][3]===""&&
-    b[0][0]==="r"&&
-    !attacked(b,0,3,"w")&&
-    !attacked(b,0,2,"w")
-   )
-    out.push([0,2]);
+        }
 
-  }
+    }
 
- }
+    if(type==="r"||type==="q"){
 
- if(type==="r"||type==="q"){
+        for(let [dr,dc] of [
 
-  for(let [dr,dc] of [
+            [1,0],[-1,0],
+            [0,1],[0,-1]
 
-   [1,0],[-1,0],
-   [0,1],[0,-1]
+        ]){
 
-  ]){
+            let rr=r+dr;
+            let cc=c+dc;
 
-   let rr=r+dr;
-   let cc=c+dc;
+            while(add(rr,cc)){
 
-   while(add(rr,cc)){
+                rr+=dr;
+                cc+=dc;
 
-    rr+=dr;
-    cc+=dc;
+            }
 
-   }
+        }
 
-  }
+    }
 
- }
+    if(type==="b"||type==="q"){
 
- if(type==="b"||type==="q"){
+        for(let [dr,dc] of [
 
-  for(let [dr,dc] of [
+            [1,1],[1,-1],
+            [-1,1],[-1,-1]
 
-   [1,1],[1,-1],
-   [-1,1],[-1,-1]
+        ]){
 
-  ]){
+            let rr=r+dr;
+            let cc=c+dc;
 
-   let rr=r+dr;
-   let cc=c+dc;
+            while(add(rr,cc)){
 
-   while(add(rr,cc)){
+                rr+=dr;
+                cc+=dc;
 
-    rr+=dr;
-    cc+=dc;
+            }
 
-   }
+        }
 
-  }
+    }
 
- }
-
- return out;
+    return out;
 
 }
 
 function makeMove(b,from,to){
 
- const nb=cloneBoard(b);
+    const nb=cloneBoard(b);
 
- const p=nb[from[0]][from[1]];
- const type=p.toLowerCase();
+    const p=nb[from[0]][from[1]];
+    const type=p.toLowerCase();
 
- nb[to[0]][to[1]]=p;
- nb[from[0]][from[1]]="";
+    nb[to[0]][to[1]]=p;
+    nb[from[0]][from[1]]="";
 
- if(
-  type==="p"&&
-  from[1]!==to[1]&&
-  !b[to[0]][to[1]]
- )
-  nb[from[0]][to[1]]="";
+    if(
+        type==="p"&&
+        from[1]!==to[1]&&
+        !b[to[0]][to[1]]
+    )
+        nb[from[0]][to[1]]="";
 
- if(
-  type==="k"&&
-  Math.abs(to[1]-from[1])===2
- ){
+    if(
+        type==="k"&&
+        Math.abs(to[1]-from[1])===2
+    ){
 
-  if(to[1]===6){
+        if(to[1]===6){
 
-   nb[to[0]][5]=nb[to[0]][7];
-   nb[to[0]][7]="";
+            nb[to[0]][5]=nb[to[0]][7];
+            nb[to[0]][7]="";
 
-  }else{
+        }else{
 
-   nb[to[0]][3]=nb[to[0]][0];
-   nb[to[0]][0]="";
+            nb[to[0]][3]=nb[to[0]][0];
+            nb[to[0]][0]="";
 
-  }
+        }
 
- }
+    }
 
- return nb;
+    return nb;
 
 }
 
 function legalFor(b,r,c){
 
- const p=b[r][c];
+    const p=b[r][c];
 
- if(!p)return[];
+    if(!p)return[];
 
- const col=color(p);
+    const col=color(p);
 
- return pseudoMoves(b,r,c)
-  .filter(to=>{
+    return pseudoMoves(b,r,c)
+        .filter(to=>{
 
-   const nb=makeMove(
-    b,
-    [r,c],
-    to
-   );
+            const nb=makeMove(
+                b,
+                [r,c],
+                to
+            );
 
-   return !inCheck(nb,col);
+            return !inCheck(nb,col);
 
-  });
+        });
 
 }
 
 function allLegal(b,col){
 
- const arr=[];
+    const arr=[];
 
- for(let r=0;r<8;r++)
-  for(let c=0;c<8;c++)
+    for(let r=0;r<8;r++)
+        for(let c=0;c<8;c++)
 
-   if(color(b[r][c])===col)
+            if(color(b[r][c])===col)
 
-    for(let m of legalFor(b,r,c))
+                for(let m of legalFor(b,r,c))
 
-     arr.push({
-      from:[r,c],
-      to:m
-     });
+                    arr.push({
+                        from:[r,c],
+                        to:m
+                    });
 
- return arr;
+    return arr;
 
 }
 
 function updateCastling(from,to,p){
 
- if(p==="K"){
-  castle.wK=false;
-  castle.wQ=false;
- }
+    if(p==="K"){
+        castle.wK=false;
+        castle.wQ=false;
+    }
 
- if(p==="k"){
-  castle.bK=false;
-  castle.bQ=false;
- }
+    if(p==="k"){
+        castle.bK=false;
+        castle.bQ=false;
+    }
 
- if(p==="R"){
+    if(p==="R"){
 
-  if(from[0]===7&&from[1]===0)
-   castle.wQ=false;
+        if(from[0]===7&&from[1]===0)
+            castle.wQ=false;
 
-  if(from[0]===7&&from[1]===7)
-   castle.wK=false;
+        if(from[0]===7&&from[1]===7)
+            castle.wK=false;
 
- }
+    }
 
- if(p==="r"){
+    if(p==="r"){
 
-  if(from[0]===0&&from[1]===0)
-   castle.bQ=false;
+        if(from[0]===0&&from[1]===0)
+            castle.bQ=false;
 
-  if(from[0]===0&&from[1]===7)
-   castle.bK=false;
+        if(from[0]===0&&from[1]===7)
+            castle.bK=false;
 
- }
+    }
 
- if(to[0]===7&&to[1]===0)
-  castle.wQ=false;
+    if(to[0]===7&&to[1]===0)
+        castle.wQ=false;
 
- if(to[0]===7&&to[1]===7)
-  castle.wK=false;
+    if(to[0]===7&&to[1]===7)
+        castle.wK=false;
 
- if(to[0]===0&&to[1]===0)
-  castle.bQ=false;
+    if(to[0]===0&&to[1]===0)
+        castle.bQ=false;
 
- if(to[0]===0&&to[1]===7)
-  castle.bK=false;
+    if(to[0]===0&&to[1]===7)
+        castle.bK=false;
 
 }
 
 function playMove(from,to){
 
- const p=board[from[0]][from[1]];
+    const p=board[from[0]][from[1]];
 
- updateCastling(
-  from,
-  to,
-  p
- );
+    updateCastling(
+        from,
+        to,
+        p
+    );
 
- board=makeMove(
-  board,
-  from,
-  to
- );
+    board=makeMove(
+        board,
+        from,
+        to
+    );
 
- enPassant=null;
+    enPassant=null;
 
- if(
-  p.toLowerCase()==="p"&&
-  Math.abs(to[0]-from[0])===2
- )
-  enPassant=[
-   (from[0]+to[0])/2,
-   from[1]
-  ];
+    if(
+        p.toLowerCase()==="p"&&
+        Math.abs(to[0]-from[0])===2
+    )
+        enPassant=[
+            (from[0]+to[0])/2,
+            from[1]
+        ];
 
- if(
-  p.toLowerCase()==="p"&&
-  (to[0]===0||to[0]===7)
- ){
+    if(
+        p.toLowerCase()==="p"&&
+        (to[0]===0||to[0]===7)
+    ){
 
-  pendingPromotion={
-   r:to[0],
-   c:to[1],
-   color:color(p)
-  };
+        pendingPromotion={
+            r:to[0],
+            c:to[1],
+            color:color(p)
+        };
 
-  showPromotion(color(p));
+        showPromotion(color(p));
 
-  return;
+        return;
 
- }
+    }
 
- finishMove();
+    finishMove();
 
 }
 
 function finishMove(){
 
- turn=opposite(turn);
+    turn=opposite(turn);
 
- selected=null;
- legalMoves=[];
+    selected=null;
+    legalMoves=[];
 
- renderChess();
- updateStatus();
+    renderChess();
+    updateStatus();
 
 }
 
 function showPromotion(col){
 
- const box=
-  document.getElementById("promotion");
+    const box=
+        document.getElementById("promotion");
 
- const buttons=
-  document.getElementById("promotionButtons");
+    const buttons=
+        document.getElementById("promotionButtons");
 
- buttons.innerHTML="";
+    buttons.innerHTML="";
 
- const pieces=
-  col==="w"
-  ?["Q","R","B","N"]
-  :["q","r","b","n"];
+    const pieces=
+        col==="w"
+        ?["Q","R","B","N"]
+        :["q","r","b","n"];
 
- pieces.forEach(p=>{
+    pieces.forEach(p=>{
 
-  const b=document.createElement("button");
+        const b=document.createElement("button");
 
-  b.textContent=PIECES[p];
+        b.textContent=PIECES[p];
 
-  b.onclick=()=>{
+        b.onclick=()=>{
 
-   board[
-    pendingPromotion.r
-   ][
-    pendingPromotion.c
-   ]=p;
+            board[
+                pendingPromotion.r
+            ][
+                pendingPromotion.c
+            ]=p;
 
-   pendingPromotion=null;
+            pendingPromotion=null;
 
-   box.style.display="none";
+            box.style.display="none";
 
-   finishMove();
+            finishMove();
 
-  };
+        };
 
-  buttons.appendChild(b);
+        buttons.appendChild(b);
 
- });
+    });
 
- box.style.display="flex";
+    box.style.display="flex";
 
 }
 
 function chessClick(r,c){
 
- if(
-  gameFinished||
-  pendingPromotion
- )
-  return;
+    if(
+        gameFinished||
+        pendingPromotion
+    )
+        return;
 
- const p=board[r][c];
+    const p=board[r][c];
 
- if(!selected){
+    if(!selected){
 
-  if(color(p)!==turn)
-   return;
+        if(color(p)!==turn)
+            return;
 
-  selected=[r,c];
+        selected=[r,c];
 
-  legalMoves=
-   legalFor(board,r,c);
+        legalMoves=
+            legalFor(board,r,c);
 
-  renderChess();
+        renderChess();
 
-  return;
+        return;
 
- }
+    }
 
- if(color(p)===turn){
+    if(color(p)===turn){
 
-  selected=[r,c];
+        selected=[r,c];
 
-  legalMoves=
-   legalFor(board,r,c);
+        legalMoves=
+            legalFor(board,r,c);
 
-  renderChess();
+        renderChess();
 
-  return;
+        return;
 
- }
+    }
 
- const valid=
-  legalMoves.some(
-   m=>m[0]===r&&m[1]===c
-  );
+    const valid=
+        legalMoves.some(
+            m=>m[0]===r&&m[1]===c
+        );
 
- if(valid)
-  playMove(
-   selected,
-   [r,c]
-  );
+    if(valid)
+        playMove(
+            selected,
+            [r,c]
+        );
 
 }
 
 function renderChess(){
 
- const el=
-  document.getElementById("board");
+    const el=
+        document.getElementById("board");
 
- el.innerHTML="";
+    el.innerHTML="";
 
- for(let r=0;r<8;r++)
-  for(let c=0;c<8;c++){
+    for(let r=0;r<8;r++)
+        for(let c=0;c<8;c++){
 
-   const s=
-    document.createElement("div");
+            const s=
+                document.createElement("div");
 
-   s.className=
-    "sq "+
-    ((r+c)%2?"dark":"light");
+            s.className=
+                "sq "+
+                ((r+c)%2?"dark":"light");
 
-   if(
-    selected&&
-    selected[0]===r&&
-    selected[1]===c
-   )
-    s.classList.add("selected");
+            if(
+                selected&&
+                selected[0]===r&&
+                selected[1]===c
+            )
+                s.classList.add("selected");
 
-   const move=
-    legalMoves.find(
-     m=>m[0]===r&&m[1]===c
-    );
+            const move=
+                legalMoves.find(
+                    m=>m[0]===r&&m[1]===c
+                );
 
-   if(move){
+            if(move){
 
-    if(board[r][c])
-     s.classList.add("capture");
-    else
-     s.classList.add("legal");
+                if(board[r][c])
+                    s.classList.add("capture");
+                else
+                    s.classList.add("legal");
 
-   }
+            }
 
-   const p=board[r][c];
+            const p=board[r][c];
 
-   if(p)
-    s.textContent=PIECES[p];
+            if(p)
+                s.textContent=PIECES[p];
 
-   s.onclick=
-    ()=>chessClick(r,c);
+            s.onclick=
+                ()=>chessClick(r,c);
 
-   el.appendChild(s);
+            el.appendChild(s);
 
-  }
+        }
 
 }
 
 function updateStatus(){
 
- if(gameFinished)
-  return;
+    if(gameFinished)
+        return;
 
- const moves=
-  allLegal(board,turn);
+    const moves=
+        allLegal(board,turn);
 
- const check=
-  inCheck(board,turn);
+    const check=
+        inCheck(board,turn);
 
- if(moves.length===0){
+    if(moves.length===0){
 
-  gameFinished=true;
+        gameFinished=true;
 
-  if(check){
+        if(check){
 
-   const winner=
-    turn==="w"
-    ?"Đen"
-    :"Trắng";
+            const winner=
+                turn==="w"
+                ?"Đen"
+                :"Trắng";
 
-   document
-    .getElementById("status")
-    .textContent=
-    "♚ CHIẾU HẾT — "+
-    winner+
-    " thắng!";
+            document
+                .getElementById("status")
+                .textContent=
+                "♚ CHIẾU HẾT — "+
+                winner+
+                " thắng!";
 
-  }else{
+        }else{
 
-   document
-    .getElementById("status")
-    .textContent=
-    "🤝 HÒA — Bế tắc!";
+            document
+                .getElementById("status")
+                .textContent=
+                "🤝 HÒA — Bế tắc!";
 
-  }
+        }
 
-  return;
+        return;
 
- }
+    }
 
- if(check){
+    if(check){
 
-  document
-   .getElementById("status")
-   .textContent=
-   "⚠️ CHIẾU! — Lượt của "+
-   (turn==="w"?"Trắng":"Đen");
+        document
+            .getElementById("status")
+            .textContent=
+            "⚠️ CHIẾU! — Lượt của "+
+            (turn==="w"?"Trắng":"Đen");
 
- }else{
+    }else{
 
-  document
-   .getElementById("status")
-   .textContent=
-   "Lượt của "+
-   (turn==="w"?"Trắng":"Đen");
+        document
+            .getElementById("status")
+            .textContent=
+            "Lượt của "+
+            (turn==="w"?"Trắng":"Đen");
 
- }
+    }
 
 }
 
 
 /* =====================================================
-   BIDA 8 BALL
+GAME 2D PLATFORMER
 ===================================================== */
 
-const pc=
- document.getElementById("poolCanvas");
+const gameCanvas=
+    document.getElementById("platformCanvas");
 
-const px=
- pc.getContext("2d");
+const g=
+    gameCanvas.getContext("2d");
 
-const PW=1000;
-const PH=560;
+const GW=1000;
+const GH=560;
 
-const table={
- x:55,
- y:55,
- w:890,
- h:450
+let player;
+let platforms=[];
+let coins=[];
+let enemies=[];
+let goal;
+let cameraX=0;
+let coinScore=0;
+let playerLives=3;
+let platformRunning=false;
+let platformKeys={
+    left:false,
+    right:false,
+    jump:false
 };
 
-const ballR=12;
-
-const pockets=[
- [table.x,table.y],
- [table.x+table.w/2,table.y-3],
- [table.x+table.w,table.y],
- [table.x,table.y+table.h],
- [table.x+table.w/2,table.y+table.h+3],
- [table.x+table.w,table.y+table.h]
-];
-
-let balls=[];
-let poolTurn=1;
-let poolPotted=0;
-let poolRunning=false;
-let aiming=false;
-let aimStart=null;
-let mousePos=null;
-let animationId=null;
+let lastTime=0;
 
 
-/* Tạo bi */
+/* ================= LEVEL ================= */
 
-function newPoolGame(){
+function createLevel(){
 
- balls=[];
- poolTurn=1;
- poolPotted=0;
- poolRunning=false;
- aiming=false;
- aimStart=null;
+    platforms=[
 
- document
-  .getElementById("poolTurn")
-  .textContent="Người chơi 1";
+        {x:0,y:500,w:900,h:60},
+        {x:1000,y:500,w:800,h:60},
+        {x:1900,y:500,w:1000,h:60},
 
- document
-  .getElementById("potted")
-  .textContent=0;
+        {x:250,y:400,w:150,h:25},
+        {x:500,y:330,w:170,h:25},
+        {x:760,y:400,w:130,h:25},
 
- createPoolBalls();
+        {x:1100,y:390,w:180,h:25},
+        {x:1400,y:320,w:180,h:25},
+        {x:1650,y:400,w:130,h:25},
 
- drawPool();
+        {x:2050,y:390,w:170,h:25},
+        {x:2350,y:300,w:180,h:25},
+        {x:2600,y:400,w:150,h:25}
 
-}
-
-
-/* Tạo bi cái */
-
-function createBall(x,y,n,color,group=""){
-
- balls.push({
-
-  x,
-  y,
-
-  vx:0,
-  vy:0,
-
-  number:n,
-  color,
-
-  group,
-
-  pocketed:false
-
- });
-
-}
+    ];
 
 
-/* Xếp tam giác */
+    coins=[
 
-function createPoolBalls(){
+        {x:300,y:360,taken:false},
+        {x:550,y:290,taken:false},
+        {x:810,y:360,taken:false},
 
- const cx=table.x+table.w*0.68;
- const cy=table.y+table.h/2;
+        {x:1160,y:350,taken:false},
+        {x:1460,y:280,taken:false},
+        {x:1700,y:360,taken:false},
 
- let nums=[];
+        {x:2120,y:350,taken:false},
+        {x:2410,y:260,taken:false},
+        {x:2650,y:360,taken:false}
 
- for(let i=1;i<=15;i++)
-  nums.push(i);
+    ];
 
- let index=0;
 
- const spacing=ballR*2.05;
+    enemies=[
 
- for(let row=0;row<5;row++){
+        {
+            x:620,
+            y:460,
+            w:34,
+            h:34,
+            vx:1.2,
+            min:500,
+            max:850,
+            alive:true
+        },
 
-  for(let col=0;col<=row;col++){
+        {
+            x:1220,
+            y:460,
+            w:34,
+            h:34,
+            vx:1.4,
+            min:1050,
+            max:1750,
+            alive:true
+        },
 
-   let x=
-    cx+
-    row*spacing;
+        {
+            x:2200,
+            y:460,
+            w:34,
+            h:34,
+            vx:1.5,
+            min:1950,
+            max:2800,
+            alive:true
+        }
 
-   let y=
-    cy+
-    (col-row/2)*spacing;
+    ];
 
-   let n=nums[index++];
 
-   let color=
-    n===8
-    ?"#111"
-    :n%2===0
-     ?"#f2c84b"
-     :"#e53935";
-
-   createBall(
-    x,y,n,color
-   );
-
-  }
-
- }
-
- /* Bi cái */
-
- createBall(
-  table.x+table.w*0.27,
-  cy,
-  0,
-  "#f5f5f5",
-  "cue"
- );
+    goal={
+        x:2820,
+        y:400,
+        w:45,
+        h:100
+    };
 
 }
 
 
-/* Vẽ bàn */
+function resetPlayer(){
 
-function drawPool(){
+    player={
+        x:100,
+        y:430,
+        w:35,
+        h:55,
+        vx:0,
+        vy:0,
+        speed:5,
+        jump:-13,
+        grounded:false
+    };
 
- px.clearRect(
-  0,0,PW,PH
- );
+    cameraX=0;
 
- /* Bàn ngoài */
-
- px.fillStyle="#3c2415";
-
- px.fillRect(
-  table.x-35,
-  table.y-35,
-  table.w+70,
-  table.h+70
- );
-
- /* Mặt bàn */
-
- px.fillStyle="#08783f";
-
- px.fillRect(
-  table.x,
-  table.y,
-  table.w,
-  table.h
- );
-
- /* Viền */
-
- px.strokeStyle="#0b4f2d";
- px.lineWidth=8;
-
- px.strokeRect(
-  table.x,
-  table.y,
-  table.w,
-  table.h
- );
+}
 
 
- /* Lỗ */
+function restartPlatform(){
 
- pockets.forEach(([x,y])=>{
+    createLevel();
 
-  px.fillStyle="#050505";
+    resetPlayer();
 
-  px.beginPath();
+    coinScore=0;
+    playerLives=3;
+    platformRunning=true;
 
-  px.arc(
-   x,
-   y,
-   25,
-   0,
-   Math.PI*2
-  );
+    document
+        .getElementById("coinScore")
+        .textContent=0;
 
-  px.fill();
+    document
+        .getElementById("lives")
+        .textContent=3;
 
- });
+    lastTime=performance.now();
 
+    requestAnimationFrame(platformLoop);
 
- /* Bi */
-
- balls.forEach(drawBall);
+}
 
 
- /* Đường ngắm */
+/* ================= KEYBOARD ================= */
 
- if(
-  aiming&&
-  aimStart&&
-  mousePos&&
-  !poolRunning
- ){
+document.addEventListener("keydown",e=>{
 
-  const cue=getCueBall();
+    if(
+        e.key==="ArrowLeft"||
+        e.key==="a"||
+        e.key==="A"
+    )
+        platformKeys.left=true;
 
-  if(cue&&!cue.pocketed){
+    if(
+        e.key==="ArrowRight"||
+        e.key==="d"||
+        e.key==="D"
+    )
+        platformKeys.right=true;
 
-   let dx=
-    aimStart.x-
-    mousePos.x;
+    if(
+        e.key===" "||
+        e.key==="ArrowUp"||
+        e.key==="w"||
+        e.key==="W"
+    ){
 
-   let dy=
-    aimStart.y-
-    mousePos.y;
+        if(!e.repeat)
+            platformJump();
 
-   let len=
-    Math.hypot(dx,dy);
+        e.preventDefault();
 
-   if(len>1){
+    }
 
-    dx/=len;
-    dy/=len;
+});
 
-    px.strokeStyle=
-     "rgba(255,255,255,.7)";
+document.addEventListener("keyup",e=>{
 
-    px.lineWidth=2;
+    if(
+        e.key==="ArrowLeft"||
+        e.key==="a"||
+        e.key==="A"
+    )
+        platformKeys.left=false;
 
-    px.setLineDash([8,8]);
+    if(
+        e.key==="ArrowRight"||
+        e.key==="d"||
+        e.key==="D"
+    )
+        platformKeys.right=false;
 
-    px.beginPath();
+});
 
-    px.moveTo(
-     cue.x,
-     cue.y
+
+function platformJump(){
+
+    if(
+        platformRunning&&
+        player&&
+        player.grounded
+    ){
+
+        player.vy=player.jump;
+        player.grounded=false;
+
+    }
+
+}
+
+
+/* ================= COLLISION ================= */
+
+function overlap(a,b){
+
+    return(
+        a.x<b.x+b.w&&
+        a.x+a.w>b.x&&
+        a.y<b.y+b.h&&
+        a.y+a.h>b.y
     );
 
-    px.lineTo(
-     cue.x+dx*220,
-     cue.y+dy*220
-    );
-
-    px.stroke();
-
-    px.setLineDash([]);
-
-   }
-
-  }
-
- }
-
-}
-
-function drawBall(b){
-
- if(b.pocketed)return;
-
- /* bóng */
-
- px.fillStyle=b.color;
-
- px.beginPath();
-
- px.arc(
-  b.x,
-  b.y,
-  ballR,
-  0,
-  Math.PI*2
- );
-
- px.fill();
-
- px.strokeStyle="#222";
- px.lineWidth=1;
- px.stroke();
-
- /* Số */
-
- if(b.number!==0){
-
-  px.fillStyle="white";
-
-  px.beginPath();
-
-  px.arc(
-   b.x,
-   b.y,
-   6.5,
-   0,
-   Math.PI*2
-  );
-
-  px.fill();
-
-  px.fillStyle="#111";
-
-  px.font="bold 8px Arial";
-  px.textAlign="center";
-  px.textBaseline="middle";
-
-  px.fillText(
-   b.number,
-   b.x,
-   b.y
-  );
-
- }
-
- /* bóng cái chấm nhỏ */
-
- if(b.number===0){
-
-  px.fillStyle="#ddd";
-
-  px.beginPath();
-
-  px.arc(
-   b.x-3,
-   b.y-3,
-   2,
-   0,
-   Math.PI*2
-  );
-
-  px.fill();
-
- }
-
 }
 
 
-/* Lấy bi cái */
+/* ================= UPDATE ================= */
 
-function getCueBall(){
+function updatePlatform(){
 
- return balls.find(
-  b=>b.number===0
- );
+    if(!platformRunning)
+        return;
 
-}
 
+    /* Di chuyển */
 
-/* Tọa độ chuột */
+    player.vx=0;
 
-function getMouse(e){
+    if(platformKeys.left)
+        player.vx=-player.speed;
 
- const rect=
-  pc.getBoundingClientRect();
+    if(platformKeys.right)
+        player.vx=player.speed;
 
- return {
+    player.x+=player.vx;
 
-  x:(e.clientX-rect.left)*
-    (PW/rect.width),
 
-  y:(e.clientY-rect.top)*
-    (PH/rect.height)
+    /* Trọng lực */
 
- };
+    player.vy+=0.65;
 
-}
+    if(player.vy>15)
+        player.vy=15;
 
+    player.y+=player.vy;
 
-/* Bắt đầu ngắm */
+    player.grounded=false;
 
-pc.addEventListener(
- "pointerdown",
- e=>{
 
-  if(poolRunning)return;
+    /* Va chạm nền tảng */
 
-  const cue=getCueBall();
+    for(const p of platforms){
 
-  if(!cue||cue.pocketed)return;
+        if(
+            player.x<p.x+p.w&&
+            player.x+player.w>p.x&&
+            player.y+player.h>=p.y&&
+            player.y+player.h<=p.y+30&&
+            player.vy>=0
+        ){
 
-  aiming=true;
+            player.y=
+                p.y-player.h;
 
-  aimStart=getMouse(e);
+            player.vy=0;
+            player.grounded=true;
 
-  mousePos=aimStart;
+        }
 
-  pc.setPointerCapture(e.pointerId);
+    }
 
- }
-);
 
+    /* Rơi xuống */
 
-/* Kéo chọn lực */
+    if(player.y>700){
 
-pc.addEventListener(
- "pointermove",
- e=>{
+        loseLife();
 
-  if(!aiming)return;
+        return;
 
-  mousePos=getMouse(e);
+    }
 
-  const dx=
-   aimStart.x-mousePos.x;
 
-  const dy=
-   aimStart.y-mousePos.y;
+    /* Xu */
 
-  const distance=
-   Math.min(
-    180,
-    Math.hypot(dx,dy)
-   );
+    for(const c of coins){
 
-  document
-   .getElementById("powerFill")
-   .style.width=
-   (distance/180*100)+"%";
+        if(c.taken)
+            continue;
 
-  drawPool();
+        const coinBox={
+            x:c.x-12,
+            y:c.y-12,
+            w:24,
+            h:24
+        };
 
- }
-);
+        if(overlap(player,coinBox)){
 
+            c.taken=true;
 
-/* Thả chuột đánh */
+            coinScore++;
 
-pc.addEventListener(
- "pointerup",
- e=>{
+            document
+                .getElementById("coinScore")
+                .textContent=coinScore;
 
-  if(!aiming)return;
+        }
 
-  aiming=false;
+    }
 
-  mousePos=getMouse(e);
 
-  const cue=getCueBall();
+    /* Quái vật */
 
-  if(!cue||cue.pocketed)return;
+    for(const e of enemies){
 
-  let dx=
-   aimStart.x-
-   mousePos.x;
+        if(!e.alive)
+            continue;
 
-  let dy=
-   aimStart.y-
-   mousePos.y;
+        e.x+=e.vx;
 
-  let distance=
-   Math.hypot(dx,dy);
+        if(
+            e.x<e.min||
+            e.x>e.max
+        )
+            e.vx*=-1;
 
-  if(distance<8){
 
-   drawPool();
-   return;
+        if(overlap(player,e)){
 
-  }
+            /* Nhảy lên đầu quái */
 
-  distance=Math.min(
-   distance,
-   180
-  );
+            if(
+                player.vy>0&&
+                player.y+player.h-e.y<22
+            ){
 
-  let power=
-   distance/180;
+                e.alive=false;
+                player.vy=-9;
 
-  let len=
-   Math.hypot(dx,dy);
+            }else{
 
-  dx/=len;
-  dy/=len;
+                loseLife();
+                return;
 
-  cue.vx=
-   dx*
-   power*
-   13;
+            }
 
-  cue.vy=
-   dy*
-   power*
-   13;
+        }
 
-  poolRunning=true;
+    }
 
-  document
-   .getElementById("powerFill")
-   .style.width="0%";
 
-  animatePool();
+    /* Đích */
 
- }
-);
+    if(overlap(player,goal)){
 
+        winPlatform();
+        return;
 
-/* Vật lý */
+    }
 
-function animatePool(){
 
- if(!poolRunning)return;
+    /* Camera */
 
- let moving=false;
+    cameraX=
+        player.x-300;
 
- balls.forEach(b=>{
+    if(cameraX<0)
+        cameraX=0;
 
-  if(b.pocketed)return;
-
-  b.x+=b.vx;
-  b.y+=b.vy;
-
-  b.vx*=.985;
-  b.vy*=.985;
-
-  if(
-   Math.abs(b.vx)>.02||
-   Math.abs(b.vy)>.02
-  )
-   moving=true;
-
-  /* Thành ngang */
-
-  if(
-   b.y-ballR<table.y
-  ){
-
-   b.y=table.y+ballR;
-   b.vy=Math.abs(b.vy)*.85;
-
-  }
-
-  if(
-   b.y+ballR>
-   table.y+table.h
-  ){
-
-   b.y=
-    table.y+
-    table.h-
-    ballR;
-
-   b.vy=-Math.abs(b.vy)*.85;
-
-  }
-
-  /* Thành dọc */
-
-  if(
-   b.x-ballR<table.x
-  ){
-
-   b.x=table.x+ballR;
-   b.vx=Math.abs(b.vx)*.85;
-
-  }
-
-  if(
-   b.x+ballR>
-   table.x+table.w
-  ){
-
-   b.x=
-    table.x+
-    table.w-
-    ballR;
-
-   b.vx=-Math.abs(b.vx)*.85;
-
-  }
-
- });
-
-
- /* Va chạm bi */
-
- for(let i=0;i<balls.length;i++){
-
-  const a=balls[i];
-
-  if(a.pocketed)continue;
-
-  for(let j=i+1;j<balls.length;j++){
-
-   const b=balls[j];
-
-   if(b.pocketed)continue;
-
-   let dx=b.x-a.x;
-   let dy=b.y-a.y;
-
-   let dist=Math.hypot(dx,dy);
-   let minDist=ballR*2;
-
-   if(
-    dist>0&&
-    dist<minDist
-   ){
-
-    let nx=dx/dist;
-    let ny=dy/dist;
-
-    let overlap=
-     minDist-dist;
-
-    a.x-=nx*overlap/2;
-    a.y-=ny*overlap/2;
-
-    b.x+=nx*overlap/2;
-    b.y+=ny*overlap/2;
-
-    let rel=
-     (a.vx-b.vx)*nx+
-     (a.vy-b.vy)*ny;
-
-    if(rel>0)continue;
-
-    let impulse=rel;
-
-    a.vx-=impulse*nx;
-    a.vy-=impulse*ny;
-
-    b.vx+=impulse*nx;
-    b.vy+=impulse*ny;
-
-   }
-
-  }
-
- }
-
-
- /* Kiểm tra lỗ */
-
- balls.forEach(checkPocket);
-
-
- drawPool();
-
- if(moving){
-
-  animationId=
-   requestAnimationFrame(
-    animatePool
-   );
-
- }else{
-
-  poolRunning=false;
-
-  nextPoolTurn();
-
- }
+    if(cameraX>2000)
+        cameraX=2000;
 
 }
 
 
-/* Kiểm tra bi vào lỗ */
+/* ================= LIVES ================= */
 
-function checkPocket(b){
+function loseLife(){
 
- if(b.pocketed)return;
+    playerLives--;
 
- for(let [px0,py0] of pockets){
+    document
+        .getElementById("lives")
+        .textContent=playerLives;
 
-  let d=
-   Math.hypot(
-    b.x-px0,
-    b.y-py0
-   );
+    if(playerLives<=0){
 
-  if(d<27){
+        platformRunning=false;
 
-   b.pocketed=true;
+        setTimeout(()=>{
 
-   b.vx=0;
-   b.vy=0;
+            alert(
+                "💀 GAME OVER!\n\n"+
+                "Xu: "+coinScore
+            );
 
-   poolPotted++;
+        },50);
 
-   document
-    .getElementById("potted")
-    .textContent=
-    poolPotted;
+        return;
 
-   /* Bi cái */
+    }
 
-   if(b.number===0){
+    resetPlayer();
+
+}
+
+
+/* ================= WIN ================= */
+
+function winPlatform(){
+
+    platformRunning=false;
 
     setTimeout(()=>{
 
-     b.pocketed=false;
+        alert(
+            "🏆 BẠN ĐÃ VỀ ĐÍCH!\n\n"+
+            "Số xu: "+coinScore
+        );
 
-     b.x=
-      table.x+
-      table.w*.27;
-
-     b.y=
-      table.y+
-      table.h/2;
-
-    },100);
-
-   }
-
-   /* Bi 8 */
-
-   if(b.number===8){
-
-    setTimeout(()=>{
-
-     alert(
-      "🎱 Bạn đã đánh bi số 8 vào lỗ!"
-     );
-
-     newPoolGame();
-
-    },100);
-
-   }
-
-   break;
-
-  }
-
- }
+    },50);
 
 }
 
 
-/* Đổi lượt */
+/* ================= DRAW ================= */
 
-function nextPoolTurn(){
+function drawPlatform(){
 
- poolTurn=
-  poolTurn===1
-  ?2
-  :1;
+    /* Bầu trời */
 
- document
-  .getElementById("poolTurn")
-  .textContent=
-  "Người chơi "+
-  poolTurn;
+    const gradient=
+        g.createLinearGradient(
+            0,0,0,GH
+        );
 
- drawPool();
+    gradient.addColorStop(
+        0,
+        "#55c7ff"
+    );
+
+    gradient.addColorStop(
+        1,
+        "#d8f4ff"
+    );
+
+    g.fillStyle=gradient;
+
+    g.fillRect(
+        0,0,GW,GH
+    );
+
+
+    /* Mặt trời */
+
+    g.fillStyle="#ffd84a";
+
+    g.beginPath();
+
+    g.arc(
+        820,
+        90,
+        50,
+        0,
+        Math.PI*2
+    );
+
+    g.fill();
+
+
+    /* Núi */
+
+    g.fillStyle="#80a6c4";
+
+    for(let x=-200;x<1300;x+=260){
+
+        g.beginPath();
+
+        g.moveTo(
+            x-cameraX*.25,
+            400
+        );
+
+        g.lineTo(
+            x+130-cameraX*.25,
+            170
+        );
+
+        g.lineTo(
+            x+280-cameraX*.25,
+            400
+        );
+
+        g.fill();
+
+    }
+
+
+    /* Thế giới */
+
+    g.save();
+
+    g.translate(
+        -cameraX,
+        0
+    );
+
+
+    /* Platforms */
+
+    platforms.forEach(p=>{
+
+        g.fillStyle="#6b4025";
+
+        g.fillRect(
+            p.x,
+            p.y,
+            p.w,
+            p.h
+        );
+
+        g.fillStyle="#36a852";
+
+        g.fillRect(
+            p.x,
+            p.y,
+            p.w,
+            9
+        );
+
+    });
+
+
+    /* Xu */
+
+    coins.forEach(c=>{
+
+        if(c.taken)
+            return;
+
+        g.fillStyle="#ffd43b";
+
+        g.beginPath();
+
+        g.arc(
+            c.x,
+            c.y,
+            12,
+            0,
+            Math.PI*2
+        );
+
+        g.fill();
+
+        g.fillStyle="#fff1a3";
+
+        g.beginPath();
+
+        g.arc(
+            c.x-3,
+            c.y-3,
+            4,
+            0,
+            Math.PI*2
+        );
+
+        g.fill();
+
+    });
+
+
+    /* Quái */
+
+    enemies.forEach(e=>{
+
+        if(!e.alive)
+            return;
+
+        g.fillStyle="#e84343";
+
+        g.beginPath();
+
+        g.roundRect(
+            e.x,
+            e.y,
+            e.w,
+            e.h,
+            8
+        );
+
+        g.fill();
+
+        /* mắt */
+
+        g.fillStyle="white";
+
+        g.beginPath();
+
+        g.arc(
+            e.x+10,
+            e.y+11,
+            5,
+            0,
+            Math.PI*2
+        );
+
+        g.arc(
+            e.x+24,
+            e.y+11,
+            5,
+            0,
+            Math.PI*2
+        );
+
+        g.fill();
+
+        g.fillStyle="#222";
+
+        g.beginPath();
+
+        g.arc(
+            e.x+10,
+            e.y+11,
+            2,
+            0,
+            Math.PI*2
+        );
+
+        g.arc(
+            e.x+24,
+            e.y+11,
+            2,
+            0,
+            Math.PI*2
+        );
+
+        g.fill();
+
+    });
+
+
+    /* Cờ đích */
+
+    g.fillStyle="#333";
+
+    g.fillRect(
+        goal.x,
+        goal.y,
+        6,
+        goal.h
+    );
+
+    g.fillStyle="#ff3e5f";
+
+    g.beginPath();
+
+    g.moveTo(
+        goal.x+6,
+        goal.y
+    );
+
+    g.lineTo(
+        goal.x+48,
+        goal.y+20
+    );
+
+    g.lineTo(
+        goal.x+6,
+        goal.y+40
+    );
+
+    g.closePath();
+
+    g.fill();
+
+
+    /* Player */
+
+    g.fillStyle="#536dfe";
+
+    g.beginPath();
+
+    g.roundRect(
+        player.x,
+        player.y,
+        player.w,
+        player.h,
+        8
+    );
+
+    g.fill();
+
+
+    /* cabeça */
+
+    g.fillStyle="#ffd2a6";
+
+    g.beginPath();
+
+    g.arc(
+        player.x+17,
+        player.y+12,
+        11,
+        0,
+        Math.PI*2
+    );
+
+    g.fill();
+
+
+    /* mắt */
+
+    g.fillStyle="#222";
+
+    g.beginPath();
+
+    g.arc(
+        player.x+13,
+        player.y+10,
+        2,
+        0,
+        Math.PI*2
+    );
+
+    g.arc(
+        player.x+21,
+        player.y+10,
+        2,
+        0,
+        Math.PI*2
+    );
+
+    g.fill();
+
+
+    g.restore();
+
+
+    /* hướng dẫn */
+
+    if(
+        player.x<400
+    ){
+
+        g.fillStyle="rgba(0,0,0,.5)";
+
+        g.fillRect(
+            20,
+            20,
+            310,
+            55
+        );
+
+        g.fillStyle="white";
+
+        g.font="17px Arial";
+
+        g.fillText(
+            "A/D hoặc ←/→ để di chuyển",
+            35,
+            43
+        );
+
+        g.fillText(
+            "SPACE / ↑ để nhảy",
+            35,
+            65
+        );
+
+    }
 
 }
 
 
-/* Khởi tạo */
+/* ================= LOOP ================= */
+
+function platformLoop(time){
+
+    if(!platformRunning){
+
+        drawPlatform();
+        return;
+
+    }
+
+    updatePlatform();
+    drawPlatform();
+
+    requestAnimationFrame(
+        platformLoop
+    );
+
+}
+
+
+/* ================= START ================= */
 
 newChess();
 
@@ -2561,3 +2671,4 @@ newChess();
 
 </body>
 </html>
+```
