@@ -7,210 +7,646 @@
 
 <style>
 *{box-sizing:border-box}
-body{
- margin:0;min-height:100vh;font-family:Arial,sans-serif;color:white;
- background:radial-gradient(circle at top,#243b53,#0b1117 65%);
-}
-.screen{display:none;min-height:100vh;justify-content:center;align-items:center;padding:25px}
-.screen.active{display:flex}
-button{font:inherit;cursor:pointer}
 
-.menu{width:min(1000px,95vw);text-align:center}
+body{
+ margin:0;
+ min-height:100vh;
+ font-family:Arial,sans-serif;
+ color:white;
+ background:
+ radial-gradient(circle at top,#263c52,#0b1117 65%);
+}
+
+.screen{
+ display:none;
+ min-height:100vh;
+ justify-content:center;
+ align-items:center;
+ padding:25px;
+}
+
+.screen.active{display:flex}
+
+button{
+ font:inherit;
+ cursor:pointer;
+}
+
+.menu{
+ width:min(1100px,95vw);
+ text-align:center;
+}
+
 .logo{font-size:65px}
-h1{font-size:45px;margin:5px}
-.subtitle{color:#9daab6;margin:10px 0 40px}
-.games{display:grid;grid-template-columns:1fr 1fr;gap:25px}
+
+h1{
+ font-size:45px;
+ margin:5px;
+}
+
+.subtitle{
+ color:#9daab6;
+ margin:10px 0 40px;
+}
+
+.games{
+ display:grid;
+ grid-template-columns:repeat(3,1fr);
+ gap:20px;
+}
+
 .card{
- min-height:390px;padding:35px;border-radius:25px;
+ min-height:380px;
+ padding:30px 20px;
+ border-radius:25px;
  background:rgba(255,255,255,.07);
  border:1px solid rgba(255,255,255,.12);
- display:flex;flex-direction:column;align-items:center;justify-content:center;
- transition:.3s;backdrop-filter:blur(12px)
+ display:flex;
+ flex-direction:column;
+ align-items:center;
+ justify-content:center;
+ transition:.3s;
+ backdrop-filter:blur(12px);
 }
-.card:hover{transform:translateY(-8px);box-shadow:0 20px 50px #0008}
-.icon{font-size:110px}
-.card h2{font-size:30px;margin:10px}
-.card p{color:#aeb9c4}
+
+.card:hover{
+ transform:translateY(-8px);
+ box-shadow:0 20px 50px #0008;
+}
+
+.icon{font-size:100px}
+
+.card h2{
+ font-size:28px;
+ margin:10px;
+}
+
+.card p{
+ color:#aeb9c4;
+ min-height:45px;
+}
+
 .play{
- border:0;border-radius:12px;padding:14px 30px;
- color:white;background:#22c55e;font-weight:bold
+ border:0;
+ border-radius:12px;
+ padding:13px 25px;
+ color:white;
+ background:#22c55e;
+ font-weight:bold;
 }
-.play.chess{background:#c58a45}
-.play:hover{filter:brightness(1.15);transform:scale(1.04)}
 
-.game{flex-direction:column}
+.play:hover{
+ filter:brightness(1.15);
+ transform:scale(1.04);
+}
+
+.chess{background:#c58a45}
+.pool{background:#147b45}
+
+.game{
+ flex-direction:column;
+}
+
 .header{
- width:min(850px,95vw);display:flex;align-items:center;
- justify-content:space-between;margin-bottom:12px
+ width:min(950px,95vw);
+ display:flex;
+ align-items:center;
+ justify-content:space-between;
+ margin-bottom:12px;
 }
+
 .back{
- border:0;background:#273746;color:white;border-radius:10px;
- padding:10px 18px
+ border:0;
+ background:#273746;
+ color:white;
+ border-radius:10px;
+ padding:10px 18px;
 }
+
 .back:hover{background:#3b4d5e}
-.title{font-size:28px;margin:0}
 
-#snakeCanvas{
- width:min(600px,92vw);height:min(600px,92vw);
- background:#071016;border:3px solid #3be75f;border-radius:15px
+.title{
+ font-size:28px;
+ margin:0;
 }
-.snake-info{margin:5px;font-size:18px}
 
-.chess-wrap{display:flex;flex-direction:column;align-items:center}
-#status{font-size:18px;margin-bottom:12px}
+/* SNAKE */
+
+#snake{
+ width:min(600px,92vw);
+ height:min(600px,92vw);
+ background:#071016;
+ border:3px solid #3be75f;
+ border-radius:15px;
+}
+
+.snake-info{
+ margin:5px;
+ font-size:18px;
+}
+
+/* CHESS */
+
+.chess-wrap{
+ display:flex;
+ flex-direction:column;
+ align-items:center;
+}
+
+#status{
+ font-size:18px;
+ margin-bottom:12px;
+}
+
 #board{
- width:min(680px,94vw);height:min(680px,94vw);
- display:grid;grid-template-columns:repeat(8,1fr);
+ width:min(680px,94vw);
+ height:min(680px,94vw);
+ display:grid;
+ grid-template-columns:repeat(8,1fr);
  border:7px solid #4a3422;
- box-shadow:0 15px 45px #0009
+ box-shadow:0 15px 45px #0009;
 }
+
 .sq{
- display:flex;justify-content:center;align-items:center;
+ display:flex;
+ justify-content:center;
+ align-items:center;
  font-size:clamp(28px,8vw,68px);
- position:relative;user-select:none
+ position:relative;
+ user-select:none;
 }
+
 .light{background:#f0d9b5}
 .dark{background:#b58863}
-.selected{box-shadow:inset 0 0 0 5px #38ff62}
+
+.selected{
+ box-shadow:inset 0 0 0 5px #38ff62;
+}
+
 .legal::after{
- content:"";width:22%;height:22%;border-radius:50%;
- background:#0005;position:absolute
+ content:"";
+ width:22%;
+ height:22%;
+ border-radius:50%;
+ background:#0005;
+ position:absolute;
 }
+
 .capture::after{
- content:"";position:absolute;inset:5px;
- border:5px solid #ef4444;border-radius:50%
+ content:"";
+ position:absolute;
+ inset:5px;
+ border:5px solid #ef4444;
+ border-radius:50%;
 }
-.controls{margin-top:15px}
+
 .small-btn{
- padding:9px 15px;border:0;border-radius:9px;
- background:#34495e;color:white
+ padding:9px 15px;
+ border:0;
+ border-radius:9px;
+ background:#34495e;
+ color:white;
 }
+
+/* PROMOTION */
 
 .promotion{
- position:fixed;inset:0;background:#000b;
- display:none;align-items:center;justify-content:center;z-index:10
-}
-.promotion-box{
- background:#18232e;padding:25px;border-radius:18px;text-align:center
-}
-.promotion button{
- font-size:45px;margin:5px;width:65px;height:65px;
- border:0;border-radius:10px;background:#eee
+ position:fixed;
+ inset:0;
+ background:#000b;
+ display:none;
+ align-items:center;
+ justify-content:center;
+ z-index:10;
 }
 
-@media(max-width:700px){
- .games{grid-template-columns:1fr}
- .card{min-height:300px}
- .icon{font-size:80px}
- h1{font-size:34px}
+.promotion-box{
+ background:#18232e;
+ padding:25px;
+ border-radius:18px;
+ text-align:center;
+}
+
+.promotion button{
+ font-size:45px;
+ margin:5px;
+ width:65px;
+ height:65px;
+ border:0;
+ border-radius:10px;
+ background:#eee;
+}
+
+/* ================= BIDA ================= */
+
+.pool-wrap{
+ display:flex;
+ flex-direction:column;
+ align-items:center;
+ width:100%;
+}
+
+.pool-info{
+ display:flex;
+ justify-content:space-between;
+ width:min(1000px,95vw);
+ margin-bottom:10px;
+ font-size:17px;
+}
+
+#poolCanvas{
+ width:min(1000px,95vw);
+ height:auto;
+ display:block;
+ border-radius:18px;
+ box-shadow:
+  0 15px 50px #000b,
+  0 0 0 6px #3d2414;
+ background:#08783f;
+ touch-action:none;
+}
+
+.pool-help{
+ color:#aeb9c4;
+ margin-top:12px;
+ text-align:center;
+}
+
+.pool-buttons{
+ margin-top:12px;
+ display:flex;
+ gap:10px;
+}
+
+.power-bar{
+ width:min(400px,80vw);
+ height:12px;
+ border-radius:20px;
+ background:#263441;
+ overflow:hidden;
+ margin-top:10px;
+}
+
+#powerFill{
+ width:0%;
+ height:100%;
+ background:#e8b84a;
+}
+    
+@media(max-width:850px){
+ .games{
+  grid-template-columns:1fr;
+ }
+
+ .card{
+  min-height:280px;
+ }
+
+ .icon{
+  font-size:75px;
+ }
+
+ h1{
+  font-size:34px;
+ }
 }
 </style>
 </head>
 
 <body>
 
-<!-- MENU -->
+<!-- ================= MENU ================= -->
+
 <section id="menu" class="screen active">
+
 <div class="menu">
+
  <div class="logo">🎮</div>
+
  <h1>GAME CENTER</h1>
- <div class="subtitle">Chọn trò chơi bạn muốn chơi</div>
+
+ <div class="subtitle">
+  Chọn trò chơi bạn muốn chơi
+ </div>
 
  <div class="games">
-  <div class="card">
-   <div class="icon">🐍</div>
-   <h2>Rắn săn mồi</h2>
-   <p>Ăn mồi, lớn lên và phá kỷ lục.</p>
-   <button class="play" onclick="openSnake()">🐍 Chơi Rắn</button>
-  </div>
+
+  <!-- RẮN -->
 
   <div class="card">
-   <div class="icon">♟️</div>
-   <h2>Cờ vua</h2>
-   <p>Đấu cờ vua 2 người với luật cơ bản đầy đủ.</p>
-   <button class="play chess" onclick="openChess()">♟️ Chơi Cờ vua</button>
+
+   <div class="icon">🐍</div>
+
+   <h2>Rắn săn mồi</h2>
+
+   <p>
+    Ăn mồi, lớn lên và phá kỷ lục.
+   </p>
+
+   <button class="play"
+    onclick="openSnake()">
+    🐍 Chơi Rắn
+   </button>
+
   </div>
+
+
+  <!-- CỜ -->
+
+  <div class="card">
+
+   <div class="icon">♟️</div>
+
+   <h2>Cờ vua</h2>
+
+   <p>
+    Đấu cờ vua 2 người.
+   </p>
+
+   <button class="play chess"
+    onclick="openChess()">
+    ♟️ Chơi Cờ vua
+   </button>
+
+  </div>
+
+
+  <!-- BIDA -->
+
+  <div class="card">
+
+   <div class="icon">🎱</div>
+
+   <h2>Bida 8 Ball</h2>
+
+   <p>
+    Ngắm, kéo lực và đánh bi vào lỗ.
+   </p>
+
+   <button class="play pool"
+    onclick="openPool()">
+    🎱 Chơi Bida
+   </button>
+
+  </div>
+
  </div>
 </div>
+
 </section>
 
-<!-- SNAKE -->
+
+<!-- ================= SNAKE ================= -->
+
 <section id="snakeScreen" class="screen game">
+
  <div class="header">
-  <button class="back" onclick="backMenu()">← Quay lại</button>
-  <h2 class="title">🐍 Rắn săn mồi</h2>
+
+  <button class="back"
+   onclick="backMenu()">
+   ← Quay lại
+  </button>
+
+  <h2 class="title">
+   🐍 Rắn săn mồi
+  </h2>
+
   <span></span>
+
  </div>
 
  <div class="snake-info">
-  Điểm: <b id="score">0</b> |
-  Kỷ lục: <b id="high">0</b>
+
+  Điểm:
+  <b id="score">0</b>
+
+  |
+
+  Kỷ lục:
+  <b id="high">0</b>
+
  </div>
 
- <canvas id="snake" width="600" height="600"></canvas>
+ <canvas
+  id="snake"
+  width="600"
+  height="600">
+ </canvas>
 
  <div style="margin-top:12px">
-  <button class="small-btn" onclick="restartSnake()">🔄 Chơi lại</button>
+
+  <button
+   class="small-btn"
+   onclick="restartSnake()">
+   🔄 Chơi lại
+  </button>
+
  </div>
+
 </section>
 
-<!-- CHESS -->
+
+<!-- ================= CHESS ================= -->
+
 <section id="chessScreen" class="screen game">
+
  <div class="header">
-  <button class="back" onclick="backMenu()">← Quay lại</button>
-  <h2 class="title">♟️ Cờ vua</h2>
+
+  <button class="back"
+   onclick="backMenu()">
+   ← Quay lại
+  </button>
+
+  <h2 class="title">
+   ♟️ Cờ vua
+  </h2>
+
   <span></span>
+
  </div>
 
  <div class="chess-wrap">
-  <div id="status">Lượt của Trắng</div>
-  <div id="board"></div>
-  <div class="controls">
-   <button class="small-btn" onclick="newChess()">🔄 Ván mới</button>
+
+  <div id="status">
+   Lượt của Trắng
   </div>
+
+  <div id="board"></div>
+
+  <div style="margin-top:15px">
+
+   <button
+    class="small-btn"
+    onclick="newChess()">
+    🔄 Ván mới
+   </button>
+
+  </div>
+
  </div>
+
 </section>
 
-<!-- PHONG CẤP -->
-<div id="promotion" class="promotion">
- <div class="promotion-box">
-  <h2>Chọn quân phong cấp</h2>
-  <div id="promotionButtons"></div>
+
+<!-- ================= BIDA ================= -->
+
+<section id="poolScreen" class="screen game">
+
+ <div class="header">
+
+  <button class="back"
+   onclick="backMenu()">
+   ← Quay lại
+  </button>
+
+  <h2 class="title">
+   🎱 Bida 8 Ball
+  </h2>
+
+  <span></span>
+
  </div>
+
+
+ <div class="pool-wrap">
+
+  <div class="pool-info">
+
+   <span>
+    Lượt:
+    <b id="poolTurn">Người chơi 1</b>
+   </span>
+
+   <span>
+    Bi đã vào:
+    <b id="potted">0</b>
+   </span>
+
+  </div>
+
+
+  <canvas
+   id="poolCanvas"
+   width="1000"
+   height="560">
+  </canvas>
+
+
+  <div class="power-bar">
+   <div id="powerFill"></div>
+  </div>
+
+
+  <div class="pool-help">
+   Kéo chuột từ bi cái ngược hướng muốn đánh
+   để chọn hướng và lực, sau đó thả chuột.
+  </div>
+
+
+  <div class="pool-buttons">
+
+   <button
+    class="small-btn"
+    onclick="newPoolGame()">
+    🔄 Ván mới
+   </button>
+
+  </div>
+
+ </div>
+
+</section>
+
+
+<!-- PHONG CẤP CỜ -->
+
+<div id="promotion" class="promotion">
+
+ <div class="promotion-box">
+
+  <h2>
+   Chọn quân phong cấp
+  </h2>
+
+  <div id="promotionButtons"></div>
+
+ </div>
+
 </div>
 
+
 <script>
-/* =========================
+
+/* =====================================================
    CHUYỂN MÀN HÌNH
-========================= */
+===================================================== */
+
 function hideScreens(){
- document.querySelectorAll(".screen").forEach(x=>x.classList.remove("active"));
+
+ document
+  .querySelectorAll(".screen")
+  .forEach(x=>x.classList.remove("active"));
+
 }
 
 function openSnake(){
+
  hideScreens();
- document.getElementById("snakeScreen").classList.add("active");
+
+ document
+  .getElementById("snakeScreen")
+  .classList.add("active");
+
  restartSnake();
+
 }
 
 function openChess(){
+
  hideScreens();
- document.getElementById("chessScreen").classList.add("active");
+
+ document
+  .getElementById("chessScreen")
+  .classList.add("active");
+
  newChess();
+
+}
+
+function openPool(){
+
+ hideScreens();
+
+ document
+  .getElementById("poolScreen")
+  .classList.add("active");
+
+ newPoolGame();
+
 }
 
 function backMenu(){
+
  clearInterval(snakeTimer);
+
+ poolRunning=false;
+
  hideScreens();
- document.getElementById("menu").classList.add("active");
+
+ document
+  .getElementById("menu")
+  .classList.add("active");
+
 }
 
 
-/* =========================
+/* =====================================================
    SNAKE
-========================= */
+===================================================== */
+
 const sc=document.getElementById("snake");
 const sx=sc.getContext("2d");
+
 const N=30;
 const TILE=20;
 
@@ -222,10 +658,13 @@ let snakeScore=0;
 let snakeTimer=null;
 let snakeDead=false;
 
-let high=Number(localStorage.getItem("snakeHigh")||0);
+let high=
+ Number(localStorage.getItem("snakeHigh")||0);
+
 document.getElementById("high").textContent=high;
 
 function restartSnake(){
+
  clearInterval(snakeTimer);
 
  snake=[
@@ -239,44 +678,90 @@ function restartSnake(){
  snakeScore=0;
  snakeDead=false;
 
- document.getElementById("score").textContent=0;
+ document
+  .getElementById("score")
+  .textContent=0;
+
  makeFood();
+
  drawSnake();
 
- snakeTimer=setInterval(updateSnake,100);
+ snakeTimer=setInterval(
+  updateSnake,
+  100
+ );
+
 }
 
 function makeFood(){
+
  do{
+
   food={
    x:Math.floor(Math.random()*N),
    y:Math.floor(Math.random()*N)
   };
- }while(snake.some(p=>p.x===food.x&&p.y===food.y));
+
+ }while(
+  snake.some(
+   p=>p.x===food.x&&p.y===food.y
+  )
+ );
+
 }
 
 function setDir(d){
- const opp={up:"down",down:"up",left:"right",right:"left"};
- if(opp[d]!==dir) nextDir=d;
+
+ const opp={
+  up:"down",
+  down:"up",
+  left:"right",
+  right:"left"
+ };
+
+ if(opp[d]!==dir)
+  nextDir=d;
+
 }
 
 document.addEventListener("keydown",e=>{
+
  const k={
-  ArrowUp:"up",w:"up",W:"up",
-  ArrowDown:"down",s:"down",S:"down",
-  ArrowLeft:"left",a:"left",A:"left",
-  ArrowRight:"right",d:"right",D:"right"
+
+  ArrowUp:"up",
+  w:"up",
+  W:"up",
+
+  ArrowDown:"down",
+  s:"down",
+  S:"down",
+
+  ArrowLeft:"left",
+  a:"left",
+  A:"left",
+
+  ArrowRight:"right",
+  d:"right",
+  D:"right"
+
  };
+
  if(k[e.key]){
+
   e.preventDefault();
+
   setDir(k[e.key]);
+
  }
+
 });
 
 function updateSnake(){
+
  if(snakeDead)return;
 
  dir=nextDir;
+
  let h={...snake[0]};
 
  if(dir==="up")h.y--;
@@ -284,89 +769,186 @@ function updateSnake(){
  if(dir==="left")h.x--;
  if(dir==="right")h.x++;
 
- if(h.x<0||h.x>=N||h.y<0||h.y>=N){
-  endSnake();return;
+ if(
+  h.x<0||
+  h.x>=N||
+  h.y<0||
+  h.y>=N
+ ){
+
+  endSnake();
+
+  return;
+
  }
 
- let ate=h.x===food.x&&h.y===food.y;
+ let ate=
+  h.x===food.x&&
+  h.y===food.y;
 
- let body=ate?snake:snake.slice(0,-1);
+ let body=
+  ate
+  ?snake
+  :snake.slice(0,-1);
 
- if(body.some(p=>p.x===h.x&&p.y===h.y)){
-  endSnake();return;
+ if(
+  body.some(
+   p=>p.x===h.x&&p.y===h.y
+  )
+ ){
+
+  endSnake();
+
+  return;
+
  }
 
  snake.unshift(h);
 
  if(ate){
+
   snakeScore++;
-  document.getElementById("score").textContent=snakeScore;
+
+  document
+   .getElementById("score")
+   .textContent=snakeScore;
 
   if(snakeScore>high){
+
    high=snakeScore;
-   localStorage.setItem("snakeHigh",high);
-   document.getElementById("high").textContent=high;
+
+   localStorage.setItem(
+    "snakeHigh",
+    high
+   );
+
+   document
+    .getElementById("high")
+    .textContent=high;
+
   }
 
   makeFood();
- }else snake.pop();
+
+ }else{
+
+  snake.pop();
+
+ }
 
  drawSnake();
+
 }
 
 function drawSnake(){
- sx.fillStyle="#071016";
- sx.fillRect(0,0,600,600);
 
- sx.strokeStyle="rgba(255,255,255,.035)";
+ sx.fillStyle="#071016";
+
+ sx.fillRect(
+  0,0,600,600
+ );
+
+ sx.strokeStyle=
+  "rgba(255,255,255,.035)";
+
  for(let i=0;i<=N;i++){
+
   sx.beginPath();
+
   sx.moveTo(i*TILE,0);
   sx.lineTo(i*TILE,600);
+
   sx.stroke();
 
   sx.beginPath();
+
   sx.moveTo(0,i*TILE);
   sx.lineTo(600,i*TILE);
+
   sx.stroke();
+
  }
 
  sx.fillStyle="#ff4057";
+
  sx.beginPath();
- sx.arc(food.x*TILE+10,food.y*TILE+10,7,0,Math.PI*2);
+
+ sx.arc(
+  food.x*TILE+10,
+  food.y*TILE+10,
+  7,
+  0,
+  Math.PI*2
+ );
+
  sx.fill();
 
  snake.forEach((p,i)=>{
-  sx.fillStyle=i===0?"#7cff91":"#25d94d";
+
+  sx.fillStyle=
+   i===0
+   ?"#7cff91"
+   :"#25d94d";
+
   sx.beginPath();
-  sx.roundRect(p.x*TILE+2,p.y*TILE+2,16,16,5);
+
+  sx.roundRect(
+   p.x*TILE+2,
+   p.y*TILE+2,
+   16,
+   16,
+   5
+  );
+
   sx.fill();
+
  });
+
 }
 
 function endSnake(){
+
  snakeDead=true;
+
  clearInterval(snakeTimer);
 
  sx.fillStyle="#0009";
- sx.fillRect(0,0,600,600);
+
+ sx.fillRect(
+  0,0,600,600
+ );
 
  sx.fillStyle="white";
  sx.textAlign="center";
+
  sx.font="bold 48px Arial";
- sx.fillText("GAME OVER",300,280);
+
+ sx.fillText(
+  "GAME OVER",
+  300,
+  280
+ );
+
  sx.font="24px Arial";
- sx.fillText("Điểm: "+snakeScore,300,325);
+
+ sx.fillText(
+  "Điểm: "+snakeScore,
+  300,
+  325
+ );
+
 }
 
 
-/* =========================
-   CHESS ENGINE
-========================= */
+/* =====================================================
+   CHESS
+===================================================== */
 
 const PIECES={
+
  r:"♜",n:"♞",b:"♝",q:"♛",k:"♚",p:"♟",
  R:"♖",N:"♘",B:"♗",Q:"♕",K:"♔",P:"♙"
+
 };
 
 let board=[];
@@ -382,7 +964,9 @@ let gameFinished=false;
 let pendingPromotion=null;
 
 function newChess(){
+
  board=[
+
   ["r","n","b","q","k","b","n","r"],
   ["p","p","p","p","p","p","p","p"],
   ["","","","","","","",""],
@@ -391,6 +975,7 @@ function newChess(){
   ["","","","","","","",""],
   ["P","P","P","P","P","P","P","P"],
   ["R","N","B","Q","K","B","N","R"]
+
  ];
 
  turn="w";
@@ -408,472 +993,1571 @@ function newChess(){
 
  renderChess();
  updateStatus();
+
 }
 
 function color(p){
+
  if(!p)return null;
- return p===p.toUpperCase()?"w":"b";
+
+ return p===p.toUpperCase()
+  ?"w"
+  :"b";
+
 }
 
 function inside(r,c){
+
  return r>=0&&r<8&&c>=0&&c<8;
+
 }
 
 function opposite(c){
+
  return c==="w"?"b":"w";
+
 }
 
 function cloneBoard(b){
- return b.map(row=>row.slice());
+
+ return b.map(
+  row=>row.slice()
+ );
+
 }
 
 function findKing(b,col){
+
  for(let r=0;r<8;r++)
   for(let c=0;c<8;c++)
-   if(b[r][c]===(col==="w"?"K":"k"))
+   if(
+    b[r][c]===(col==="w"?"K":"k")
+   )
     return [r,c];
 
  return null;
+
 }
 
 function attacked(b,r,c,by){
 
- /* Tốt */
  let pr=by==="w"?r+1:r-1;
 
  for(let dc of [-1,1]){
+
   let pc=c+dc;
-  if(inside(pr,pc)){
-   if(b[pr][pc]===(by==="w"?"P":"p"))return true;
-  }
+
+  if(
+   inside(pr,pc)&&
+   b[pr][pc]===(by==="w"?"P":"p")
+  )
+   return true;
+
  }
 
- /* Mã */
  const knight=[
-  [-2,-1],[-2,1],[-1,-2],[-1,2],
-  [1,-2],[1,2],[2,-1],[2,1]
+
+  [-2,-1],[-2,1],
+  [-1,-2],[-1,2],
+  [1,-2],[1,2],
+  [2,-1],[2,1]
+
  ];
 
  for(let [dr,dc] of knight){
-  let rr=r+dr,cc=c+dc;
-  if(inside(rr,cc)&&b[rr][cc]===(by==="w"?"N":"n"))
+
+  let rr=r+dr;
+  let cc=c+dc;
+
+  if(
+   inside(rr,cc)&&
+   b[rr][cc]===(by==="w"?"N":"n")
+  )
    return true;
+
  }
 
- /* Vua */
  for(let dr=-1;dr<=1;dr++)
   for(let dc=-1;dc<=1;dc++){
+
    if(!dr&&!dc)continue;
-   let rr=r+dr,cc=c+dc;
-   if(inside(rr,cc)&&b[rr][cc]===(by==="w"?"K":"k"))
+
+   let rr=r+dr;
+   let cc=c+dc;
+
+   if(
+    inside(rr,cc)&&
+    b[rr][cc]===(by==="w"?"K":"k")
+   )
     return true;
+
   }
 
- /* Xe + Hậu */
  const straight=[
   [1,0],[-1,0],[0,1],[0,-1]
  ];
 
  for(let [dr,dc] of straight){
-  let rr=r+dr,cc=c+dc;
+
+  let rr=r+dr;
+  let cc=c+dc;
 
   while(inside(rr,cc)){
+
    let p=b[rr][cc];
 
    if(p){
+
     if(
      p===(by==="w"?"R":"r")||
      p===(by==="w"?"Q":"q")
-    )return true;
+    )
+     return true;
+
     break;
+
    }
 
-   rr+=dr;cc+=dc;
+   rr+=dr;
+   cc+=dc;
+
   }
+
  }
 
- /* Tượng + Hậu */
  const diagonal=[
-  [1,1],[1,-1],[-1,1],[-1,-1]
+  [1,1],[1,-1],
+  [-1,1],[-1,-1]
  ];
 
  for(let [dr,dc] of diagonal){
-  let rr=r+dr,cc=c+dc;
+
+  let rr=r+dr;
+  let cc=c+dc;
 
   while(inside(rr,cc)){
+
    let p=b[rr][cc];
 
    if(p){
+
     if(
      p===(by==="w"?"B":"b")||
      p===(by==="w"?"Q":"q")
-    )return true;
+    )
+     return true;
+
     break;
+
    }
 
-   rr+=dr;cc+=dc;
+   rr+=dr;
+   cc+=dc;
+
   }
+
  }
 
  return false;
+
 }
 
 function inCheck(b,col){
+
  let k=findKing(b,col);
+
  if(!k)return true;
- return attacked(b,k[0],k[1],opposite(col));
+
+ return attacked(
+  b,
+  k[0],
+  k[1],
+  opposite(col)
+ );
+
 }
 
 function pseudoMoves(b,r,c){
+
  const p=b[r][c];
- if(!p)return [];
+
+ if(!p)return[];
 
  const col=color(p);
  const type=p.toLowerCase();
  const out=[];
 
  const add=(rr,cc)=>{
-  if(!inside(rr,cc))return false;
+
+  if(!inside(rr,cc))
+   return false;
+
   if(!b[rr][cc]){
+
    out.push([rr,cc]);
+
    return true;
+
   }
 
   if(color(b[rr][cc])!==col)
    out.push([rr,cc]);
 
   return false;
+
  };
 
  if(type==="p"){
+
   let d=col==="w"?-1:1;
   let start=col==="w"?6:1;
 
-  if(inside(r+d,c)&&!b[r+d][c]){
+  if(
+   inside(r+d,c)&&
+   !b[r+d][c]
+  ){
+
    out.push([r+d,c]);
 
-   if(r===start&&!b[r+2*d][c])
+   if(
+    r===start&&
+    !b[r+2*d][c]
+   )
     out.push([r+2*d,c]);
+
   }
 
   for(let dc of [-1,1]){
-   let rr=r+d,cc=c+dc;
-   if(!inside(rr,cc))continue;
 
-   if(b[rr][cc]&&color(b[rr][cc])!==col)
+   let rr=r+d;
+   let cc=c+dc;
+
+   if(!inside(rr,cc))
+    continue;
+
+   if(
+    b[rr][cc]&&
+    color(b[rr][cc])!==col
+   )
     out.push([rr,cc]);
 
    if(
-    enPassant &&
-    enPassant[0]===rr &&
+    enPassant&&
+    enPassant[0]===rr&&
     enPassant[1]===cc
-   )out.push([rr,cc]);
+   )
+    out.push([rr,cc]);
+
   }
+
  }
 
  if(type==="n"){
+
   [
-   [-2,-1],[-2,1],[-1,-2],[-1,2],
-   [1,-2],[1,2],[2,-1],[2,1]
-  ].forEach(([dr,dc])=>add(r+dr,c+dc));
+
+   [-2,-1],[-2,1],
+   [-1,-2],[-1,2],
+   [1,-2],[1,2],
+   [2,-1],[2,1]
+
+  ].forEach(
+   ([dr,dc])=>add(r+dr,c+dc)
+  );
+
  }
 
  if(type==="k"){
+
   for(let dr=-1;dr<=1;dr++)
    for(let dc=-1;dc<=1;dc++)
-    if(dr||dc)add(r+dr,c+dc);
+    if(dr||dc)
+     add(r+dr,c+dc);
 
-  /* Nhập thành */
-  if(col==="w"&&r===7&&c===4&&!inCheck(b,"w")){
+  if(
+   col==="w"&&
+   r===7&&c===4&&
+   !inCheck(b,"w")
+  ){
+
    if(
-    castle.wK&&b[7][5]===""&&b[7][6]===""&&
+    castle.wK&&
+    b[7][5]===""&&
+    b[7][6]===""&&
     b[7][7]==="R"&&
-    !attacked(b,7,5,"b")&&!attacked(b,7,6,"b")
-   )out.push([7,6]);
+    !attacked(b,7,5,"b")&&
+    !attacked(b,7,6,"b")
+   )
+    out.push([7,6]);
 
    if(
-    castle.wQ&&b[7][1]===""&&b[7][2]===""&&b[7][3]===""&&
+    castle.wQ&&
+    b[7][1]===""&&
+    b[7][2]===""&&
+    b[7][3]===""&&
     b[7][0]==="R"&&
-    !attacked(b,7,3,"b")&&!attacked(b,7,2,"b")
-   )out.push([7,2]);
+    !attacked(b,7,3,"b")&&
+    !attacked(b,7,2,"b")
+   )
+    out.push([7,2]);
+
   }
 
-  if(col==="b"&&r===0&&c===4&&!inCheck(b,"b")){
+  if(
+   col==="b"&&
+   r===0&&c===4&&
+   !inCheck(b,"b")
+  ){
+
    if(
-    castle.bK&&b[0][5]===""&&b[0][6]===""&&
+    castle.bK&&
+    b[0][5]===""&&
+    b[0][6]===""&&
     b[0][7]==="r"&&
-    !attacked(b,0,5,"w")&&!attacked(b,0,6,"w")
-   )out.push([0,6]);
+    !attacked(b,0,5,"w")&&
+    !attacked(b,0,6,"w")
+   )
+    out.push([0,6]);
 
    if(
-    castle.bQ&&b[0][1]===""&&b[0][2]===""&&b[0][3]===""&&
+    castle.bQ&&
+    b[0][1]===""&&
+    b[0][2]===""&&
+    b[0][3]===""&&
     b[0][0]==="r"&&
-    !attacked(b,0,3,"w")&&!attacked(b,0,2,"w")
-   )out.push([0,2]);
+    !attacked(b,0,3,"w")&&
+    !attacked(b,0,2,"w")
+   )
+    out.push([0,2]);
+
   }
+
  }
 
  if(type==="r"||type==="q"){
-  for(let [dr,dc] of [[1,0],[-1,0],[0,1],[0,-1]]){
-   let rr=r+dr,cc=c+dc;
+
+  for(let [dr,dc] of [
+
+   [1,0],[-1,0],
+   [0,1],[0,-1]
+
+  ]){
+
+   let rr=r+dr;
+   let cc=c+dc;
+
    while(add(rr,cc)){
-    rr+=dr;cc+=dc;
+
+    rr+=dr;
+    cc+=dc;
+
    }
+
   }
+
  }
 
  if(type==="b"||type==="q"){
-  for(let [dr,dc] of [[1,1],[1,-1],[-1,1],[-1,-1]]){
-   let rr=r+dr,cc=c+dc;
+
+  for(let [dr,dc] of [
+
+   [1,1],[1,-1],
+   [-1,1],[-1,-1]
+
+  ]){
+
+   let rr=r+dr;
+   let cc=c+dc;
+
    while(add(rr,cc)){
-    rr+=dr;cc+=dc;
+
+    rr+=dr;
+    cc+=dc;
+
    }
+
   }
+
  }
 
  return out;
+
 }
 
 function makeMove(b,from,to){
+
  const nb=cloneBoard(b);
+
  const p=nb[from[0]][from[1]];
- const col=color(p);
  const type=p.toLowerCase();
 
  nb[to[0]][to[1]]=p;
  nb[from[0]][from[1]]="";
 
- /* Bắt tốt qua đường */
  if(
-  type==="p" &&
-  from[1]!==to[1] &&
+  type==="p"&&
+  from[1]!==to[1]&&
   !b[to[0]][to[1]]
- ){
+ )
   nb[from[0]][to[1]]="";
- }
 
- /* Nhập thành */
- if(type==="k"&&Math.abs(to[1]-from[1])===2){
+ if(
+  type==="k"&&
+  Math.abs(to[1]-from[1])===2
+ ){
+
   if(to[1]===6){
+
    nb[to[0]][5]=nb[to[0]][7];
    nb[to[0]][7]="";
+
   }else{
+
    nb[to[0]][3]=nb[to[0]][0];
    nb[to[0]][0]="";
+
   }
+
  }
 
  return nb;
+
 }
 
 function legalFor(b,r,c){
+
  const p=b[r][c];
- if(!p)return [];
+
+ if(!p)return[];
 
  const col=color(p);
- let moves=pseudoMoves(b,r,c);
 
- return moves.filter(to=>{
-  const nb=makeMove(b,[r,c],to);
-  return !inCheck(nb,col);
- });
+ return pseudoMoves(b,r,c)
+  .filter(to=>{
+
+   const nb=makeMove(
+    b,
+    [r,c],
+    to
+   );
+
+   return !inCheck(nb,col);
+
+  });
+
 }
 
 function allLegal(b,col){
+
  const arr=[];
 
  for(let r=0;r<8;r++)
   for(let c=0;c<8;c++)
+
    if(color(b[r][c])===col)
+
     for(let m of legalFor(b,r,c))
-     arr.push({from:[r,c],to:m});
+
+     arr.push({
+      from:[r,c],
+      to:m
+     });
 
  return arr;
+
 }
 
 function updateCastling(from,to,p){
- if(p==="K"){castle.wK=false;castle.wQ=false}
- if(p==="k"){castle.bK=false;castle.bQ=false}
+
+ if(p==="K"){
+  castle.wK=false;
+  castle.wQ=false;
+ }
+
+ if(p==="k"){
+  castle.bK=false;
+  castle.bQ=false;
+ }
 
  if(p==="R"){
-  if(from[0]===7&&from[1]===0)castle.wQ=false;
-  if(from[0]===7&&from[1]===7)castle.wK=false;
+
+  if(from[0]===7&&from[1]===0)
+   castle.wQ=false;
+
+  if(from[0]===7&&from[1]===7)
+   castle.wK=false;
+
  }
 
  if(p==="r"){
-  if(from[0]===0&&from[1]===0)castle.bQ=false;
-  if(from[0]===0&&from[1]===7)castle.bK=false;
+
+  if(from[0]===0&&from[1]===0)
+   castle.bQ=false;
+
+  if(from[0]===0&&from[1]===7)
+   castle.bK=false;
+
  }
 
- /* Ăn xe ở vị trí ban đầu */
- if(to[0]===7&&to[1]===0)castle.wQ=false;
- if(to[0]===7&&to[1]===7)castle.wK=false;
- if(to[0]===0&&to[1]===0)castle.bQ=false;
- if(to[0]===0&&to[1]===7)castle.bK=false;
+ if(to[0]===7&&to[1]===0)
+  castle.wQ=false;
+
+ if(to[0]===7&&to[1]===7)
+  castle.wK=false;
+
+ if(to[0]===0&&to[1]===0)
+  castle.bQ=false;
+
+ if(to[0]===0&&to[1]===7)
+  castle.bK=false;
+
 }
 
 function playMove(from,to){
+
  const p=board[from[0]][from[1]];
 
- updateCastling(from,to,p);
+ updateCastling(
+  from,
+  to,
+  p
+ );
 
- const wasPawn=p.toLowerCase()==="p";
- const oldEn=enPassant;
+ board=makeMove(
+  board,
+  from,
+  to
+ );
 
- board=makeMove(board,from,to);
-
- /* En passant mới */
  enPassant=null;
 
- if(wasPawn&&Math.abs(to[0]-from[0])===2){
+ if(
+  p.toLowerCase()==="p"&&
+  Math.abs(to[0]-from[0])===2
+ )
   enPassant=[
    (from[0]+to[0])/2,
    from[1]
   ];
- }
 
- /* Phong cấp */
  if(
-  wasPawn &&
+  p.toLowerCase()==="p"&&
   (to[0]===0||to[0]===7)
  ){
-  pendingPromotion={r:to[0],c:to[1],color:color(p)};
+
+  pendingPromotion={
+   r:to[0],
+   c:to[1],
+   color:color(p)
+  };
+
   showPromotion(color(p));
+
   return;
+
  }
 
  finishMove();
+
 }
 
 function finishMove(){
+
  turn=opposite(turn);
+
  selected=null;
  legalMoves=[];
 
  renderChess();
  updateStatus();
+
 }
 
 function showPromotion(col){
- const box=document.getElementById("promotion");
- const buttons=document.getElementById("promotionButtons");
+
+ const box=
+  document.getElementById("promotion");
+
+ const buttons=
+  document.getElementById("promotionButtons");
 
  buttons.innerHTML="";
 
- const pieces=col==="w"
+ const pieces=
+  col==="w"
   ?["Q","R","B","N"]
   :["q","r","b","n"];
 
  pieces.forEach(p=>{
+
   const b=document.createElement("button");
+
   b.textContent=PIECES[p];
 
   b.onclick=()=>{
-   board[pendingPromotion.r][pendingPromotion.c]=p;
+
+   board[
+    pendingPromotion.r
+   ][
+    pendingPromotion.c
+   ]=p;
+
    pendingPromotion=null;
+
    box.style.display="none";
+
    finishMove();
+
   };
 
   buttons.appendChild(b);
+
  });
 
  box.style.display="flex";
+
 }
 
 function chessClick(r,c){
- if(gameFinished||pendingPromotion)return;
+
+ if(
+  gameFinished||
+  pendingPromotion
+ )
+  return;
 
  const p=board[r][c];
 
  if(!selected){
 
-  if(color(p)!==turn)return;
+  if(color(p)!==turn)
+   return;
 
   selected=[r,c];
-  legalMoves=legalFor(board,r,c);
+
+  legalMoves=
+   legalFor(board,r,c);
 
   renderChess();
+
   return;
+
  }
 
- /* Chọn quân khác cùng màu */
  if(color(p)===turn){
+
   selected=[r,c];
-  legalMoves=legalFor(board,r,c);
+
+  legalMoves=
+   legalFor(board,r,c);
+
   renderChess();
+
   return;
+
  }
 
- const valid=legalMoves.some(m=>m[0]===r&&m[1]===c);
+ const valid=
+  legalMoves.some(
+   m=>m[0]===r&&m[1]===c
+  );
 
- if(valid){
-  playMove(selected,[r,c]);
- }
+ if(valid)
+  playMove(
+   selected,
+   [r,c]
+  );
+
 }
 
 function renderChess(){
- const el=document.getElementById("board");
+
+ const el=
+  document.getElementById("board");
+
  el.innerHTML="";
 
- for(let r=0;r<8;r++){
+ for(let r=0;r<8;r++)
   for(let c=0;c<8;c++){
 
-   const s=document.createElement("div");
-   s.className="sq "+((r+c)%2?"dark":"light");
+   const s=
+    document.createElement("div");
 
-   if(selected&&selected[0]===r&&selected[1]===c)
+   s.className=
+    "sq "+
+    ((r+c)%2?"dark":"light");
+
+   if(
+    selected&&
+    selected[0]===r&&
+    selected[1]===c
+   )
     s.classList.add("selected");
 
-   const move=legalMoves.find(m=>m[0]===r&&m[1]===c);
+   const move=
+    legalMoves.find(
+     m=>m[0]===r&&m[1]===c
+    );
 
    if(move){
-    if(board[r][c])s.classList.add("capture");
-    else s.classList.add("legal");
+
+    if(board[r][c])
+     s.classList.add("capture");
+    else
+     s.classList.add("legal");
+
    }
 
    const p=board[r][c];
-   if(p)s.textContent=PIECES[p];
 
-   s.onclick=()=>chessClick(r,c);
+   if(p)
+    s.textContent=PIECES[p];
+
+   s.onclick=
+    ()=>chessClick(r,c);
 
    el.appendChild(s);
+
   }
- }
+
 }
 
 function updateStatus(){
- if(gameFinished)return;
 
- const moves=allLegal(board,turn);
- const check=inCheck(board,turn);
+ if(gameFinished)
+  return;
+
+ const moves=
+  allLegal(board,turn);
+
+ const check=
+  inCheck(board,turn);
 
  if(moves.length===0){
 
   gameFinished=true;
 
   if(check){
-   const winner=turn==="w"?"Đen":"Trắng";
-   document.getElementById("status").textContent=
-    "♚ CHIẾU HẾT — "+winner+" thắng!";
+
+   const winner=
+    turn==="w"
+    ?"Đen"
+    :"Trắng";
+
+   document
+    .getElementById("status")
+    .textContent=
+    "♚ CHIẾU HẾT — "+
+    winner+
+    " thắng!";
+
   }else{
-   document.getElementById("status").textContent=
+
+   document
+    .getElementById("status")
+    .textContent=
     "🤝 HÒA — Bế tắc!";
+
   }
 
   return;
+
  }
 
  if(check){
-  document.getElementById("status").textContent=
-   "⚠️ CHIẾU! — Lượt của "+(turn==="w"?"Trắng":"Đen");
+
+  document
+   .getElementById("status")
+   .textContent=
+   "⚠️ CHIẾU! — Lượt của "+
+   (turn==="w"?"Trắng":"Đen");
+
  }else{
-  document.getElementById("status").textContent=
-   "Lượt của "+(turn==="w"?"Trắng":"Đen");
+
+  document
+   .getElementById("status")
+   .textContent=
+   "Lượt của "+
+   (turn==="w"?"Trắng":"Đen");
+
  }
+
 }
+
+
+/* =====================================================
+   BIDA 8 BALL
+===================================================== */
+
+const pc=
+ document.getElementById("poolCanvas");
+
+const px=
+ pc.getContext("2d");
+
+const PW=1000;
+const PH=560;
+
+const table={
+ x:55,
+ y:55,
+ w:890,
+ h:450
+};
+
+const ballR=12;
+
+const pockets=[
+ [table.x,table.y],
+ [table.x+table.w/2,table.y-3],
+ [table.x+table.w,table.y],
+ [table.x,table.y+table.h],
+ [table.x+table.w/2,table.y+table.h+3],
+ [table.x+table.w,table.y+table.h]
+];
+
+let balls=[];
+let poolTurn=1;
+let poolPotted=0;
+let poolRunning=false;
+let aiming=false;
+let aimStart=null;
+let mousePos=null;
+let animationId=null;
+
+
+/* Tạo bi */
+
+function newPoolGame(){
+
+ balls=[];
+ poolTurn=1;
+ poolPotted=0;
+ poolRunning=false;
+ aiming=false;
+ aimStart=null;
+
+ document
+  .getElementById("poolTurn")
+  .textContent="Người chơi 1";
+
+ document
+  .getElementById("potted")
+  .textContent=0;
+
+ createPoolBalls();
+
+ drawPool();
+
+}
+
+
+/* Tạo bi cái */
+
+function createBall(x,y,n,color,group=""){
+
+ balls.push({
+
+  x,
+  y,
+
+  vx:0,
+  vy:0,
+
+  number:n,
+  color,
+
+  group,
+
+  pocketed:false
+
+ });
+
+}
+
+
+/* Xếp tam giác */
+
+function createPoolBalls(){
+
+ const cx=table.x+table.w*0.68;
+ const cy=table.y+table.h/2;
+
+ let nums=[];
+
+ for(let i=1;i<=15;i++)
+  nums.push(i);
+
+ let index=0;
+
+ const spacing=ballR*2.05;
+
+ for(let row=0;row<5;row++){
+
+  for(let col=0;col<=row;col++){
+
+   let x=
+    cx+
+    row*spacing;
+
+   let y=
+    cy+
+    (col-row/2)*spacing;
+
+   let n=nums[index++];
+
+   let color=
+    n===8
+    ?"#111"
+    :n%2===0
+     ?"#f2c84b"
+     :"#e53935";
+
+   createBall(
+    x,y,n,color
+   );
+
+  }
+
+ }
+
+ /* Bi cái */
+
+ createBall(
+  table.x+table.w*0.27,
+  cy,
+  0,
+  "#f5f5f5",
+  "cue"
+ );
+
+}
+
+
+/* Vẽ bàn */
+
+function drawPool(){
+
+ px.clearRect(
+  0,0,PW,PH
+ );
+
+ /* Bàn ngoài */
+
+ px.fillStyle="#3c2415";
+
+ px.fillRect(
+  table.x-35,
+  table.y-35,
+  table.w+70,
+  table.h+70
+ );
+
+ /* Mặt bàn */
+
+ px.fillStyle="#08783f";
+
+ px.fillRect(
+  table.x,
+  table.y,
+  table.w,
+  table.h
+ );
+
+ /* Viền */
+
+ px.strokeStyle="#0b4f2d";
+ px.lineWidth=8;
+
+ px.strokeRect(
+  table.x,
+  table.y,
+  table.w,
+  table.h
+ );
+
+
+ /* Lỗ */
+
+ pockets.forEach(([x,y])=>{
+
+  px.fillStyle="#050505";
+
+  px.beginPath();
+
+  px.arc(
+   x,
+   y,
+   25,
+   0,
+   Math.PI*2
+  );
+
+  px.fill();
+
+ });
+
+
+ /* Bi */
+
+ balls.forEach(drawBall);
+
+
+ /* Đường ngắm */
+
+ if(
+  aiming&&
+  aimStart&&
+  mousePos&&
+  !poolRunning
+ ){
+
+  const cue=getCueBall();
+
+  if(cue&&!cue.pocketed){
+
+   let dx=
+    aimStart.x-
+    mousePos.x;
+
+   let dy=
+    aimStart.y-
+    mousePos.y;
+
+   let len=
+    Math.hypot(dx,dy);
+
+   if(len>1){
+
+    dx/=len;
+    dy/=len;
+
+    px.strokeStyle=
+     "rgba(255,255,255,.7)";
+
+    px.lineWidth=2;
+
+    px.setLineDash([8,8]);
+
+    px.beginPath();
+
+    px.moveTo(
+     cue.x,
+     cue.y
+    );
+
+    px.lineTo(
+     cue.x+dx*220,
+     cue.y+dy*220
+    );
+
+    px.stroke();
+
+    px.setLineDash([]);
+
+   }
+
+  }
+
+ }
+
+}
+
+function drawBall(b){
+
+ if(b.pocketed)return;
+
+ /* bóng */
+
+ px.fillStyle=b.color;
+
+ px.beginPath();
+
+ px.arc(
+  b.x,
+  b.y,
+  ballR,
+  0,
+  Math.PI*2
+ );
+
+ px.fill();
+
+ px.strokeStyle="#222";
+ px.lineWidth=1;
+ px.stroke();
+
+ /* Số */
+
+ if(b.number!==0){
+
+  px.fillStyle="white";
+
+  px.beginPath();
+
+  px.arc(
+   b.x,
+   b.y,
+   6.5,
+   0,
+   Math.PI*2
+  );
+
+  px.fill();
+
+  px.fillStyle="#111";
+
+  px.font="bold 8px Arial";
+  px.textAlign="center";
+  px.textBaseline="middle";
+
+  px.fillText(
+   b.number,
+   b.x,
+   b.y
+  );
+
+ }
+
+ /* bóng cái chấm nhỏ */
+
+ if(b.number===0){
+
+  px.fillStyle="#ddd";
+
+  px.beginPath();
+
+  px.arc(
+   b.x-3,
+   b.y-3,
+   2,
+   0,
+   Math.PI*2
+  );
+
+  px.fill();
+
+ }
+
+}
+
+
+/* Lấy bi cái */
+
+function getCueBall(){
+
+ return balls.find(
+  b=>b.number===0
+ );
+
+}
+
+
+/* Tọa độ chuột */
+
+function getMouse(e){
+
+ const rect=
+  pc.getBoundingClientRect();
+
+ return {
+
+  x:(e.clientX-rect.left)*
+    (PW/rect.width),
+
+  y:(e.clientY-rect.top)*
+    (PH/rect.height)
+
+ };
+
+}
+
+
+/* Bắt đầu ngắm */
+
+pc.addEventListener(
+ "pointerdown",
+ e=>{
+
+  if(poolRunning)return;
+
+  const cue=getCueBall();
+
+  if(!cue||cue.pocketed)return;
+
+  aiming=true;
+
+  aimStart=getMouse(e);
+
+  mousePos=aimStart;
+
+  pc.setPointerCapture(e.pointerId);
+
+ }
+);
+
+
+/* Kéo chọn lực */
+
+pc.addEventListener(
+ "pointermove",
+ e=>{
+
+  if(!aiming)return;
+
+  mousePos=getMouse(e);
+
+  const dx=
+   aimStart.x-mousePos.x;
+
+  const dy=
+   aimStart.y-mousePos.y;
+
+  const distance=
+   Math.min(
+    180,
+    Math.hypot(dx,dy)
+   );
+
+  document
+   .getElementById("powerFill")
+   .style.width=
+   (distance/180*100)+"%";
+
+  drawPool();
+
+ }
+);
+
+
+/* Thả chuột đánh */
+
+pc.addEventListener(
+ "pointerup",
+ e=>{
+
+  if(!aiming)return;
+
+  aiming=false;
+
+  mousePos=getMouse(e);
+
+  const cue=getCueBall();
+
+  if(!cue||cue.pocketed)return;
+
+  let dx=
+   aimStart.x-
+   mousePos.x;
+
+  let dy=
+   aimStart.y-
+   mousePos.y;
+
+  let distance=
+   Math.hypot(dx,dy);
+
+  if(distance<8){
+
+   drawPool();
+   return;
+
+  }
+
+  distance=Math.min(
+   distance,
+   180
+  );
+
+  let power=
+   distance/180;
+
+  let len=
+   Math.hypot(dx,dy);
+
+  dx/=len;
+  dy/=len;
+
+  cue.vx=
+   dx*
+   power*
+   13;
+
+  cue.vy=
+   dy*
+   power*
+   13;
+
+  poolRunning=true;
+
+  document
+   .getElementById("powerFill")
+   .style.width="0%";
+
+  animatePool();
+
+ }
+);
+
+
+/* Vật lý */
+
+function animatePool(){
+
+ if(!poolRunning)return;
+
+ let moving=false;
+
+ balls.forEach(b=>{
+
+  if(b.pocketed)return;
+
+  b.x+=b.vx;
+  b.y+=b.vy;
+
+  b.vx*=.985;
+  b.vy*=.985;
+
+  if(
+   Math.abs(b.vx)>.02||
+   Math.abs(b.vy)>.02
+  )
+   moving=true;
+
+  /* Thành ngang */
+
+  if(
+   b.y-ballR<table.y
+  ){
+
+   b.y=table.y+ballR;
+   b.vy=Math.abs(b.vy)*.85;
+
+  }
+
+  if(
+   b.y+ballR>
+   table.y+table.h
+  ){
+
+   b.y=
+    table.y+
+    table.h-
+    ballR;
+
+   b.vy=-Math.abs(b.vy)*.85;
+
+  }
+
+  /* Thành dọc */
+
+  if(
+   b.x-ballR<table.x
+  ){
+
+   b.x=table.x+ballR;
+   b.vx=Math.abs(b.vx)*.85;
+
+  }
+
+  if(
+   b.x+ballR>
+   table.x+table.w
+  ){
+
+   b.x=
+    table.x+
+    table.w-
+    ballR;
+
+   b.vx=-Math.abs(b.vx)*.85;
+
+  }
+
+ });
+
+
+ /* Va chạm bi */
+
+ for(let i=0;i<balls.length;i++){
+
+  const a=balls[i];
+
+  if(a.pocketed)continue;
+
+  for(let j=i+1;j<balls.length;j++){
+
+   const b=balls[j];
+
+   if(b.pocketed)continue;
+
+   let dx=b.x-a.x;
+   let dy=b.y-a.y;
+
+   let dist=Math.hypot(dx,dy);
+   let minDist=ballR*2;
+
+   if(
+    dist>0&&
+    dist<minDist
+   ){
+
+    let nx=dx/dist;
+    let ny=dy/dist;
+
+    let overlap=
+     minDist-dist;
+
+    a.x-=nx*overlap/2;
+    a.y-=ny*overlap/2;
+
+    b.x+=nx*overlap/2;
+    b.y+=ny*overlap/2;
+
+    let rel=
+     (a.vx-b.vx)*nx+
+     (a.vy-b.vy)*ny;
+
+    if(rel>0)continue;
+
+    let impulse=rel;
+
+    a.vx-=impulse*nx;
+    a.vy-=impulse*ny;
+
+    b.vx+=impulse*nx;
+    b.vy+=impulse*ny;
+
+   }
+
+  }
+
+ }
+
+
+ /* Kiểm tra lỗ */
+
+ balls.forEach(checkPocket);
+
+
+ drawPool();
+
+ if(moving){
+
+  animationId=
+   requestAnimationFrame(
+    animatePool
+   );
+
+ }else{
+
+  poolRunning=false;
+
+  nextPoolTurn();
+
+ }
+
+}
+
+
+/* Kiểm tra bi vào lỗ */
+
+function checkPocket(b){
+
+ if(b.pocketed)return;
+
+ for(let [px0,py0] of pockets){
+
+  let d=
+   Math.hypot(
+    b.x-px0,
+    b.y-py0
+   );
+
+  if(d<27){
+
+   b.pocketed=true;
+
+   b.vx=0;
+   b.vy=0;
+
+   poolPotted++;
+
+   document
+    .getElementById("potted")
+    .textContent=
+    poolPotted;
+
+   /* Bi cái */
+
+   if(b.number===0){
+
+    setTimeout(()=>{
+
+     b.pocketed=false;
+
+     b.x=
+      table.x+
+      table.w*.27;
+
+     b.y=
+      table.y+
+      table.h/2;
+
+    },100);
+
+   }
+
+   /* Bi 8 */
+
+   if(b.number===8){
+
+    setTimeout(()=>{
+
+     alert(
+      "🎱 Bạn đã đánh bi số 8 vào lỗ!"
+     );
+
+     newPoolGame();
+
+    },100);
+
+   }
+
+   break;
+
+  }
+
+ }
+
+}
+
+
+/* Đổi lượt */
+
+function nextPoolTurn(){
+
+ poolTurn=
+  poolTurn===1
+  ?2
+  :1;
+
+ document
+  .getElementById("poolTurn")
+  .textContent=
+  "Người chơi "+
+  poolTurn;
+
+ drawPool();
+
+}
+
+
+/* Khởi tạo */
+
+newChess();
+
 </script>
 
 </body>
 </html>
-```
