@@ -1,4 +1,3 @@
-```html
 <!DOCTYPE html>
 <html lang="vi">
 <head>
@@ -260,27 +259,26 @@ h1{
     background:#eee;
 }
 
-/* ================= 2D GAME ================= */
+/* ================= TANK 2D ================= */
 
-.platform-wrap{
+.tank-wrap{
     width:min(1000px,95vw);
     display:flex;
     flex-direction:column;
     align-items:center;
 }
 
-#platformCanvas{
+#tankCanvas{
     width:100%;
     max-height:600px;
-    border:4px solid #5964ff;
+    border:4px solid #4ade80;
     border-radius:16px;
-    background:#77cfff;
+    background:#18251d;
     box-shadow:0 15px 50px #0009;
-    image-rendering:auto;
     touch-action:none;
 }
 
-.platform-info{
+.tank-info{
     width:100%;
     display:flex;
     justify-content:space-between;
@@ -288,26 +286,16 @@ h1{
     font-size:18px;
 }
 
-.controls{
+.tank-controls{
     display:flex;
     gap:10px;
     margin-top:12px;
 }
 
-.mobile-controls{
-    display:none;
-    gap:10px;
-    margin-top:12px;
-}
-
-.mobile-controls button{
-    width:65px;
-    height:55px;
-    border:0;
-    border-radius:12px;
-    background:#34495e;
-    color:white;
-    font-size:25px;
+.tank-help{
+    margin-top:10px;
+    color:#b8c7c0;
+    text-align:center;
 }
 
 @media(max-width:850px){
@@ -397,22 +385,22 @@ MENU
         </div>
 
 
-        <!-- 2D -->
+        <!-- TANK 2D -->
 
         <div class="card">
 
-            <div class="icon">🎮</div>
+            <div class="icon">🪖</div>
 
-            <h2>Phiêu lưu 2D</h2>
+            <h2>Xe tăng 2D</h2>
 
             <p>
-                Chạy, nhảy, ăn xu và đánh bại quái vật.
+                Điều khiển xe tăng, bắn địch và sống sót qua các đợt tấn công.
             </p>
 
             <button
                 class="play adventure"
-                onclick="openPlatform()">
-                🎮 Chơi 2D
+                onclick="openTank()">
+                🪖 Chơi Xe tăng
             </button>
 
         </div>
@@ -523,87 +511,40 @@ CHESS
 
 
 <!-- =====================================================
-2D PLATFORMER
+TANK 2D
 ===================================================== -->
 
-<section id="platformScreen" class="screen game">
+<section id="tankScreen" class="screen game">
 
     <div class="header">
 
-        <button
-            class="back"
-            onclick="backMenu()">
+        <button class="back" onclick="backMenu()">
             ← Quay lại
         </button>
 
-        <h2 class="title">
-            🎮 Phiêu lưu 2D
-        </h2>
+        <h2 class="title">🪖 Xe tăng chiến đấu 2D</h2>
 
         <span></span>
 
     </div>
 
+    <div class="tank-wrap">
 
-    <div class="platform-wrap">
-
-        <div class="platform-info">
-
-            <span>
-                🪙 Xu:
-                <b id="coinScore">0</b>
-            </span>
-
-            <span>
-                ❤️ Mạng:
-                <b id="lives">3</b>
-            </span>
-
-            <span>
-                🏁 Màn:
-                <b>1</b>
-            </span>
-
+        <div class="tank-info">
+            <span>❤️ Máu: <b id="tankHealth">100</b></span>
+            <span>🎯 Điểm: <b id="tankScore">0</b></span>
+            <span>🌊 Wave: <b id="tankWave">1</b></span>
+            <span>💥 Địch: <b id="tankEnemies">0</b></span>
         </div>
 
+        <canvas id="tankCanvas" width="1000" height="560"></canvas>
 
-        <canvas
-            id="platformCanvas"
-            width="1000"
-            height="560">
-        </canvas>
-
-
-        <div class="controls">
-
-            <button
-                class="small-btn"
-                onclick="restartPlatform()">
-                🔄 Chơi lại
-            </button>
-
+        <div class="tank-controls">
+            <button class="small-btn" onclick="restartTank()">🔄 Chơi lại</button>
         </div>
 
-
-        <div class="mobile-controls">
-
-            <button
-                ontouchstart="platformKeys.left=true"
-                ontouchend="platformKeys.left=false">
-                ◀
-            </button>
-
-            <button
-                ontouchstart="platformJump()">
-                ⬆
-            </button>
-
-            <button
-                ontouchstart="platformKeys.right=true"
-                ontouchend="platformKeys.right=false">
-                ▶
-            </button>
-
+        <div class="tank-help">
+            WASD / ←↑↓→: di chuyển • Chuột: ngắm • Click hoặc Space: bắn
         </div>
 
     </div>
@@ -666,15 +607,15 @@ function openChess(){
 
 }
 
-function openPlatform(){
+function openTank(){
 
     hideScreens();
 
     document
-        .getElementById("platformScreen")
+        .getElementById("tankScreen")
         .classList.add("active");
 
-    restartPlatform();
+    restartTank();
 
 }
 
@@ -682,7 +623,7 @@ function backMenu(){
 
     clearInterval(snakeTimer);
 
-    platformRunning=false;
+    tankRunning=false;
 
     hideScreens();
 
@@ -1836,832 +1777,285 @@ function updateStatus(){
 
 
 /* =====================================================
-GAME 2D PLATFORMER
+TANK 2D
 ===================================================== */
 
-const gameCanvas=
-    document.getElementById("platformCanvas");
+const tankCanvas=document.getElementById("tankCanvas");
+const tg=tankCanvas.getContext("2d");
+const TW=1000, TH=560;
 
-const g=
-    gameCanvas.getContext("2d");
+let tank=null;
+let tankEnemies=[];
+let tankBullets=[];
+let tankEnemyBullets=[];
+let tankObstacles=[];
+let tankScore=0;
+let tankWave=1;
+let tankHealth=100;
+let tankRunning=false;
+let tankKeys={up:false,down:false,left:false,right:false};
+let tankMouse={x:500,y:280,down:false};
+let tankLast=0;
+let tankSpawnTimer=0;
+let tankWaveKills=0;
+let tankTotalKills=0;
 
-const GW=1000;
-const GH=560;
-
-let player;
-let platforms=[];
-let coins=[];
-let enemies=[];
-let goal;
-let cameraX=0;
-let coinScore=0;
-let playerLives=3;
-let platformRunning=false;
-let platformKeys={
-    left:false,
-    right:false,
-    jump:false
-};
-
-let lastTime=0;
-
-
-/* ================= LEVEL ================= */
-
-function createLevel(){
-
-    platforms=[
-
-        {x:0,y:500,w:900,h:60},
-        {x:1000,y:500,w:800,h:60},
-        {x:1900,y:500,w:1000,h:60},
-
-        {x:250,y:400,w:150,h:25},
-        {x:500,y:330,w:170,h:25},
-        {x:760,y:400,w:130,h:25},
-
-        {x:1100,y:390,w:180,h:25},
-        {x:1400,y:320,w:180,h:25},
-        {x:1650,y:400,w:130,h:25},
-
-        {x:2050,y:390,w:170,h:25},
-        {x:2350,y:300,w:180,h:25},
-        {x:2600,y:400,w:150,h:25}
-
+function tankResetWorld(){
+    tank={x:500,y:280,r:22,angle:0,speed:3.6,fireCooldown:0};
+    tankEnemies=[];
+    tankBullets=[];
+    tankEnemyBullets=[];
+    tankObstacles=[
+        {x:130,y:120,w:180,h:34},
+        {x:690,y:105,w:180,h:34},
+        {x:370,y:220,w:120,h:34},
+        {x:560,y:330,w:120,h:34},
+        {x:150,y:390,w:170,h:34},
+        {x:720,y:400,w:140,h:34}
     ];
-
-
-    coins=[
-
-        {x:300,y:360,taken:false},
-        {x:550,y:290,taken:false},
-        {x:810,y:360,taken:false},
-
-        {x:1160,y:350,taken:false},
-        {x:1460,y:280,taken:false},
-        {x:1700,y:360,taken:false},
-
-        {x:2120,y:350,taken:false},
-        {x:2410,y:260,taken:false},
-        {x:2650,y:360,taken:false}
-
-    ];
-
-
-    enemies=[
-
-        {
-            x:620,
-            y:460,
-            w:34,
-            h:34,
-            vx:1.2,
-            min:500,
-            max:850,
-            alive:true
-        },
-
-        {
-            x:1220,
-            y:460,
-            w:34,
-            h:34,
-            vx:1.4,
-            min:1050,
-            max:1750,
-            alive:true
-        },
-
-        {
-            x:2200,
-            y:460,
-            w:34,
-            h:34,
-            vx:1.5,
-            min:1950,
-            max:2800,
-            alive:true
-        }
-
-    ];
-
-
-    goal={
-        x:2820,
-        y:400,
-        w:45,
-        h:100
-    };
-
+    tankScore=0;
+    tankWave=1;
+    tankHealth=100;
+    tankWaveKills=0;
+    tankTotalKills=0;
+    tankSpawnTimer=0;
+    tankRunning=true;
+    updateTankHUD();
+    tankLast=performance.now();
+    requestAnimationFrame(tankLoop);
 }
 
-
-function resetPlayer(){
-
-    player={
-        x:100,
-        y:430,
-        w:35,
-        h:55,
-        vx:0,
-        vy:0,
-        speed:5,
-        jump:-13,
-        grounded:false
-    };
-
-    cameraX=0;
-
+function restartTank(){
+    tankResetWorld();
 }
 
-
-function restartPlatform(){
-
-    createLevel();
-
-    resetPlayer();
-
-    coinScore=0;
-    playerLives=3;
-    platformRunning=true;
-
-    document
-        .getElementById("coinScore")
-        .textContent=0;
-
-    document
-        .getElementById("lives")
-        .textContent=3;
-
-    lastTime=performance.now();
-
-    requestAnimationFrame(platformLoop);
-
+function updateTankHUD(){
+    document.getElementById("tankHealth").textContent=Math.max(0,Math.ceil(tankHealth));
+    document.getElementById("tankScore").textContent=tankScore;
+    document.getElementById("tankWave").textContent=tankWave;
+    document.getElementById("tankEnemies").textContent=tankEnemies.length;
 }
 
+function tankClamp(v,a,b){return Math.max(a,Math.min(b,v));}
+function tankDist(a,b){return Math.hypot(a.x-b.x,a.y-b.y);}
 
-/* ================= KEYBOARD ================= */
+function tankCircleRectCollision(x,y,r,o){
+    const cx=tankClamp(x,o.x,o.x+o.w);
+    const cy=tankClamp(y,o.y,o.y+o.h);
+    return Math.hypot(x-cx,y-cy)<r;
+}
 
-document.addEventListener("keydown",e=>{
+function tankCanMove(x,y,r){
+    if(x-r<8||x+r>TW-8||y-r<8||y+r>TH-8)return false;
+    return !tankObstacles.some(o=>tankCircleRectCollision(x,y,r,o));
+}
 
-    if(
-        e.key==="ArrowLeft"||
-        e.key==="a"||
-        e.key==="A"
-    )
-        platformKeys.left=true;
+function tankSpawnEnemy(){
+    const side=Math.floor(Math.random()*4);
+    let x=20,y=20;
+    if(side===0){x=20;y=40+Math.random()*(TH-80);}
+    if(side===1){x=TW-20;y=40+Math.random()*(TH-80);}
+    if(side===2){x=40+Math.random()*(TW-80);y=20;}
+    if(side===3){x=40+Math.random()*(TW-80);y=TH-20;}
 
-    if(
-        e.key==="ArrowRight"||
-        e.key==="d"||
-        e.key==="D"
-    )
-        platformKeys.right=true;
+    const type=Math.random()<Math.min(.25,tankWave*.015)?"heavy":"normal";
+    tankEnemies.push({
+        x,y,r:type==="heavy"?25:19,
+        hp:type==="heavy"?3:1,
+        maxHp:type==="heavy"?3:1,
+        speed:type==="heavy"?0.75:1.05+tankWave*.025,
+        fire:500+Math.random()*900,
+        type
+    });
+}
 
-    if(
-        e.key===" "||
-        e.key==="ArrowUp"||
-        e.key==="w"||
-        e.key==="W"
-    ){
+function tankMove(){
+    let dx=0,dy=0;
+    if(tankKeys.left)dx--;
+    if(tankKeys.right)dx++;
+    if(tankKeys.up)dy--;
+    if(tankKeys.down)dy++;
+    if(dx||dy){
+        const len=Math.hypot(dx,dy);
+        dx/=len;dy/=len;
+        const nx=tank.x+dx*tank.speed;
+        const ny=tank.y+dy*tank.speed;
+        if(tankCanMove(nx,tank.y,tank.r))tank.x=nx;
+        if(tankCanMove(tank.x,ny,tank.r))tank.y=ny;
+    }
+}
 
-        if(!e.repeat)
-            platformJump();
+function tankShoot(){
+    if(!tank||tank.fireCooldown>0)return;
+    const a=tank.angle;
+    tankBullets.push({x:tank.x+Math.cos(a)*28,y:tank.y+Math.sin(a)*28,vx:Math.cos(a)*8.5,vy:Math.sin(a)*8.5,r:5,life:900});
+    tank.fireCooldown=180;
+}
 
-        e.preventDefault();
+function tankEnemyShoot(e){
+    const a=Math.atan2(tank.y-e.y,tank.x-e.x);
+    tankEnemyBullets.push({x:e.x+Math.cos(a)*24,y:e.y+Math.sin(a)*24,vx:Math.cos(a)*4.2,vy:Math.sin(a)*4.2,r:5,life:1800});
+}
 
+function tankUpdate(dt){
+    if(!tankRunning)return;
+    tankMove();
+    tank.angle=Math.atan2(tankMouse.y-tank.y,tankMouse.x-tank.x);
+    tank.fireCooldown=Math.max(0,tank.fireCooldown-dt);
+    if(tankMouse.down||tankKeys.fire)tankShoot();
+
+    tankSpawnTimer-=dt;
+    const maxEnemies=Math.min(5+tankWave*2,18);
+    if(tankSpawnTimer<=0&&tankEnemies.length<maxEnemies){
+        tankSpawnEnemy();
+        tankSpawnTimer=Math.max(350,1000-tankWave*35);
     }
 
+    for(const e of tankEnemies){
+        const a=Math.atan2(tank.y-e.y,tank.x-e.x);
+        const nx=e.x+Math.cos(a)*e.speed;
+        const ny=e.y+Math.sin(a)*e.speed;
+        if(tankCanMove(nx,ny,e.r)){e.x=nx;e.y=ny;}
+        else if(tankCanMove(nx,e.y,e.r)){e.x=nx;}
+        else if(tankCanMove(e.x,ny,e.r)){e.y=ny;}
+        e.fire-=dt;
+        if(e.fire<=0){tankEnemyShoot(e);e.fire=900+Math.random()*900;}
+        if(tankDist(e,tank)<e.r+tank.r){tankHealth-=0.18*dt/10;}
+    }
+
+    for(let i=tankBullets.length-1;i>=0;i--){
+        const b=tankBullets[i];
+        b.x+=b.vx; b.y+=b.vy; b.life-=dt;
+        if(b.x<0||b.x>TW||b.y<0||b.y>TH||b.life<=0||tankObstacles.some(o=>tankCircleRectCollision(b.x,b.y,b.r,o))){
+            tankBullets.splice(i,1);continue;
+        }
+        let hit=false;
+        for(let j=tankEnemies.length-1;j>=0;j--){
+            const e=tankEnemies[j];
+            if(Math.hypot(b.x-e.x,b.y-e.y)<b.r+e.r){
+                e.hp--; hit=true;
+                if(e.hp<=0){
+                    tankScore+=e.type==="heavy"?30:10;
+                    tankWaveKills++; tankTotalKills++;
+                    tankEnemies.splice(j,1);
+                }
+                break;
+            }
+        }
+        if(hit)tankBullets.splice(i,1);
+    }
+
+    for(let i=tankEnemyBullets.length-1;i>=0;i--){
+        const b=tankEnemyBullets[i];
+        b.x+=b.vx;b.y+=b.vy;b.life-=dt;
+        if(b.x<0||b.x>TW||b.y<0||b.y>TH||b.life<=0||tankObstacles.some(o=>tankCircleRectCollision(b.x,b.y,b.r,o))){
+            tankEnemyBullets.splice(i,1);continue;
+        }
+        if(Math.hypot(b.x-tank.x,b.y-tank.y)<b.r+tank.r){
+            tankHealth-=10;
+            tankEnemyBullets.splice(i,1);
+        }
+    }
+
+    if(tankWaveKills>=8+tankWave*2){
+        tankWave++;
+        tankWaveKills=0;
+        tankHealth=Math.min(100,tankHealth+15);
+    }
+
+    if(tankHealth<=0){
+        tankHealth=0;tankRunning=false;
+        updateTankHUD();
+        setTimeout(()=>alert("💥 GAME OVER!\n\nĐiểm: "+tankScore+"\nWave: "+tankWave),50);
+    }
+    updateTankHUD();
+}
+
+function drawTank(){
+    tg.clearRect(0,0,TW,TH);
+    tg.fillStyle="#26382c";tg.fillRect(0,0,TW,TH);
+
+    tg.strokeStyle="rgba(255,255,255,.045)";tg.lineWidth=1;
+    for(let x=0;x<TW;x+=40){tg.beginPath();tg.moveTo(x,0);tg.lineTo(x,TH);tg.stroke();}
+    for(let y=0;y<TH;y+=40){tg.beginPath();tg.moveTo(0,y);tg.lineTo(TW,y);tg.stroke();}
+
+    // obstacles
+    for(const o of tankObstacles){
+        tg.fillStyle="#59635b";tg.fillRect(o.x,o.y,o.w,o.h);
+        tg.fillStyle="#78847b";tg.fillRect(o.x,o.y,o.w,7);
+        tg.strokeStyle="#252b27";tg.strokeRect(o.x,o.y,o.w,o.h);
+    }
+
+    // bullets
+    tg.fillStyle="#ffe066";
+    for(const b of tankBullets){tg.beginPath();tg.arc(b.x,b.y,b.r,0,Math.PI*2);tg.fill();}
+    tg.fillStyle="#ff7b7b";
+    for(const b of tankEnemyBullets){tg.beginPath();tg.arc(b.x,b.y,b.r,0,Math.PI*2);tg.fill();}
+
+    // enemies
+    for(const e of tankEnemies){
+        tg.save();tg.translate(e.x,e.y);
+        tg.fillStyle=e.type==="heavy"?"#8b5cf6":"#ef4444";
+        tg.fillRect(-e.r,-e.r,e.r*2,e.r*2);
+        tg.fillStyle="#252525";tg.fillRect(-5,-e.r-9,10,e.r+9);
+        tg.fillStyle="#f8fafc";tg.beginPath();tg.arc(-7,-5,3,0,Math.PI*2);tg.arc(7,-5,3,0,Math.PI*2);tg.fill();
+        tg.restore();
+        if(e.hp<e.maxHp){
+            tg.fillStyle="#111";tg.fillRect(e.x-e.r,e.y-e.r-16,e.r*2,5);
+            tg.fillStyle="#4ade80";tg.fillRect(e.x-e.r,e.y-e.r-16,e.r*2*(e.hp/e.maxHp),5);
+        }
+    }
+
+    // player tank
+    if(tank){
+        tg.save();tg.translate(tank.x,tank.y);tg.rotate(tank.angle);
+        tg.fillStyle="#0f172a";tg.fillRect(-24,-20,48,40);
+        tg.fillStyle="#22c55e";tg.fillRect(-18,-15,36,30);
+        tg.fillStyle="#86efac";tg.fillRect(-8,-8,16,16);
+        tg.fillStyle="#111827";tg.fillRect(0,-5,34,10);
+        tg.restore();
+    }
+
+    tg.fillStyle="rgba(0,0,0,.42)";tg.fillRect(15,15,235,52);
+    tg.fillStyle="white";tg.font="bold 18px Arial";
+    tg.fillText("🪖 TIÊU DIỆT ĐỊCH!",30,38);
+    tg.font="15px Arial";tg.fillText("Đợt này: "+tankWaveKills+" hạ gục",30,58);
+}
+
+function tankLoop(time){
+    const dt=Math.min(40,time-tankLast||16);
+    tankLast=time;
+    tankUpdate(dt);
+    drawTank();
+    if(tankRunning)requestAnimationFrame(tankLoop);
+}
+
+function tankPointer(e){
+    const r=tankCanvas.getBoundingClientRect();
+    tankMouse.x=(e.clientX-r.left)*TW/r.width;
+    tankMouse.y=(e.clientY-r.top)*TH/r.height;
+}
+
+tankCanvas.addEventListener("pointermove",tankPointer);
+tankCanvas.addEventListener("pointerdown",e=>{tankMouse.down=true;tankPointer(e);tankShoot();});
+tankCanvas.addEventListener("pointerup",()=>tankMouse.down=false);
+tankCanvas.addEventListener("pointerleave",()=>tankMouse.down=false);
+
+document.addEventListener("keydown",e=>{
+    if(e.key==="ArrowUp"||e.key==="w"||e.key==="W")tankKeys.up=true;
+    if(e.key==="ArrowDown"||e.key==="s"||e.key==="S")tankKeys.down=true;
+    if(e.key==="ArrowLeft"||e.key==="a"||e.key==="A")tankKeys.left=true;
+    if(e.key==="ArrowRight"||e.key==="d"||e.key==="D")tankKeys.right=true;
+    if(e.key===" "){tankKeys.fire=true;e.preventDefault();}
 });
 
 document.addEventListener("keyup",e=>{
-
-    if(
-        e.key==="ArrowLeft"||
-        e.key==="a"||
-        e.key==="A"
-    )
-        platformKeys.left=false;
-
-    if(
-        e.key==="ArrowRight"||
-        e.key==="d"||
-        e.key==="D"
-    )
-        platformKeys.right=false;
-
+    if(e.key==="ArrowUp"||e.key==="w"||e.key==="W")tankKeys.up=false;
+    if(e.key==="ArrowDown"||e.key==="s"||e.key==="S")tankKeys.down=false;
+    if(e.key==="ArrowLeft"||e.key==="a"||e.key==="A")tankKeys.left=false;
+    if(e.key==="ArrowRight"||e.key==="d"||e.key==="D")tankKeys.right=false;
+    if(e.key===" ")tankKeys.fire=false;
 });
-
-
-function platformJump(){
-
-    if(
-        platformRunning&&
-        player&&
-        player.grounded
-    ){
-
-        player.vy=player.jump;
-        player.grounded=false;
-
-    }
-
-}
-
-
-/* ================= COLLISION ================= */
-
-function overlap(a,b){
-
-    return(
-        a.x<b.x+b.w&&
-        a.x+a.w>b.x&&
-        a.y<b.y+b.h&&
-        a.y+a.h>b.y
-    );
-
-}
-
-
-/* ================= UPDATE ================= */
-
-function updatePlatform(){
-
-    if(!platformRunning)
-        return;
-
-
-    /* Di chuyển */
-
-    player.vx=0;
-
-    if(platformKeys.left)
-        player.vx=-player.speed;
-
-    if(platformKeys.right)
-        player.vx=player.speed;
-
-    player.x+=player.vx;
-
-
-    /* Trọng lực */
-
-    player.vy+=0.65;
-
-    if(player.vy>15)
-        player.vy=15;
-
-    player.y+=player.vy;
-
-    player.grounded=false;
-
-
-    /* Va chạm nền tảng */
-
-    for(const p of platforms){
-
-        if(
-            player.x<p.x+p.w&&
-            player.x+player.w>p.x&&
-            player.y+player.h>=p.y&&
-            player.y+player.h<=p.y+30&&
-            player.vy>=0
-        ){
-
-            player.y=
-                p.y-player.h;
-
-            player.vy=0;
-            player.grounded=true;
-
-        }
-
-    }
-
-
-    /* Rơi xuống */
-
-    if(player.y>700){
-
-        loseLife();
-
-        return;
-
-    }
-
-
-    /* Xu */
-
-    for(const c of coins){
-
-        if(c.taken)
-            continue;
-
-        const coinBox={
-            x:c.x-12,
-            y:c.y-12,
-            w:24,
-            h:24
-        };
-
-        if(overlap(player,coinBox)){
-
-            c.taken=true;
-
-            coinScore++;
-
-            document
-                .getElementById("coinScore")
-                .textContent=coinScore;
-
-        }
-
-    }
-
-
-    /* Quái vật */
-
-    for(const e of enemies){
-
-        if(!e.alive)
-            continue;
-
-        e.x+=e.vx;
-
-        if(
-            e.x<e.min||
-            e.x>e.max
-        )
-            e.vx*=-1;
-
-
-        if(overlap(player,e)){
-
-            /* Nhảy lên đầu quái */
-
-            if(
-                player.vy>0&&
-                player.y+player.h-e.y<22
-            ){
-
-                e.alive=false;
-                player.vy=-9;
-
-            }else{
-
-                loseLife();
-                return;
-
-            }
-
-        }
-
-    }
-
-
-    /* Đích */
-
-    if(overlap(player,goal)){
-
-        winPlatform();
-        return;
-
-    }
-
-
-    /* Camera */
-
-    cameraX=
-        player.x-300;
-
-    if(cameraX<0)
-        cameraX=0;
-
-    if(cameraX>2000)
-        cameraX=2000;
-
-}
-
-
-/* ================= LIVES ================= */
-
-function loseLife(){
-
-    playerLives--;
-
-    document
-        .getElementById("lives")
-        .textContent=playerLives;
-
-    if(playerLives<=0){
-
-        platformRunning=false;
-
-        setTimeout(()=>{
-
-            alert(
-                "💀 GAME OVER!\n\n"+
-                "Xu: "+coinScore
-            );
-
-        },50);
-
-        return;
-
-    }
-
-    resetPlayer();
-
-}
-
-
-/* ================= WIN ================= */
-
-function winPlatform(){
-
-    platformRunning=false;
-
-    setTimeout(()=>{
-
-        alert(
-            "🏆 BẠN ĐÃ VỀ ĐÍCH!\n\n"+
-            "Số xu: "+coinScore
-        );
-
-    },50);
-
-}
-
-
-/* ================= DRAW ================= */
-
-function drawPlatform(){
-
-    /* Bầu trời */
-
-    const gradient=
-        g.createLinearGradient(
-            0,0,0,GH
-        );
-
-    gradient.addColorStop(
-        0,
-        "#55c7ff"
-    );
-
-    gradient.addColorStop(
-        1,
-        "#d8f4ff"
-    );
-
-    g.fillStyle=gradient;
-
-    g.fillRect(
-        0,0,GW,GH
-    );
-
-
-    /* Mặt trời */
-
-    g.fillStyle="#ffd84a";
-
-    g.beginPath();
-
-    g.arc(
-        820,
-        90,
-        50,
-        0,
-        Math.PI*2
-    );
-
-    g.fill();
-
-
-    /* Núi */
-
-    g.fillStyle="#80a6c4";
-
-    for(let x=-200;x<1300;x+=260){
-
-        g.beginPath();
-
-        g.moveTo(
-            x-cameraX*.25,
-            400
-        );
-
-        g.lineTo(
-            x+130-cameraX*.25,
-            170
-        );
-
-        g.lineTo(
-            x+280-cameraX*.25,
-            400
-        );
-
-        g.fill();
-
-    }
-
-
-    /* Thế giới */
-
-    g.save();
-
-    g.translate(
-        -cameraX,
-        0
-    );
-
-
-    /* Platforms */
-
-    platforms.forEach(p=>{
-
-        g.fillStyle="#6b4025";
-
-        g.fillRect(
-            p.x,
-            p.y,
-            p.w,
-            p.h
-        );
-
-        g.fillStyle="#36a852";
-
-        g.fillRect(
-            p.x,
-            p.y,
-            p.w,
-            9
-        );
-
-    });
-
-
-    /* Xu */
-
-    coins.forEach(c=>{
-
-        if(c.taken)
-            return;
-
-        g.fillStyle="#ffd43b";
-
-        g.beginPath();
-
-        g.arc(
-            c.x,
-            c.y,
-            12,
-            0,
-            Math.PI*2
-        );
-
-        g.fill();
-
-        g.fillStyle="#fff1a3";
-
-        g.beginPath();
-
-        g.arc(
-            c.x-3,
-            c.y-3,
-            4,
-            0,
-            Math.PI*2
-        );
-
-        g.fill();
-
-    });
-
-
-    /* Quái */
-
-    enemies.forEach(e=>{
-
-        if(!e.alive)
-            return;
-
-        g.fillStyle="#e84343";
-
-        g.beginPath();
-
-        g.roundRect(
-            e.x,
-            e.y,
-            e.w,
-            e.h,
-            8
-        );
-
-        g.fill();
-
-        /* mắt */
-
-        g.fillStyle="white";
-
-        g.beginPath();
-
-        g.arc(
-            e.x+10,
-            e.y+11,
-            5,
-            0,
-            Math.PI*2
-        );
-
-        g.arc(
-            e.x+24,
-            e.y+11,
-            5,
-            0,
-            Math.PI*2
-        );
-
-        g.fill();
-
-        g.fillStyle="#222";
-
-        g.beginPath();
-
-        g.arc(
-            e.x+10,
-            e.y+11,
-            2,
-            0,
-            Math.PI*2
-        );
-
-        g.arc(
-            e.x+24,
-            e.y+11,
-            2,
-            0,
-            Math.PI*2
-        );
-
-        g.fill();
-
-    });
-
-
-    /* Cờ đích */
-
-    g.fillStyle="#333";
-
-    g.fillRect(
-        goal.x,
-        goal.y,
-        6,
-        goal.h
-    );
-
-    g.fillStyle="#ff3e5f";
-
-    g.beginPath();
-
-    g.moveTo(
-        goal.x+6,
-        goal.y
-    );
-
-    g.lineTo(
-        goal.x+48,
-        goal.y+20
-    );
-
-    g.lineTo(
-        goal.x+6,
-        goal.y+40
-    );
-
-    g.closePath();
-
-    g.fill();
-
-
-    /* Player */
-
-    g.fillStyle="#536dfe";
-
-    g.beginPath();
-
-    g.roundRect(
-        player.x,
-        player.y,
-        player.w,
-        player.h,
-        8
-    );
-
-    g.fill();
-
-
-    /* cabeça */
-
-    g.fillStyle="#ffd2a6";
-
-    g.beginPath();
-
-    g.arc(
-        player.x+17,
-        player.y+12,
-        11,
-        0,
-        Math.PI*2
-    );
-
-    g.fill();
-
-
-    /* mắt */
-
-    g.fillStyle="#222";
-
-    g.beginPath();
-
-    g.arc(
-        player.x+13,
-        player.y+10,
-        2,
-        0,
-        Math.PI*2
-    );
-
-    g.arc(
-        player.x+21,
-        player.y+10,
-        2,
-        0,
-        Math.PI*2
-    );
-
-    g.fill();
-
-
-    g.restore();
-
-
-    /* hướng dẫn */
-
-    if(
-        player.x<400
-    ){
-
-        g.fillStyle="rgba(0,0,0,.5)";
-
-        g.fillRect(
-            20,
-            20,
-            310,
-            55
-        );
-
-        g.fillStyle="white";
-
-        g.font="17px Arial";
-
-        g.fillText(
-            "A/D hoặc ←/→ để di chuyển",
-            35,
-            43
-        );
-
-        g.fillText(
-            "SPACE / ↑ để nhảy",
-            35,
-            65
-        );
-
-    }
-
-}
-
-
-/* ================= LOOP ================= */
-
-function platformLoop(time){
-
-    if(!platformRunning){
-
-        drawPlatform();
-        return;
-
-    }
-
-    updatePlatform();
-    drawPlatform();
-
-    requestAnimationFrame(
-        platformLoop
-    );
-
-}
-
 
 /* ================= START ================= */
 
@@ -2671,4 +2065,3 @@ newChess();
 
 </body>
 </html>
-```
