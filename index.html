@@ -116,6 +116,10 @@ h1{
     background:#5b55e8;
 }
 
+.space{
+    background:#7c3aed;
+}
+
 /* ================= GAME ================= */
 
 .game{
@@ -472,6 +476,27 @@ MENU
 
         </div>
 
+
+
+        <!-- SPACE SHOOTER -->
+
+        <div class="card">
+
+            <div class="icon">🚀</div>
+
+            <h2>Bắn phi thuyền</h2>
+
+            <p>
+                Điều khiển phi thuyền, bắn thiên thạch và hạ kẻ địch.
+            </p>
+
+            <button
+                class="play space"
+                onclick="openSpace()">
+                🚀 Chơi Bắn phi thuyền
+            </button>
+
+        </div>
     </div>
 
 </div>
@@ -661,6 +686,82 @@ RACING 2D
 </section>
 
 
+<style>
+/* ================= SPACE SHOOTER ================= */
+.space-wrap{
+    width:min(900px,95vw);
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+}
+.space-info{
+    width:100%;
+    display:flex;
+    justify-content:space-between;
+    gap:12px;
+    margin-bottom:10px;
+    font-size:18px;
+    flex-wrap:wrap;
+}
+#spaceCanvas{
+    width:100%;
+    max-height:650px;
+    border:4px solid #8b5cf6;
+    border-radius:16px;
+    background:#050816;
+    box-shadow:0 15px 50px #0009;
+    touch-action:none;
+}
+.space-help{
+    margin-top:10px;
+    color:#cbd5e1;
+    text-align:center;
+}
+@media(max-width:850px){
+    .space-info{justify-content:center;}
+}
+</style>
+
+<!-- =====================================================
+SPACE SHOOTER
+===================================================== -->
+
+<section id="spaceScreen" class="screen game">
+
+    <div class="header">
+
+        <button class="back" onclick="backMenu()">
+            ← Quay lại
+        </button>
+
+        <h2 class="title">🚀 Bắn phi thuyền</h2>
+
+        <span></span>
+
+    </div>
+
+    <div class="space-wrap">
+
+        <div class="space-info">
+            <span>🏆 Điểm: <b id="spaceScore">0</b></span>
+            <span>❤️ Máu: <b id="spaceLives">3</b></span>
+            <span>🌊 Wave: <b id="spaceWave">1</b></span>
+            <span>☄️ Địch: <b id="spaceEnemies">0</b></span>
+        </div>
+
+        <canvas id="spaceCanvas" width="900" height="600"></canvas>
+
+        <div class="racing-controls">
+            <button class="small-btn" onclick="restartSpace()">🔄 Chơi lại</button>
+        </div>
+
+        <div class="space-help">A/D hoặc ←/→: di chuyển • Space hoặc click: bắn • Hạ địch để tăng điểm</div>
+
+    </div>
+
+</section>
+
+
 <!-- PROMOTION -->
 
 <div id="promotion" class="promotion">
@@ -740,12 +841,25 @@ function openRacing(){
 
 }
 
+function openSpace(){
+
+    hideScreens();
+
+    document
+        .getElementById("spaceScreen")
+        .classList.add("active");
+
+    restartSpace();
+
+}
+
 function backMenu(){
 
     clearInterval(snakeTimer);
 
     tankRunning=false;
     racingRunning=false;
+    spaceRunning=false;
 
     hideScreens();
 
@@ -2393,6 +2507,289 @@ document.addEventListener("keyup",e=>{
     if(e.key==="ArrowRight"||e.key==="d"||e.key==="D")racingKeys.right=false;
     if(e.key===" ")racingKeys.boost=false;
 });
+
+/* =====================================================
+SPACE SHOOTER
+===================================================== */
+
+const spaceCanvas=document.getElementById("spaceCanvas");
+const sg=spaceCanvas.getContext("2d");
+const SW=900, SH=600;
+let spaceRunning=false;
+let spaceLast=0;
+let spaceKeys={left:false,right:false,shoot:false};
+let spacePlayer=null;
+let spaceBullets=[];
+let spaceEnemiesArr=[];
+let spaceParticles=[];
+let spaceStars=[];
+let spaceScore=0;
+let spaceLives=3;
+let spaceWave=1;
+let spaceSpawn=0;
+let spaceShootCooldown=0;
+
+function resetSpaceStars(){
+    spaceStars=Array.from({length:90},()=>({
+        x:Math.random()*SW,
+        y:Math.random()*SH,
+        r:Math.random()*2+0.5,
+        s:Math.random()*45+20
+    }));
+}
+
+function restartSpace(){
+    spaceRunning=true;
+    spaceLast=performance.now();
+    spaceScore=0;
+    spaceLives=3;
+    spaceWave=1;
+    spaceSpawn=0;
+    spaceShootCooldown=0;
+    spaceBullets=[];
+    spaceEnemiesArr=[];
+    spaceParticles=[];
+    spacePlayer={x:SW/2,y:SH-70,w:42,h:50,speed:6,inv:0};
+    resetSpaceStars();
+    updateSpaceHUD();
+    cancelAnimationFrame(spaceFrame);
+    spaceFrame=requestAnimationFrame(spaceLoop);
+}
+
+function updateSpaceHUD(){
+    document.getElementById("spaceScore").textContent=spaceScore;
+    document.getElementById("spaceLives").textContent=spaceLives;
+    document.getElementById("spaceWave").textContent=spaceWave;
+    document.getElementById("spaceEnemies").textContent=spaceEnemiesArr.length;
+}
+
+function spawnSpaceEnemy(){
+    const strong=Math.random()<Math.min(.12+spaceWave*.015,.38);
+    spaceEnemiesArr.push({
+        x:35+Math.random()*(SW-70),
+        y:-40,
+        w:strong?44:34,
+        h:strong?36:30,
+        hp:strong?2+Math.floor(spaceWave/5):1,
+        maxHp:strong?2+Math.floor(spaceWave/5):1,
+        vy:1.2+Math.random()*0.9+spaceWave*.08,
+        vx:(Math.random()-.5)*(0.8+spaceWave*.03),
+        strong
+    });
+}
+
+function spaceShoot(){
+    if(!spaceRunning||!spacePlayer||spaceShootCooldown>0)return;
+    spaceBullets.push({x:spacePlayer.x,y:spacePlayer.y-26,w:5,h:18,vy:-10});
+    spaceShootCooldown=150;
+}
+
+function hitSpace(a,b){
+    return a.x-a.w/2<b.x+b.w/2 && a.x+a.w/2>b.x-b.w/2 &&
+           a.y-a.h/2<b.y+b.h/2 && a.y+a.h/2>b.y-b.h/2;
+}
+
+function addSpaceExplosion(x,y,big=false){
+    const n=big?22:10;
+    for(let i=0;i<n;i++){
+        const ang=Math.random()*Math.PI*2;
+        const sp=Math.random()*3+1;
+        spaceParticles.push({x,y,vx:Math.cos(ang)*sp,vy:Math.sin(ang)*sp,life:500+Math.random()*400,r:Math.random()*3+2});
+    }
+}
+
+function loseSpaceLife(){
+    spaceLives--;
+    addSpaceExplosion(spacePlayer.x,spacePlayer.y,true);
+    if(spaceLives<=0){
+        spaceRunning=false;
+        drawSpace(true);
+        setTimeout(()=>alert("💀 GAME OVER!\n\nĐiểm: "+spaceScore),50);
+        return;
+    }
+    spacePlayer.x=SW/2;
+    spacePlayer.inv=1500;
+}
+
+function updateSpace(dt){
+    const scale=dt/16.67;
+    if(!spaceRunning)return;
+
+    spaceShootCooldown=Math.max(0,spaceShootCooldown-dt);
+    spacePlayer.inv=Math.max(0,spacePlayer.inv-dt);
+
+    if(spaceKeys.left)spacePlayer.x-=spacePlayer.speed*scale;
+    if(spaceKeys.right)spacePlayer.x+=spacePlayer.speed*scale;
+    spacePlayer.x=Math.max(28,Math.min(SW-28,spacePlayer.x));
+
+    if(spaceKeys.shoot)spaceShoot();
+
+    for(const st of spaceStars){
+        st.y+=st.s*scale;
+        if(st.y>SH){st.y=-2;st.x=Math.random()*SW;}
+    }
+
+    spaceSpawn-=dt;
+    const interval=Math.max(250,900-spaceWave*45);
+    if(spaceSpawn<=0){
+        spawnSpaceEnemy();
+        if(spaceWave>5&&Math.random()<.25)spawnSpaceEnemy();
+        spaceSpawn=interval;
+    }
+
+    for(const b of spaceBullets)b.y+=b.vy*scale;
+    spaceBullets=spaceBullets.filter(b=>b.y>-30);
+
+    for(const e of spaceEnemiesArr){
+        e.y+=e.vy*scale;
+        e.x+=e.vx*scale;
+        if(e.x<25||e.x>SW-25)e.vx*=-1;
+    }
+
+    for(let i=spaceBullets.length-1;i>=0;i--){
+        const b=spaceBullets[i];
+        let removed=false;
+        for(let j=spaceEnemiesArr.length-1;j>=0;j--){
+            const e=spaceEnemiesArr[j];
+            if(hitSpace({x:b.x,y:b.y,w:b.w,h:b.h},e)){
+                spaceBullets.splice(i,1);
+                removed=true;
+                e.hp--;
+                addSpaceExplosion(b.x,b.y,false);
+                if(e.hp<=0){
+                    spaceScore+=e.strong?30:10;
+                    addSpaceExplosion(e.x,e.y,true);
+                    spaceEnemiesArr.splice(j,1);
+                    if(spaceScore>=spaceWave*100)spaceWave++;
+                }
+                break;
+            }
+        }
+        if(removed)continue;
+    }
+
+    for(let i=spaceEnemiesArr.length-1;i>=0;i--){
+        const e=spaceEnemiesArr[i];
+        if(e.y>SH+50){
+            spaceEnemiesArr.splice(i,1);
+            loseSpaceLife();
+            if(!spaceRunning)return;
+            continue;
+        }
+        if(spacePlayer.inv<=0&&hitSpace(spacePlayer,e)){
+            spaceEnemiesArr.splice(i,1);
+            loseSpaceLife();
+            if(!spaceRunning)return;
+        }
+    }
+
+    for(const p of spaceParticles){
+        p.x+=p.vx*scale;
+        p.y+=p.vy*scale;
+        p.life-=dt;
+    }
+    spaceParticles=spaceParticles.filter(p=>p.life>0);
+    updateSpaceHUD();
+}
+
+function drawSpace(gameOver=false){
+    const grad=sg.createLinearGradient(0,0,0,SH);
+    grad.addColorStop(0,"#020617");
+    grad.addColorStop(1,"#111827");
+    sg.fillStyle=grad;
+    sg.fillRect(0,0,SW,SH);
+
+    for(const st of spaceStars){
+        sg.fillStyle=st.r>1.5?"#c4b5fd":"#94a3b8";
+        sg.beginPath();sg.arc(st.x,st.y,st.r,0,Math.PI*2);sg.fill();
+    }
+
+    for(const p of spaceParticles){
+        sg.globalAlpha=Math.max(0,p.life/900);
+        sg.fillStyle="#fbbf24";
+        sg.beginPath();sg.arc(p.x,p.y,p.r,0,Math.PI*2);sg.fill();
+    }
+    sg.globalAlpha=1;
+
+    for(const e of spaceEnemiesArr){
+        sg.save();
+        sg.translate(e.x,e.y);
+        sg.fillStyle=e.strong?"#f97316":"#ef4444";
+        sg.beginPath();
+        sg.moveTo(0,e.h/2);
+        sg.lineTo(-e.w/2,-e.h/3);
+        sg.lineTo(0,-e.h/2);
+        sg.lineTo(e.w/2,-e.h/3);
+        sg.closePath();sg.fill();
+        sg.fillStyle="#fde68a";sg.fillRect(-6,-3,12,7);
+        sg.restore();
+        if(e.maxHp>1){
+            sg.fillStyle="#111827";sg.fillRect(e.x-22,e.y-e.h/2-10,44,5);
+            sg.fillStyle="#22c55e";sg.fillRect(e.x-22,e.y-e.h/2-10,44*(e.hp/e.maxHp),5);
+        }
+    }
+
+    for(const b of spaceBullets){
+        sg.fillStyle="#a78bfa";
+        sg.shadowColor="#a78bfa";sg.shadowBlur=12;
+        sg.fillRect(b.x-b.w/2,b.y,b.w,b.h);
+        sg.shadowBlur=0;
+    }
+
+    if(spacePlayer){
+        sg.save();
+        sg.globalAlpha=spacePlayer.inv>0&&Math.floor(spacePlayer.inv/100)%2===0?.35:1;
+        sg.translate(spacePlayer.x,spacePlayer.y);
+        sg.fillStyle="#8b5cf6";
+        sg.beginPath();
+        sg.moveTo(0,-28);sg.lineTo(-22,25);sg.lineTo(0,17);sg.lineTo(22,25);sg.closePath();sg.fill();
+        sg.fillStyle="#67e8f9";sg.beginPath();sg.arc(0,-6,7,0,Math.PI*2);sg.fill();
+        sg.fillStyle="#fb923c";sg.beginPath();sg.moveTo(-8,24);sg.lineTo(0,40);sg.lineTo(8,24);sg.closePath();sg.fill();
+        sg.restore();
+    }
+
+    sg.fillStyle="rgba(2,6,23,.65)";
+    sg.fillRect(18,18,245,68);
+    sg.fillStyle="white";
+    sg.font="bold 20px Arial";
+    sg.fillText("🚀 BẮN PHI THUYỀN",32,46);
+    sg.font="15px Arial";
+    sg.fillText("Wave "+spaceWave+" • Hạ địch để ghi điểm",32,70);
+
+    if(gameOver){
+        sg.fillStyle="rgba(0,0,0,.55)";sg.fillRect(0,0,SW,SH);
+        sg.fillStyle="white";sg.textAlign="center";
+        sg.font="bold 48px Arial";sg.fillText("GAME OVER",SW/2,SH/2-10);
+        sg.font="24px Arial";sg.fillText("Điểm: "+spaceScore,SW/2,SH/2+35);
+        sg.textAlign="left";
+    }
+}
+
+let spaceFrame=0;
+function spaceLoop(time){
+    const dt=Math.min(40,time-(spaceLast||time-16));
+    spaceLast=time;
+    updateSpace(dt);
+    drawSpace(!spaceRunning&&spaceLives<=0);
+    if(spaceRunning)spaceFrame=requestAnimationFrame(spaceLoop);
+}
+
+document.addEventListener("keydown",e=>{
+    if(e.key==="ArrowLeft"||e.key==="a"||e.key==="A")spaceKeys.left=true;
+    if(e.key==="ArrowRight"||e.key==="d"||e.key==="D")spaceKeys.right=true;
+    if(e.key===" "){
+        spaceKeys.shoot=true;
+        if(document.getElementById("spaceScreen").classList.contains("active"))e.preventDefault();
+    }
+});
+
+document.addEventListener("keyup",e=>{
+    if(e.key==="ArrowLeft"||e.key==="a"||e.key==="A")spaceKeys.left=false;
+    if(e.key==="ArrowRight"||e.key==="d"||e.key==="D")spaceKeys.right=false;
+    if(e.key===" ")spaceKeys.shoot=false;
+});
+
+spaceCanvas.addEventListener("pointerdown",()=>spaceShoot());
 
 /* ================= START ================= */
 
