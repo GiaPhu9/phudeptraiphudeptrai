@@ -57,7 +57,7 @@ h1{
 
 .games{
     display:grid;
-    grid-template-columns:repeat(3,1fr);
+    grid-template-columns:repeat(4,1fr);
     gap:20px;
 }
 
@@ -298,6 +298,52 @@ h1{
     text-align:center;
 }
 
+
+/* ================= RACING 2D ================= */
+
+.racing-wrap{
+    width:min(900px,95vw);
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+}
+
+#racingCanvas{
+    width:100%;
+    max-height:620px;
+    border:4px solid #f59e0b;
+    border-radius:16px;
+    background:#1f2937;
+    box-shadow:0 15px 50px #0009;
+    touch-action:none;
+}
+
+.racing-info{
+    width:100%;
+    display:flex;
+    justify-content:space-between;
+    gap:12px;
+    margin-bottom:10px;
+    font-size:18px;
+    flex-wrap:wrap;
+}
+
+.racing-controls{
+    display:flex;
+    gap:10px;
+    margin-top:12px;
+}
+
+.racing-help{
+    margin-top:10px;
+    color:#cbd5e1;
+    text-align:center;
+}
+
+@media(max-width:1100px){
+    .games{grid-template-columns:repeat(2,1fr);}
+}
+
 @media(max-width:850px){
 
     .games{
@@ -401,6 +447,27 @@ MENU
                 class="play adventure"
                 onclick="openTank()">
                 🪖 Chơi Xe tăng
+            </button>
+
+        </div>
+
+
+        <!-- RACING 2D -->
+
+        <div class="card">
+
+            <div class="icon">🏎️</div>
+
+            <h2>Đua xe 2D</h2>
+
+            <p>
+                Né xe, tăng tốc và chạy càng xa càng tốt.
+            </p>
+
+            <button
+                class="play"
+                onclick="openRacing()">
+                🏎️ Chơi Đua xe
             </button>
 
         </div>
@@ -552,6 +619,48 @@ TANK 2D
 </section>
 
 
+<!-- =====================================================
+RACING 2D
+===================================================== -->
+
+<section id="racingScreen" class="screen game">
+
+    <div class="header">
+
+        <button class="back" onclick="backMenu()">
+            ← Quay lại
+        </button>
+
+        <h2 class="title">🏎️ Đua xe 2D</h2>
+
+        <span></span>
+
+    </div>
+
+    <div class="racing-wrap">
+
+        <div class="racing-info">
+            <span>🏆 Điểm: <b id="racingScore">0</b></span>
+            <span>📏 Quãng đường: <b id="racingDistance">0</b> m</span>
+            <span>💨 Tốc độ: <b id="racingSpeed">1</b></span>
+            <span>❤️ Mạng: <b id="racingLives">3</b></span>
+        </div>
+
+        <canvas id="racingCanvas" width="900" height="600"></canvas>
+
+        <div class="racing-controls">
+            <button class="small-btn" onclick="restartRacing()">🔄 Chơi lại</button>
+        </div>
+
+        <div class="racing-help">
+            A/D hoặc ←/→: lái xe • Space: tăng tốc • Né xe và chạy càng xa càng tốt
+        </div>
+
+    </div>
+
+</section>
+
+
 <!-- PROMOTION -->
 
 <div id="promotion" class="promotion">
@@ -619,11 +728,24 @@ function openTank(){
 
 }
 
+function openRacing(){
+
+    hideScreens();
+
+    document
+        .getElementById("racingScreen")
+        .classList.add("active");
+
+    restartRacing();
+
+}
+
 function backMenu(){
 
     clearInterval(snakeTimer);
 
     tankRunning=false;
+    racingRunning=false;
 
     hideScreens();
 
@@ -2055,6 +2177,221 @@ document.addEventListener("keyup",e=>{
     if(e.key==="ArrowLeft"||e.key==="a"||e.key==="A")tankKeys.left=false;
     if(e.key==="ArrowRight"||e.key==="d"||e.key==="D")tankKeys.right=false;
     if(e.key===" ")tankKeys.fire=false;
+});
+
+/* =====================================================
+RACING 2D
+===================================================== */
+
+const racingCanvas=document.getElementById("racingCanvas");
+const rg=racingCanvas.getContext("2d");
+const RW=900,RH=600;
+
+let racingCar=null;
+let racingTraffic=[];
+let racingRoadOffset=0;
+let racingScore=0;
+let racingDistance=0;
+let racingLives=3;
+let racingSpeed=5;
+let racingRunning=false;
+let racingKeys={left:false,right:false,boost:false};
+let racingLast=0;
+let racingSpawn=0;
+let racingInvincible=0;
+
+function restartRacing(){
+    racingCar={x:RW/2,y:490,w:42,h:72};
+    racingTraffic=[];
+    racingRoadOffset=0;
+    racingScore=0;
+    racingDistance=0;
+    racingLives=3;
+    racingSpeed=5;
+    racingRunning=true;
+    racingSpawn=300;
+    racingInvincible=0;
+    updateRacingHUD();
+    racingLast=performance.now();
+    requestAnimationFrame(racingLoop);
+}
+
+function updateRacingHUD(){
+    document.getElementById("racingScore").textContent=racingScore;
+    document.getElementById("racingDistance").textContent=Math.floor(racingDistance);
+    document.getElementById("racingSpeed").textContent=(racingSpeed/5).toFixed(1)+"x";
+    document.getElementById("racingLives").textContent=racingLives;
+}
+
+function racingClamp(v,a,b){return Math.max(a,Math.min(b,v));}
+function racingHit(a,b){
+    return a.x<b.x+b.w&&a.x+a.w>b.x&&a.y<b.y+b.h&&a.y+a.h>b.y;
+}
+
+function spawnRacingTraffic(){
+    const lanes=[270,375,480,585,690];
+    const lane=lanes[Math.floor(Math.random()*lanes.length)];
+    if(racingTraffic.some(c=>Math.abs(c.x-lane)<50&&c.y<180))return;
+    const colors=["#ef4444","#3b82f6","#a855f7","#f97316","#14b8a6"];
+    racingTraffic.push({
+        x:lane-21,
+        y:-90,
+        w:42,
+        h:72,
+        speed:2.5+Math.random()*2.8+racingDistance/1200,
+        color:colors[Math.floor(Math.random()*colors.length)]
+    });
+}
+
+function updateRacing(dt){
+    if(!racingRunning)return;
+
+    const boost=racingKeys.boost?2.2:0;
+    const moveSpeed=6.5+boost;
+    if(racingKeys.left)racingCar.x-=moveSpeed;
+    if(racingKeys.right)racingCar.x+=moveSpeed;
+    racingCar.x=racingClamp(racingCar.x,210,RW-210-racingCar.w);
+
+    racingSpeed=5+Math.min(7,racingDistance/180)+boost;
+    racingRoadOffset=(racingRoadOffset+racingSpeed*dt/16)%80;
+    racingDistance+=racingSpeed*dt/1000*3.2;
+    racingScore=Math.floor(racingDistance)+racingTraffic.length*5;
+    racingInvincible=Math.max(0,racingInvincible-dt);
+
+    racingSpawn-=dt;
+    const interval=Math.max(260,720-racingDistance*1.4);
+    if(racingSpawn<=0){
+        spawnRacingTraffic();
+        racingSpawn=interval;
+    }
+
+    for(let i=racingTraffic.length-1;i>=0;i--){
+        const car=racingTraffic[i];
+        car.y+=(car.speed+racingSpeed*.55)*dt/16;
+        if(car.y>RH+100){
+            racingTraffic.splice(i,1);
+            continue;
+        }
+        if(racingInvincible<=0&&racingHit(racingCar,car)){
+            racingLives--;
+            racingInvincible=1400;
+            racingTraffic.splice(i,1);
+            racingCar.x=RW/2-21;
+            if(racingLives<=0){
+                racingLives=0;
+                racingRunning=false;
+                updateRacingHUD();
+                setTimeout(()=>alert("🏁 GAME OVER!\n\nĐiểm: "+racingScore+"\nQuãng đường: "+Math.floor(racingDistance)+" m"),50);
+                return;
+            }
+        }
+    }
+    updateRacingHUD();
+}
+
+function drawRacing(){
+    rg.clearRect(0,0,RW,RH);
+
+    // grass
+    rg.fillStyle="#2f7d32";
+    rg.fillRect(0,0,RW,RH);
+
+    // roadside stripes
+    rg.fillStyle="#d9d9d9";
+    rg.fillRect(170,0,22,RH);
+    rg.fillRect(708,0,22,RH);
+
+    // road
+    rg.fillStyle="#30343b";
+    rg.fillRect(192,0,516,RH);
+
+    // road edges
+    rg.fillStyle="#f8fafc";
+    rg.fillRect(198,0,5,RH);
+    rg.fillRect(697,0,5,RH);
+
+    // lane dividers
+    rg.strokeStyle="#f8fafc";
+    rg.lineWidth=7;
+    rg.setLineDash([35,45]);
+    rg.lineDashOffset=-racingRoadOffset;
+    for(const x of [297,402,507,612]){
+        rg.beginPath();
+        rg.moveTo(x,0);
+        rg.lineTo(x,RH);
+        rg.stroke();
+    }
+    rg.setLineDash([]);
+
+    // traffic
+    for(const car of racingTraffic){
+        rg.save();
+        rg.translate(car.x+car.w/2,car.y+car.h/2);
+        rg.fillStyle=car.color;
+        rg.roundRect(-car.w/2,-car.h/2,car.w,car.h,9);
+        rg.fill();
+        rg.fillStyle="#111827";
+        rg.fillRect(-14,-17,28,20);
+        rg.fillStyle="#bae6fd";
+        rg.fillRect(-10,-14,20,8);
+        rg.fillStyle="#111";
+        rg.fillRect(-25,-23,7,17);
+        rg.fillRect(18,-23,7,17);
+        rg.fillRect(-25,6,7,17);
+        rg.fillRect(18,6,7,17);
+        rg.restore();
+    }
+
+    // player car
+    if(racingCar){
+        rg.save();
+        rg.globalAlpha=racingInvincible>0&&Math.floor(racingInvincible/100)%2===0?.35:1;
+        rg.translate(racingCar.x+racingCar.w/2,racingCar.y+racingCar.h/2);
+        rg.fillStyle="#e11d48";
+        rg.roundRect(-21,-36,42,72,10);
+        rg.fill();
+        rg.fillStyle="#111827";
+        rg.fillRect(-14,-19,28,25);
+        rg.fillStyle="#93c5fd";
+        rg.fillRect(-10,-15,20,10);
+        rg.fillStyle="#111";
+        rg.fillRect(-25,-25,7,18);
+        rg.fillRect(18,-25,7,18);
+        rg.fillRect(-25,7,7,18);
+        rg.fillRect(18,7,7,18);
+        rg.fillStyle="#fde68a";
+        rg.fillRect(-14,28,9,4);
+        rg.fillRect(5,28,9,4);
+        rg.restore();
+    }
+
+    rg.fillStyle="rgba(0,0,0,.45)";
+    rg.fillRect(20,20,255,70);
+    rg.fillStyle="white";
+    rg.font="bold 20px Arial";
+    rg.fillText("🏎️ ĐUA XE 2D",35,48);
+    rg.font="15px Arial";
+    rg.fillText("Né xe và chạy càng xa càng tốt!",35,72);
+}
+
+function racingLoop(time){
+    const dt=Math.min(40,time-racingLast||16);
+    racingLast=time;
+    updateRacing(dt);
+    drawRacing();
+    if(racingRunning)requestAnimationFrame(racingLoop);
+}
+
+document.addEventListener("keydown",e=>{
+    if(e.key==="ArrowLeft"||e.key==="a"||e.key==="A")racingKeys.left=true;
+    if(e.key==="ArrowRight"||e.key==="d"||e.key==="D")racingKeys.right=true;
+    if(e.key===" "){racingKeys.boost=true;e.preventDefault();}
+});
+
+document.addEventListener("keyup",e=>{
+    if(e.key==="ArrowLeft"||e.key==="a"||e.key==="A")racingKeys.left=false;
+    if(e.key==="ArrowRight"||e.key==="d"||e.key==="D")racingKeys.right=false;
+    if(e.key===" ")racingKeys.boost=false;
 });
 
 /* ================= START ================= */
